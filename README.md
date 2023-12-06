@@ -1,4 +1,4 @@
-# Panzer-JustClock-VB6
+# Diesel-Volume-Control-VB6
  
   A FOSS Clock VB6 WoW64 Widget for Reactos, XP, Win7, 8 and 10/11+.
  
