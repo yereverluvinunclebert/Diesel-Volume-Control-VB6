@@ -44,7 +44,8 @@
  is new VB6 widgets with more functionality and then hopefully, conversion of 
  each to RADBasic/TwinBasic for future-proofing and 64bit-ness. 
 
- ![menu01](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/4f91507e-4d74-4486-b4d0-7138737fbd57)
+![dieselpunk-volume-menu001](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/20284008-b0a6-4ed9-bef4-4a2d954b221b)
+
  
  This utility is one of a set of steampunk and dieselpunk widgets. That you can 
  find here on Deviantart: https://www.deviantart.com/yereverluvinuncleber/gallery
