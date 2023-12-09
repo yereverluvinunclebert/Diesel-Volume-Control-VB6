@@ -21,8 +21,6 @@
  This widget can be increased in size, animation speed can be changed, 
  opacity/transparency may be set as to the users discretion. The widget can 
  also be made to hide for a pre-determined period.
- 
-![diesel-volume-help](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/d2546c52-de2a-4b0e-b6eb-e21e3bd836b3)
 
  Right clicking will bring up a menu of options. Double-clicking on the widget will cause a personalised Windows application to 
  fire up. The first time you run it there will be no assigned function and so it 
@@ -30,8 +28,6 @@
  command of your choice. The widget takes command line-style commands for 
  windows. Mouse hover over the widget and press CTRL+mousewheel up/down to resize. It works well on Windows XP 
  to Windows 11.
- 
-![diesel-volume](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/026b1722-7bfa-429f-ab4a-1dae5f8f9f18)
 
  The Panzer Just Clock VB6 gauge is Beta-grade software, under development, not yet 
  ready to use on a production system - use at your own risk.
@@ -39,6 +35,7 @@
  This version was developed on Windows 7 using 32 bit VisualBasic 6 as a FOSS 
  project creating a WoW64 widget for the desktop. 
  
+![diesel-volume-help](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/d2546c52-de2a-4b0e-b6eb-e21e3bd836b3)
 
  It is open source to allow easy configuration, bug-fixing, enhancement and 
  community contribution towards free-and-useful VB6 utilities that can be created
@@ -74,7 +71,9 @@
 	Persistent debug code http://www.vbforums.com/member.php?234143-Elroy  
 	Open File common dialog code without dependent OCX - http://forums.codeguru.com/member.php?92278-rxbagain  
 	VBAdvance  
- 
+
+  
+![diesel-volume](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/026b1722-7bfa-429f-ab4a-1dae5f8f9f18)
  
  Tested on :
  
@@ -204,8 +203,6 @@
  original artist using my name or one of my pseudonyms and a link to my site. 
  With regard to the commercial use of incorporated images, permission and a 
  licence would need to be obtained from the original owner and creator, ie. me.
- 
-![about](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/ee6b1f77-5827-4441-aa7e-7871c7ea39e0)
 
 ![desktop](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/8cf592a3-968f-4bf1-ab98-c734ff1cc261)
 
