@@ -170,7 +170,7 @@
  
  In the VB6 IDE - project - references - browse - select the OLEGuids.tlb
  
-![dieselpunk-volume-menu001](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/338a6025-1f09-4542-8226-3e4884e20459)
+![dieselpunk-volume-prefs002](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/911deeb2-1649-42d6-9fd6-4339e09b7ea3)
 
  * SETUP.EXE - The program is currently distributed using setup2go, a very useful 
  and comprehensive installer program that builds a .exe installer. Youll have to 
