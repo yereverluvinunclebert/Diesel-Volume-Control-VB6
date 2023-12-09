@@ -54,6 +54,10 @@ End Sub
 Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As Single, ByVal dx_Aligned As Single, ByVal dy_Aligned As Single, UserObj As Object)
   Dim Srf As cCairoSurface ', x As Single, y As Single
   If Cairo.ImageList.Exists(W.ImageKey) Then Set Srf = Cairo.ImageList(W.ImageKey) Else Exit Sub
+    
+    CC.Operator = CAIRO_OPERATOR_CLEAR
+    CC.Paint 'clear the whole background of this Widgets underlying Surface via Clear-Operator
+    CC.Operator = CAIRO_OPERATOR_OVER 'switch back to the default-Operator
 
   CC.RenderSurfaceContent Srf, 0, 0, W.Width, W.Height, , W.Alpha 'render the current W.ImageKey-Surface (as loaded priorily into the ImageList)
 
