@@ -16,13 +16,13 @@
  It will be a simple multi-timezone Simple Clock and clock. This Widget is a moveable widget that you can move anywhere 
  around the desktop as you require.
  
-![panzer-justclockVB6beltring](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/0fda4260-7828-4626-8121-51fb82a1474e)
+![dieselpunk-volume-400](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/61063cce-eeb7-4552-ac96-ab2a192eb14f)
 
  This widget can be increased in size, animation speed can be changed, 
  opacity/transparency may be set as to the users discretion. The widget can 
  also be made to hide for a pre-determined period.
  
-![justClock-image](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/2f1080ed-8784-428f-8335-51e97a1a3bf5)
+![diesel-volume-help](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/d2546c52-de2a-4b0e-b6eb-e21e3bd836b3)
 
  Right clicking will bring up a menu of options. Double-clicking on the widget will cause a personalised Windows application to 
  fire up. The first time you run it there will be no assigned function and so it 
@@ -31,15 +31,14 @@
  windows. Mouse hover over the widget and press CTRL+mousewheel up/down to resize. It works well on Windows XP 
  to Windows 11.
  
-![panzergauge-help](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/da7d68b6-31fd-4181-aad6-253999742658)
- 
+![diesel-volume](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/026b1722-7bfa-429f-ab4a-1dae5f8f9f18)
+
  The Panzer Just Clock VB6 gauge is Beta-grade software, under development, not yet 
  ready to use on a production system - use at your own risk.
 
  This version was developed on Windows 7 using 32 bit VisualBasic 6 as a FOSS 
  project creating a WoW64 widget for the desktop. 
  
-![Licence002](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/b4f647b5-fffc-4c5c-8bdf-86353cd007e7)
 
  It is open source to allow easy configuration, bug-fixing, enhancement and 
  community contribution towards free-and-useful VB6 utilities that can be created
@@ -49,7 +48,6 @@
  each to RADBasic/TwinBasic for future-proofing and 64bit-ness. 
 
  ![menu01](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/4f91507e-4d74-4486-b4d0-7138737fbd57)
-
  
  This utility is one of a set of steampunk and dieselpunk widgets. That you can 
  find here on Deviantart: https://www.deviantart.com/yereverluvinuncleber/gallery
@@ -57,8 +55,6 @@
  I do hope you enjoy using this utility and others. Your own software 
  enhancements and contributions will be gratefully received if you choose to 
  contribute.
-
- <img width="75" alt="security" src="https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/030384c0-f44d-4a74-9090-afe1248e5c70">
 
  BUILD: The program runs without any Microsoft plugins.
  
