@@ -170,8 +170,7 @@
  
  In the VB6 IDE - project - references - browse - select the OLEGuids.tlb
  
- ![prefs-window](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/dd59d504-7a31-4e23-aff0-d528e92ec123)
-
+![dieselpunk-volume-menu001](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/338a6025-1f09-4542-8226-3e4884e20459)
 
  * SETUP.EXE - The program is currently distributed using setup2go, a very useful 
  and comprehensive installer program that builds a .exe installer. Youll have to 
