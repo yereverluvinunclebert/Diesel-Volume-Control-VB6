@@ -6,7 +6,7 @@ Option Explicit
 
 '------------------------------------------------------ STARTS
 ' for SetWindowPos z-ordering
-Public Declare Function SetWindowPos Lib "user32" (ByVal hwnd As Long, ByVal hWndInsertAfter As Long, ByVal x As Long, ByVal Y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long) As Long
+Public Declare Function SetWindowPos Lib "user32" (ByVal hwnd As Long, ByVal hWndInsertAfter As Long, ByVal x As Long, ByVal y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long) As Long
 
 Public Const HWND_TOP As Long = 0 ' for SetWindowPos z-ordering
 Public Const HWND_TOPMOST As Long = -1
@@ -101,6 +101,9 @@ Public Sub mainRoutine(ByVal restart As Boolean)
     ' check the Windows version
     classicThemeCapable = fTestClassicThemeCapable
   
+    ' get this tool's entry in the trinkets settings file and assign the app.path
+    Call getTrinketsFile
+    
     ' get the location of this tool's settings file (appdata)
     Call getToolSettingsFile
     
@@ -280,6 +283,10 @@ Private Sub initialiseGlobalVars()
     ' general storage variables declared
     gblSettingsDir = vbNullString
     gblSettingsFile = vbNullString
+    
+    gblTrinketsDir = vbNullString
+    gblTrinketsFile = vbNullString
+    
     gblClockHighDpiXPos = vbNullString
     gblClockHighDpiYPos = vbNullString
     
@@ -739,6 +746,45 @@ validateInputs_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure validateInputs of form modMain"
 End Sub
 
+'---------------------------------------------------------------------------------------
+' Procedure : getTrinketsFile
+' Author    : beededea
+' Date      : 17/10/2019
+' Purpose   : get this tool's entry in the trinkets settings file and assign the app.path
+'---------------------------------------------------------------------------------------
+'
+Private Sub getTrinketsFile()
+    On Error GoTo getTrinketsFile_Error
+    
+    Dim iFileNo As Integer: iFileNo = 0
+    
+    gblTrinketsDir = fSpecialFolder(feUserAppData) & "\trinkets" ' just for this user alone
+    gblTrinketsFile = gblTrinketsDir & "\" & widgetName & ".ini"
+        
+    'if the folder does not exist then create the folder
+    If Not fDirExists(gblTrinketsDir) Then
+        MkDir gblTrinketsDir
+    End If
+
+    'if the settings.ini does not exist then create the file by copying
+    If Not fFExists(gblTrinketsFile) Then
+
+        iFileNo = FreeFile
+        'open the file for writing
+        Open gblTrinketsFile For Output As #iFileNo
+        Write #iFileNo, App.path & "\" & App.EXEName & ".exe"
+        Write #iFileNo,
+        Close #iFileNo
+    End If
+    
+   On Error GoTo 0
+   Exit Sub
+
+getTrinketsFile_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure getTrinketsFile of Form modMain"
+
+End Sub
 '---------------------------------------------------------------------------------------
 ' Procedure : getToolSettingsFile
 ' Author    : beededea

@@ -351,6 +351,10 @@ Public gblFirstTimeRun  As String
 ' General storage variables declared
 Public gblSettingsDir As String
 Public gblSettingsFile As String
+
+Public gblTrinketsDir      As String
+Public gblTrinketsFile      As String
+
 Public gblClockHighDpiXPos As String
 Public gblClockHighDpiYPos As String
 Public gblClockLowDpiXPos As String

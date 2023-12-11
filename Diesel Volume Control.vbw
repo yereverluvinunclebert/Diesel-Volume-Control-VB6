@@ -1,4 +1,4 @@
-modMain = 52, 52, 1117, 700, 
+modMain = 52, 52, 1117, 700, Z
 cfAlpha = 437, 320, 1696, 1006, 
 modRegFree = 116, 122, 1003, 770, 
 cwOverlay = 92, 39, 1212, 936, 
@@ -15,4 +15,4 @@ cwLicence = 0, 0, 1180, 932,
 frmMessage = -11, 56, 1494, 745, , 156, 156, 996, 845, C
 modResize = 52, 52, 1122, 741, 
 modDaylightSavings = 217, 165, 1028, 829, 
-cwAlphaImg = 156, 156, 685, 761, Z
+cwAlphaImg = 156, 156, 685, 761, 
