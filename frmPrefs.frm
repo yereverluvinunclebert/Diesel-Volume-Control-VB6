@@ -1906,158 +1906,6 @@ Private Declare Function GetSysColor Lib "user32.dll" (ByVal nIndex As Long) As 
 Private Declare Function IsThemeActive Lib "uxtheme" () As Boolean
 '------------------------------------------------------ ENDS
 
-'------------------------------------------------------ STARTS
-' Types for determining the timezone
-
-'Private BiasAdjust As Boolean
-'
-'' results UDT
-'Private Type TZ_LOOKUP_DATA
-'   TimeZoneName As String
-'   bias As Long
-'   IsDST As Boolean
-'End Type
-'
-'Private tzinfo() As TZ_LOOKUP_DATA
-'
-''holds the correct key for the OS version
-'Private sTzKey As String
-
-'windows constants and declares
-'Private Const TIME_ZONE_ID_UNKNOWN As Long = 1
-'Private Const TIME_ZONE_ID_STANDARD As Long = 1
-'Private Const TIME_ZONE_ID_DAYLIGHT As Long = 2
-'Private Const TIME_ZONE_ID_INVALID As Long = &HFFFFFFFF
-'Private Const VER_PLATFORM_WIN32_NT = 2
-'Private Const VER_PLATFORM_WIN32_WINDOWS = 1
-
-'registry constants
-'Private Const SKEY_NT = "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Time Zones"
-'Private Const SKEY_9X = "SOFTWARE\Microsoft\Windows\CurrentVersion\Time Zones"
-'Private Const HKEY_LOCAL_MACHINE = &H80000002
-'Private Const ERROR_SUCCESS = 0
-''Private Const REG_SZ As Long = 1
-''Private Const REG_BINARY = 3
-''Private Const REG_DWORD As Long = 4
-'Private Const STANDARD_RIGHTS_READ As Long = &H20000
-'Private Const KEY_QUERY_VALUE As Long = &H1
-'Private Const KEY_ENUMERATE_SUB_KEYS As Long = &H8
-'Private Const KEY_NOTIFY As Long = &H10
-'Private Const SYNCHRONIZE As Long = &H100000
-'Private Const KEY_READ As Long = ((STANDARD_RIGHTS_READ Or _
-'                                   KEY_QUERY_VALUE Or _
-'                                   KEY_ENUMERATE_SUB_KEYS Or _
-'                                   KEY_NOTIFY) And _
-'                                   (Not SYNCHRONIZE))
-
-'Private Type SYSTEMTIME
-'   wYear As Integer
-'   wMonth As Integer
-'   wDayOfWeek As Integer
-'   wDay As Integer
-'   wHour As Integer
-'   wMinute As Integer
-'   wSecond As Integer
-'   wMilliseconds As Integer
-'End Type
-'
-'Private Type FILETIME
-'   dwLowDateTime As Long
-'   dwHighDateTime As Long
-'End Type
-'
-'Private Type REG_TIME_ZONE_INFORMATION
-'   bias As Long
-'   StandardBias As Long
-'   DaylightBias As Long
-'   StandardDate As SYSTEMTIME
-'   DaylightDate As SYSTEMTIME
-'End Type
-
-
-'Private Type TIME_ZONE_INFORMATION
-'    bias                    As Long
-'    StandardName(0 To 63)   As Byte
-'    StandardDate            As SYSTEMTIME
-'    StandardBias            As Long
-'    DaylightName(0 To 63)   As Byte
-'    DaylightDate            As SYSTEMTIME
-'    DaylightBias            As Long
-'End Type
-
-'Private Type OSVERSIONINFO
-'   OSVSize As Long
-'   dwVerMajor As Long
-'   dwVerMinor As Long
-'   dwBuildNumber As Long
-'   PlatformID As Long
-'   szCSDVersion As String * 128
-'End Type
-
-' APIs for determining the timezone
-
-'Private Declare Function GetVersionEx Lib "kernel32" _
-'   Alias "GetVersionExA" _
-'  (lpVersionInformation As OSVERSIONINFO) As Long
-'
-'Private Declare Function GetTimeZoneInformation Lib "kernel32" _
-'   (lpTimeZoneInformation As TIME_ZONE_INFORMATION) As Long
-
-'Private Declare Function RegOpenKeyEx Lib "advapi32.dll" _
-'   Alias "RegOpenKeyExA" _
-'  (ByVal hKey As Long, _
-'   ByVal lpsSubKey As String, _
-'   ByVal ulOptions As Long, _
-'   ByVal samDesired As Long, _
-'   phkResult As Long) As Long
-'
-'Private Declare Function RegQueryValueEx Lib "advapi32.dll" _
-'   Alias "RegQueryValueExA" _
-'  (ByVal hKey As Long, _
-'   ByVal lpszValueName As String, _
-'   ByVal lpdwReserved As Long, _
-'   lpdwType As Long, _
-'   lpData As Any, _
-'   lpcbData As Long) As Long
-'
-'Private Declare Function RegQueryInfoKey Lib "advapi32.dll" _
-'   Alias "RegQueryInfoKeyA" _
-'  (ByVal hKey As Long, _
-'   ByVal lpClass As String, _
-'   lpcbClass As Long, _
-'   ByVal lpReserved As Long, _
-'   lpcsSubKeys As Long, _
-'   lpcbMaxsSubKeyLen As Long, _
-'   lpcbMaxClassLen As Long, _
-'   lpcValues As Long, _
-'   lpcbMaxValueNameLen As Long, _
-'   lpcbMaxValueLen As Long, _
-'   lpcbSecurityDescriptor As Long, _
-'   lpftLastWriteTime As FILETIME) As Long
-   
-'Private Declare Function RegQueryValueExString Lib "advapi32.dll" _
-'   Alias "RegQueryValueExA" _
-'  (ByVal hKey As Long, _
-'   ByVal lpValueName As String, _
-'   ByVal lpReserved As Long, _
-'   lpType As Long, _
-'   ByVal lpData As String, _
-'   lpcbData As Long) As Long
-
-'Private Declare Function RegEnumKey Lib "advapi32.dll" _
-'   Alias "RegEnumKeyA" _
-'  (ByVal hKey As Long, _
-'   ByVal dwIndex As Long, _
-'   ByVal lpName As String, _
-'   ByVal cbName As Long) As Long
-'
-'Private Declare Function RegCloseKey Lib "advapi32.dll" _
-'  (ByVal hKey As Long) As Long
-
-'Private Declare Function lstrlenW Lib "kernel32" _
-'  (ByVal lpString As Long) As Long
-'
-'------------------------------------------------------ ENDS
 
 '------------------------------------------------------ STARTS
 ' Private Types for determining prefs sizing
@@ -2073,31 +1921,6 @@ Private gblAllowSizeChangeFlg As Boolean
 
 
 
-
-
-
-'---------------------------------------------------------------------------------------
-' Procedure : cmbMainGaugeTimeZone_Click
-' Author    : beededea
-' Date      : 29/10/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Private Sub cmbMainGaugeTimeZone_Click()
-    On Error GoTo cmbMainGaugeTimeZone_Click_Error
-
-    If prefsStartupFlg = False Then ' don't run this on startup
-        btnSave.Enabled = True ' enable the save button
-        Call obtainDaylightSavings 'determine the time bias
-    End If
-
-    On Error GoTo 0
-    Exit Sub
-
-cmbMainGaugeTimeZone_Click_Error:
-
-     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure cmbMainGaugeTimeZone_Click of Form widgetPrefs"
-End Sub
 
 
 
@@ -2300,7 +2123,7 @@ End Sub
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub btnResetMessages_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub btnResetMessages_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     On Error GoTo btnResetMessages_MouseMove_Error
 
     If gblEnableBalloonTooltips = "1" Then CreateToolTip btnResetMessages.hwnd, "The various pop-up messages that this program generates can be manually hidden. This button restores them to their original visible state.", _
@@ -2410,7 +2233,7 @@ End Sub
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub chkEnableTooltips_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub chkEnableTooltips_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     On Error GoTo chkEnableTooltips_MouseMove_Error
 
     If gblEnableBalloonTooltips = "1" Then CreateToolTip chkEnableTooltips.hwnd, "There is a problem with the current tooltips on the clock itself as they resize along with the program graphical elements, meaning that they cannot be seen, there is also a problem with tooltip handling different fonts, hoping to get Olaf to fix these soon. My suggestion is to turn them off for the moment.", _
@@ -3988,77 +3811,77 @@ Form_Unload_Error:
 
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Form_Unload of Form widgetPrefs"
 End Sub
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     fraScrollbarCover.Visible = True
 
 End Sub
-Private Sub fraAbout_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraAbout_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraAbout_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraAbout_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     fraScrollbarCover.Visible = True
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraAbout.hwnd, "The About tab tells you all about this program and its creation using VB6.", _
                   TTIconInfo, "Help on the About Tab", , , , True
 End Sub
-Private Sub fraConfigInner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraConfigInner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraConfigInner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraConfigInner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraConfigInner.hwnd, "The configuration panel is the location for optional configuration items. These items change how the volume control operates, configure them to suit your needs and your mode of operation.", _
                   TTIconInfo, "Help on Configuration", , , , True
 
 End Sub
-Private Sub fraConfig_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraConfig_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraConfig_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraConfig_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraConfig.hwnd, "The configuration panel is the location for optional configuration items. These items change how the volume control operates, configure them to suit your needs and your mode of operation.", _
                   TTIconInfo, "Help on Configuration", , , , True
 
 End Sub
 
-Private Sub fraDefaultEditor_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraDefaultEditor_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     lblGitHub.ForeColor = &H80000012
 End Sub
 
-Private Sub fraDevelopment_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraDevelopment_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraDevelopment_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraDevelopment_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraDevelopment.hwnd, "This tab contains elements that will assist in debugging and developing this program further. ", _
                   TTIconInfo, "Help on the Development Tab", , , , True
 End Sub
 
 
-Private Sub fraDevelopmentInner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraDevelopmentInner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraDevelopmentInner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraDevelopmentInner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraDevelopmentInner.hwnd, "This tab contains elements that will assist in debugging and developing this program further. ", _
                   TTIconInfo, "Help on the Development Tab", , , , True
 
 End Sub
-Private Sub fraFonts_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraFonts_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraFonts.hwnd, "This tab allows you to set a specific font for the preferences only as there are no textual elements in the main program. We suggest Centurion Light SF at 8pt, which you will find bundled in the gbl program folder. Choose a small 8pt font for each.", _
                   TTIconInfo, "Help on Setting the Fonts", , , , True
 
 End Sub
-Private Sub fraFontsInner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraFontsInner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraFontsInner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraFontsInner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraFontsInner.hwnd, "This tab allows you to set a specific font for the preferences only as there are no textual elements in the main program. We suggest Centurion Light SF at 8pt, which you will find bundled in the gbl program folder. Choose a small 8pt font for each.", _
                   TTIconInfo, "Help on Setting the Fonts", , , , True
 End Sub
@@ -4067,78 +3890,78 @@ End Sub
 '        Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
 '    End If
 'End Sub
-Private Sub fraGeneral_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraGeneral_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraGeneral_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraGeneral_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraGeneral.hwnd, "The General Panel contains the most important user-configurable items required for the program to operate correctly.", _
                   TTIconInfo, "Help on Essential Configuration", , , , True
 End Sub
 
-Private Sub fraGeneralInner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraGeneralInner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraGeneralInner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraGeneralInner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraGeneralInner.hwnd, "The General Panel contains the most important user-configurable items required for the program to operate correctly.", _
                   TTIconInfo, "Help on Essential Configuration", , , , True
 End Sub
 
-Private Sub fraPosition_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraPosition_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
      If gblEnableBalloonTooltips = "1" Then CreateToolTip fraPosition.hwnd, "This tab allows you to determine the X and Y positioning of your widget in landscape and portrait screen modes. Best left well alone unless you use Windows on a tablet.", _
                   TTIconInfo, "Help on Tablet Positioning", , , , True
 End Sub
-Private Sub fraPositionInner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraPositionInner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraPositionInner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraPositionInner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip fraPositionInner.hwnd, "This tab allows you to determine the X and Y positioning of your widget in landscape and portrait screen modes. Best left well alone unless you use Windows on a tablet.", _
                   TTIconInfo, "Help on Tablet Positioning", , , , True
 End Sub
 
-Private Sub fraScrollbarCover_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraScrollbarCover_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     fraScrollbarCover.Visible = False
 
 End Sub
-Private Sub fraSounds_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraSounds_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraSounds_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraSounds_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
  If gblEnableBalloonTooltips = "1" Then CreateToolTip fraSounds.hwnd, "The sound panel allows you to configure the sounds that occur within gbl. Some of the animations have associated sounds, you can control these here..", _
                   TTIconInfo, "Help on Configuring Sounds", , , , True
 End Sub
-Private Sub fraSoundsInner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraSoundsInner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraSoundsInner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraSoundsInner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
      If gblEnableBalloonTooltips = "1" Then CreateToolTip fraSoundsInner.hwnd, "The sound panel allows you to configure the sounds that occur within gbl. Some of the animations have associated sounds, you can control these here..", _
                   TTIconInfo, "Help on Configuring Sounds", , , , True
 End Sub
 
-Private Sub fraWindow_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraWindow_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraWindow_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraWindow_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
      If gblEnableBalloonTooltips = "1" Then CreateToolTip fraWindow.hwnd, "The Opacity and Window Level of the program are rather strange characteristics to change in a Windows program, however this widget is a copy of a Yahoo Widget of the same name. All widgets have similar window tab options including the capability to change the opacity and window level. Whether these options are useful to you or anyone is a moot point but as this tool aims to replicate the YWE version functionality it has been reproduced here. It is here as more of an experiment as to how to implement a feature, one carried over from the Yahoo Widget (javascript) version of this program.", _
                   TTIconInfo, "Help on YWE Quirk Mode Options", , , , True
 End Sub
-Private Sub fraWindowInner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraWindowInner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
 End Sub
-Private Sub fraWindowInner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub fraWindowInner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
      If gblEnableBalloonTooltips = "1" Then CreateToolTip fraWindowInner.hwnd, "The Opacity and Window Level of the program are rather strange characteristics to change in a Windows program, however this widget is a copy of a Yahoo Widget of the same name. All widgets have similar window tab options including the capability to change the opacity and window level. Whether these options are useful to you or anyone is a moot point but as this tool aims to replicate the YWE version functionality it has been reproduced here. It is here as more of an experiment as to how to implement a feature, one carried over from the Yahoo Widget (javascript) version of this program.", _
                   TTIconInfo, "Help on YWE Quirk Mode Options", , , , True
 End Sub
@@ -4152,7 +3975,7 @@ Private Sub imgGeneral_Click()
     imgGeneralClicked.Visible = True
 End Sub
 
-Private Sub imgGeneral_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgGeneral_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     Call picButtonMouseUpEvent("general", imgGeneral, imgGeneralClicked, fraGeneral, fraGeneralButton) ' was imgGeneralMouseUpEvent
 End Sub
 
@@ -4186,7 +4009,7 @@ lblGitHub_dblClick_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure lblGitHub_dblClick of Form widgetPrefs"
 End Sub
 
-Private Sub lblGitHub_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub lblGitHub_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     lblGitHub.ForeColor = &H8000000D
 End Sub
 
@@ -4203,7 +4026,7 @@ End Sub
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub txtAboutText_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub txtAboutText_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     On Error GoTo txtAboutText_MouseDown_Error
 
     If Button = vbRightButton Then
@@ -4220,77 +4043,77 @@ txtAboutText_MouseDown_Error:
      MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure txtAboutText_MouseDown of Form widgetPrefs"
 End Sub
 
-Private Sub txtAboutText_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub txtAboutText_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     fraScrollbarCover.Visible = False
 End Sub
 
-Private Sub imgAbout_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgAbout_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     imgAbout.Visible = False
     imgAboutClicked.Visible = True
 End Sub
-Private Sub imgAbout_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgAbout_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     Call picButtonMouseUpEvent("about", imgAbout, imgAboutClicked, fraAbout, fraAboutButton)
 End Sub
 
-Private Sub imgDevelopment_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgDevelopment_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     imgDevelopment.Visible = False
     imgDevelopmentClicked.Visible = True
 End Sub
 
-Private Sub imgDevelopment_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgDevelopment_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     Call picButtonMouseUpEvent("development", imgDevelopment, imgDevelopmentClicked, fraDevelopment, fraDevelopmentButton)
 End Sub
 
-Private Sub imgFonts_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgFonts_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     imgFonts.Visible = False
     imgFontsClicked.Visible = True
 End Sub
 
-Private Sub imgFonts_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgFonts_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     Call picButtonMouseUpEvent("fonts", imgFonts, imgFontsClicked, fraFonts, fraFontsButton)
 End Sub
 
-Private Sub imgConfig_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgConfig_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     imgConfig.Visible = False
     imgConfigClicked.Visible = True
 End Sub
 
-Private Sub imgConfig_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgConfig_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     Call picButtonMouseUpEvent("config", imgConfig, imgConfigClicked, fraConfig, fraConfigButton) ' was imgConfigMouseUpEvent
 End Sub
 
-Private Sub imgGeneral_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgGeneral_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     imgGeneral.Visible = False
     imgGeneralClicked.Visible = True
 End Sub
 
 
-Private Sub imgPosition_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgPosition_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     imgPosition.Visible = False
     imgPositionClicked.Visible = True
 End Sub
 
-Private Sub imgPosition_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgPosition_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     Call picButtonMouseUpEvent("position", imgPosition, imgPositionClicked, fraPosition, fraPositionButton)
 End Sub
 
-Private Sub imgSounds_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSounds_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     '
     imgSounds.Visible = False
     imgSoundsClicked.Visible = True
 End Sub
 
-Private Sub imgSounds_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgSounds_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     'Call imgSoundsMouseUpEvent
     Call picButtonMouseUpEvent("sounds", imgSounds, imgSoundsClicked, fraSounds, fraSoundsButton)
 End Sub
 
-Private Sub imgWindow_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgWindow_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     imgWindow.Visible = False
     imgWindowClicked.Visible = True
 End Sub
 
-Private Sub imgWindow_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub imgWindow_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     Call picButtonMouseUpEvent("window", imgWindow, imgWindowClicked, fraWindow, fraWindowButton)
 End Sub
 
@@ -4386,7 +4209,7 @@ End Sub
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub Form_MouseDown(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef Y As Single)
+Private Sub Form_MouseDown(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
    On Error GoTo Form_MouseDown_Error
 
     If Button = 2 Then
@@ -4415,7 +4238,7 @@ End Sub
 '    End If
 'End Sub
 
-Private Sub fraFonts_MouseDown(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef Y As Single)
+Private Sub fraFonts_MouseDown(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
     If Button = 2 Then
         Me.PopupMenu prefsMnuPopmenu, vbPopupMenuRightButton
     End If
@@ -4423,7 +4246,7 @@ End Sub
 
 
 
-Private Sub txtBias_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub txtBias_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip txtBias.hwnd, "This field displays the current total bias that will be applied to the current time based upon the timezone and daylight savings selection made, (read only). ", _
                   TTIconInfo, "Help on the bias field.", , , , True
 End Sub
@@ -5351,7 +5174,7 @@ chkEnableResizing_Click_Error:
 
 End Sub
 
-Private Sub chkEnableResizing_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub chkEnableResizing_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip chkEnableResizing.hwnd, "This allows you to resize the whole prefs window by dragging the bottom right corner of the window. It provides an alternative method of supporting high DPI screens.", _
                   TTIconInfo, "Help on Resizing", , , , True
 End Sub
@@ -5492,345 +5315,11 @@ setPrefsIconImagesLight_Error:
 
 End Sub
 
-Private Sub txtPrefsFontCurrentSize_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub txtPrefsFontCurrentSize_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If gblEnableBalloonTooltips = "1" Then CreateToolTip txtPrefsFontCurrentSize.hwnd, "This is a read-only text box. It displays the current font as set when dynamic form resizing is enabled. Drag the right hand corner of the window downward and the form will auto-resize. This text box will display the resized font currently in operation for informational purposes only.", _
                   TTIconInfo, "Help on Setting the Font size Dynamically", , , , True
 End Sub
 
-
-
-'---------------------------------------------------------------------------------------
-' Procedure : cmbMainDaylightSaving_Click
-' Author    : beededea
-' Date      : 13/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Private Sub cmbMainDaylightSaving_Click()
-
-   On Error GoTo cmbMainDaylightSaving_Click_Error
-
-    If prefsStartupFlg = False Then ' don't run this on startup
-        btnSave.Enabled = True ' enable the save button
-        Call obtainDaylightSavings ' determine the time bias
-    End If
-   
-   On Error GoTo 0
-   Exit Sub
-
-cmbMainDaylightSaving_Click_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure cmbMainDaylightSaving_Click of Form widgetPrefs"
-   
-End Sub
-
-'---------------------------------------------------------------------------------------
-' Procedure : populateTimeZoneRegions
-' Author    : beededea
-' Date      : 13/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Sub populateTimeZoneRegions()
-'
-'   Dim cnt As Long: cnt = 0
-'
-'  'do a lookup for the Bias entered
-'   On Error GoTo populateTimeZoneRegions_Error
-'
-'   With lstTimezoneRegions
-'      .Clear
-'
-'      For cnt = LBound(tzinfo) To UBound(tzinfo)
-'
-'         If tzinfo(cnt).bias = txtBias.Text Then
-'
-'            .AddItem tzinfo(cnt).TimeZoneName
-'            'Debug.Print tzinfo(cnt).TimeZoneName
-'         End If
-'
-'      Next
-'
-'   End With
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'populateTimeZoneRegions_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure populateTimeZoneRegions of Form widgetPrefs"
-'
-'End Sub
-
-' Randy Birch for his timezone code - http://vbnet.mvps.org/index.html?code/locale/timezonebiaslookup.htm
-
-'---------------------------------------------------------------------------------------
-' Procedure : fGetTimeZoneArray
-' Author    : Randy Birch for his timezone code - http://vbnet.mvps.org/index.html?code/locale/timezonebiaslookup.htm
-' Date      : 13/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Function fGetTimeZoneArray() As Boolean
-'
-'   Dim success As Long
-'   Dim dwIndex As Long
-'   Dim cbName As Long
-'   Dim hKey As Long
-'   Dim sName As String
-'   Dim dwSubKeys As Long
-'   Dim dwMaxSubKeyLen As Long
-'   Dim ft As FILETIME
-'
-'  'Win9x and WinNT have a slightly
-'  'different registry structure.
-'  'Determine the operating system and
-'  'set a module variable to the
-'  'correct key.
-'
-'  'assume OS is win9x
-'   On Error GoTo fGetTimeZoneArray_Error
-'
-'   sTzKey = SKEY_9X
-'
-'  'see if OS is NT, and if so,
-'  'use assign the correct key
-'   If IsWinNTPlus Then sTzKey = SKEY_NT
-'
-'  'BiasAdjust is used when calculating the
-'  'bias values retrieved from the registry.
-'  'If True, the reg value retrieved represents
-'  'the location's bias with the bias for
-'  'daylight saving time added. If false, the
-'  'location's bias is returned with the
-'  'standard bias adjustment applied (this
-'  'is usually 0). Doing this allows us to
-'  'use the bias returned from a TIME_OF_DAY_INFO
-'  'call as the correct lookup value dependant
-'  'on whether the world is currently on
-'  'daylight saving time or not. For those
-'  'countries not recognizing daylight saving
-'  'time, the registry daylight bias will be 0,
-'  'therefore proper lookup will not be affected.
-'  'Not considered (nor can such be coded) are those
-'  'special areas within a given country that do
-'  'not recognize daylight saving time, even
-'  'when the rest of the country does (like
-'  'Saskatchewan in Canada).
-'   BiasAdjust = IsDaylightSavingTime()
-'
-'  'open the timezone registry key
-'   hKey = OpenRegKey(HKEY_LOCAL_MACHINE, sTzKey)
-'
-'   If hKey <> 0 Then
-'
-'     'query registry for the number of
-'     'entries under that key
-'      If RegQueryInfoKey(hKey, _
-'                         0&, _
-'                         0&, _
-'                         0, _
-'                         dwSubKeys, _
-'                         dwMaxSubKeyLen&, _
-'                         0&, _
-'                         0&, _
-'                         0&, _
-'                         0&, _
-'                         0&, _
-'                         ft) = ERROR_SUCCESS Then
-'
-'
-'        'create a UDT array for the time zone info
-'         ReDim tzinfo(0 To dwSubKeys - 1) As TZ_LOOKUP_DATA
-'
-'         dwIndex = 0
-'         cbName = 32
-'
-'         Do
-'
-'           'pad a string for the returned value
-'            sName = Space$(cbName)
-'            success = RegEnumKey(hKey, dwIndex, sName, cbName)
-'
-'            If success = ERROR_SUCCESS Then
-'
-'              'add the data to the appropriate
-'              'tzinfo UDT array members
-'               With tzinfo(dwIndex)
-'
-'                  .TimeZoneName = TrimNull(sName)
-'                  .bias = GetTZBiasByName(.TimeZoneName)
-'                  .IsDST = BiasAdjust
-'
-'                 'is also added to a list
-'                  'cmbMainDaylightSaving.AddItem .bias & vbTab & .TimeZoneName
-'
-'               End With
-'
-'            End If
-'
-'           'increment the loop...
-'            dwIndex = dwIndex + 1
-'
-'        '...and continue while the reg
-'        'call returns success.
-'         Loop While success = ERROR_SUCCESS
-'
-'        'clean up
-'         RegCloseKey hKey
-'
-'        'return success if, well, successful
-'         fGetTimeZoneArray = dwIndex > 0
-'
-'      End If  'If RegQueryInfoKey
-'
-'   Else
-'
-'     'could not open reg key
-'      fGetTimeZoneArray = False
-'
-'   End If  'If hKey
-'
-'   On Error GoTo 0
-'   Exit Function
-'
-'fGetTimeZoneArray_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure fGetTimeZoneArray of Form widgetPrefs"
-'
-'End Function
-
-
-'---------------------------------------------------------------------------------------
-' Procedure : IsDaylightSavingTime
-' Author    : Randy Birch for his timezone code - http://vbnet.mvps.org/index.html?code/locale/timezonebiaslookup.htm
-' Date      : 13/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Function IsDaylightSavingTime() As Boolean
-'
-'   Dim tzi As TIME_ZONE_INFORMATION
-'
-'   On Error GoTo IsDaylightSavingTime_Error
-'
-'   IsDaylightSavingTime = GetTimeZoneInformation(tzi) = TIME_ZONE_ID_DAYLIGHT
-'
-'   On Error GoTo 0
-'   Exit Function
-'
-'IsDaylightSavingTime_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure IsDaylightSavingTime of Form widgetPrefs"
-'
-'End Function
-
-
-'---------------------------------------------------------------------------------------
-' Procedure : GetTZBiasByName
-' Author    : Randy Birch for his timezone code - http://vbnet.mvps.org/index.html?code/locale/timezonebiaslookup.htm
-' Date      : 13/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Function GetTZBiasByName(sTimeZone As String) As Long
-'
-'   Dim rtzi As REG_TIME_ZONE_INFORMATION
-'   Dim hKey As Long
-'
-'  'open the passed time zone key
-'   On Error GoTo GetTZBiasByName_Error
-'
-'   hKey = OpenRegKey(HKEY_LOCAL_MACHINE, sTzKey & "\" & sTimeZone)
-'
-'   If hKey <> 0 Then
-'
-'     'obtain the data from the TZI member
-'      If RegQueryValueEx(hKey, _
-'                         "TZI", _
-'                         0&, _
-'                         ByVal 0&, _
-'                         rtzi, _
-'                         Len(rtzi)) = ERROR_SUCCESS Then
-'
-'        'tweak the Bias when in Daylight Saving time
-'         If BiasAdjust Then
-'            GetTZBiasByName = (rtzi.bias + rtzi.DaylightBias)
-'         Else
-'            GetTZBiasByName = (rtzi.bias + rtzi.StandardBias) 'StandardBias is usually 0
-'         End If
-'
-'      End If
-'
-'      RegCloseKey hKey
-'
-'   End If
-'
-'   On Error GoTo 0
-'   Exit Function
-'
-'GetTZBiasByName_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure GetTZBiasByName of Form widgetPrefs"
-'
-'End Function
-
-
-'---------------------------------------------------------------------------------------
-' Procedure : TrimNull
-' Author    : Randy Birch for his timezone code - http://vbnet.mvps.org/index.html?code/locale/timezonebiaslookup.htm
-' Date      : 13/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Function TrimNull(startstr As String) As String
-'
-'   On Error GoTo TrimNull_Error
-'
-'   TrimNull = Left$(startstr, lstrlenW(StrPtr(startstr)))
-'
-'   On Error GoTo 0
-'   Exit Function
-'
-'TrimNull_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure TrimNull of Form widgetPrefs"
-'
-'End Function
-
-
-'---------------------------------------------------------------------------------------
-' Procedure : OpenRegKey
-' Author    : Randy Birch for his timezone code - http://vbnet.mvps.org/index.html?code/locale/timezonebiaslookup.htm
-' Date      : 13/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Function OpenRegKey(ByVal hKey As Long, _
-'                            ByVal lpSubKey As String) As Long
-'
-'  Dim hSubKey As Long
-'
-'   On Error GoTo OpenRegKey_Error
-'
-'  If RegOpenKeyEx(hKey, _
-'                  lpSubKey, _
-'                  0, _
-'                  KEY_READ, _
-'                  hSubKey) = ERROR_SUCCESS Then
-'
-'      OpenRegKey = hSubKey
-'
-'  End If
-'
-'   On Error GoTo 0
-'   Exit Function
-'
-'OpenRegKey_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure OpenRegKey of Form widgetPrefs"
-'
-'End Function
 
 
 '---------------------------------------------------------------------------------------
@@ -5875,7 +5364,7 @@ End Sub
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub lblDragCorner_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub lblDragCorner_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
 
     On Error GoTo lblDragCorner_MouseDown_Error
     
@@ -5900,7 +5389,7 @@ End Sub
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub lblDragCorner_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub lblDragCorner_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
 
     On Error GoTo lblDragCorner_MouseMove_Error
 

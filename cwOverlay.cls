@@ -329,7 +329,7 @@ End Property
 '             For this Overlay-Widget alone, we make everything "fully click-through"
 '---------------------------------------------------------------------------------------------
 '
-Private Sub W_HitTest(ByVal x As Single, ByVal Y As Single, HitResultHit As Boolean) 'ensure ClickThrough-behaviour in ImagePixels which are "fully Alpha"
+Private Sub W_HitTest(ByVal x As Single, ByVal y As Single, HitResultHit As Boolean) 'ensure ClickThrough-behaviour in ImagePixels which are "fully Alpha"
    On Error GoTo W_HitTest_Error
 
    HitResultHit = False
@@ -430,58 +430,3 @@ W_Paint_Error:
 End Sub
  
  
-
-    
-'---------------------------------------------------------------------------------------
-' Procedure : tmrClock_Timer
-' Author    : olaf schmidt
-' Date      : 30/07/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Private Sub tmrClock_Timer() 'update the private "Degree-Variables" for Hour-, Minute- and Second-Hands + Refresh
-    Dim currentLocaltime As SYSTEMTIME
-    Static T As Date: T = Time
-    
-    On Error GoTo tmrClock_Timer_Error
-    
-    GetSystemTime currentLocaltime
-    
-    ' every 15 mins approx. update DaylightSavings and determine the time bias
-    If (Minute(T) Mod 15 = 0) And (Second(T) = 0) And (currentLocaltime.wMilliseconds < 100) Then
-        Call obtainDaylightSavings
-    End If
-        
-    ' Debug.Print ("%updateTime-I tzDelta " & tzDelta)
-
-    HDeg = 30 * (Hour(T) Mod 12 + (Minute(T) + tzDelta) / 60)
-    MDeg = 6 * ((Minute(T) + tzDelta) + (Second(T) / 60))
-
-    If mSmoothSecondHand = True Then
-        SDeg = 6 * Second(T)
-
-        With currentLocaltime
-            MsDeg = 6 * (.wMilliseconds / 1000)
-        End With
-        
-        ' always refresh
-    Else
-        If SDeg <> 6 * Second(T) Then
-            SDeg = 6 * Second(T)
-            
-            MsDeg = 0
-        Else
-            Exit Sub  'only refresh when SDeg has changed to a new value
-        End If
-    End If
-    
-    W.Parent.Refresh
-
-   On Error GoTo 0
-   Exit Sub
-
-tmrClock_Timer_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrClock_Timer of Class Module cwOverlay"
-End Sub
-

@@ -414,12 +414,6 @@ Public Sub adjustMainControls()
     fAlpha.AdjustZoom Val(gblGaugeSize) / 100
     
 '    overlayWidget.ZoomDirection = gblScrollWheelDirection
-
-'gblClockFaceSwitchPref
-'gblMainGaugeTimeZone
-'gblMainDaylightSaving
-'gblSecondaryGaugeTimeZone
-'gblSecondaryDaylightSaving
     
     If gblWidgetFunctions = "1" Then
         overlayWidget.Ticking = True
@@ -438,7 +432,6 @@ Public Sub adjustMainControls()
         menuForm.mnuEditWidget.Visible = False
     End If
     
-    
     If gblShowTaskbar = "0" Then
         fAlpha.gaugeForm.ShowInTaskbar = False
     Else
@@ -447,74 +440,102 @@ Public Sub adjustMainControls()
     
     ' set the characteristics of the interactive areas
     ' Note: set the Hover colour close to the original layer to avoid too much intrusion, 0 being grey
-'    With fAlpha.gaugeForm.Widgets("helpbutton").Widget
-'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-'        .MousePointer = IDC_HAND
-'        .Alpha = Val(gblOpacity) / 100
-'    End With
+    With fAlpha.gaugeForm.Widgets("speaker").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_SIZEALL
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
+
+    With fAlpha.gaugeForm.Widgets("bell").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
      
-'    With fAlpha.gaugeForm.Widgets("startbutton").Widget
-'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-'        .MousePointer = IDC_HAND
-'        .Alpha = Val(gblOpacity) / 100
-'    End With
-      
-'    With fAlpha.gaugeForm.Widgets("stopbutton").Widget
-'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-'        .MousePointer = IDC_HAND
-'        .Alpha = Val(gblOpacity) / 100
-'    End With
-      
-'    With fAlpha.gaugeForm.Widgets("switchfacesbutton").Widget
-'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-'        .MousePointer = IDC_HAND
-'        .Alpha = Val(gblOpacity) / 100
-'    End With
+    With fAlpha.gaugeForm.Widgets("bellpushed").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
+            
+    With fAlpha.gaugeForm.Widgets("indicatorred").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
           
+    With fAlpha.gaugeForm.Widgets("indicatorgreen").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+         .Tag = 0.01
+   End With
+          
+    With fAlpha.gaugeForm.Widgets("cable").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
+          
+    With fAlpha.gaugeForm.Widgets("sliderset").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Tag = 0.01
+    End With
+    
+    With fAlpha.gaugeForm.Widgets("bar").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_SIZEALL
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
+    
+    With fAlpha.gaugeForm.Widgets("pipes").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_SIZEALL
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
+    
+    With fAlpha.gaugeForm.Widgets("cablewheelset").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_SIZEALL
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
+    
     With fAlpha.gaugeForm.Widgets("lockingpin").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
     End With
-          
-'    With fAlpha.gaugeForm.Widgets("prefsbutton").Widget
-'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-'        .MousePointer = IDC_HAND
-'        .Alpha = Val(gblOpacity) / 100
-'    End With
-          
-'    With fAlpha.gaugeForm.Widgets("tickbutton").Widget
-'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-'        .MousePointer = IDC_HAND
-'    End With
     
-'    With fAlpha.gaugeForm.Widgets("surround").Widget
-'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-'        .MousePointer = IDC_SIZEALL
-'        .Alpha = Val(gblOpacity) / 100
-'
-'    End With
-    
-'    If gblSmoothSecondHand = "0" Then
-'        overlayWidget.SmoothSecondHand = False
-'        fAlpha.gaugeForm.Widgets("tickbutton").Widget.Alpha = Val(gblOpacity) / 100
-'    Else
-'        overlayWidget.SmoothSecondHand = True
-'        fAlpha.gaugeForm.Widgets("tickbutton").Widget.Alpha = 0
-'    End If
+    With fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
         
     If gblPreventDragging = "0" Then
         menuForm.mnuLockWidget.Checked = False
         overlayWidget.Locked = False
         fAlpha.gaugeForm.Widgets("lockingpin").Widget.Alpha = Val(gblOpacity) / 100
+        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = 0
     Else
         menuForm.mnuLockWidget.Checked = True
         overlayWidget.Locked = True ' this is just here for continuity's sake, it is also set at the time the control is selected
         fAlpha.gaugeForm.Widgets("lockingpin").Widget.Alpha = 0
+        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
     End If
 
-    ' determine the time bias
-    Call obtainDaylightSavings
-               
+    fAlpha.gaugeForm.Refresh
+    
     ' set the z-ordering of the window
     Call setAlphaFormZordering
     
@@ -973,25 +994,13 @@ Private Sub loadExcludePathCollection()
 
     With fAlpha.collPSDNonUIElements ' the exclude list
     
-'        .Add Empty, "clockface"
-'        .Add Empty, "faceweathering"
-'
-'        .Add Empty, "swsecondhand" 'arrow-hand-top
-'        .Add Empty, "swminutehand" 'arrow-hand-right
-'        .Add Empty, "swhourhand"   'arrow-hand-bottom
-'
-'        .Add Empty, "hourshadow"   'clock-hand-hours-shadow
-'        .Add Empty, "hourhand"     'clock-hand-hours
-'
-'        .Add Empty, "minuteshadow" 'clock-hand-minutes-shadow
-'        .Add Empty, "minutehand"   'clock-hand-minutes
-'
-'        .Add Empty, "secondshadow" 'clock-hand-seconds-shadow
-'        .Add Empty, "secondhand"   'clock-hand-seconds
-'
-'        .Add Empty, "bigreflection Copy"     'all reflections
-'        .Add Empty, "bigreflection"     'all reflections
-'        .Add Empty, "windowreflection"
+'        .Add Empty, "pipes"
+'        .Add Empty, "bar"
+'        .Add Empty, "cablewheelset"
+'        .Add Empty, "cable"
+'        .Add Empty, "indicatorgreen"
+'        .Add Empty, "indicatorred"
+'        .Add Empty, "speaker"
 
     End With
 

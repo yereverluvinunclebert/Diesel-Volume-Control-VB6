@@ -23,6 +23,8 @@ Private PSDWidth As Long
 Private PSDHeight As Long
 Private mGlowing As Boolean
 
+Private mMuted As Boolean
+
 '---------------------------------------------------------------------------------------
 ' Procedure : Class_Initialize
 ' Author    : olaf schmidt
@@ -128,36 +130,43 @@ End Sub
 '---------------------------------------------------------------------------------------
 '
 Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As String, ByRef P1 As Variant, ByRef P2 As Variant, ByRef P3 As Variant, ByRef P4 As Variant, ByRef P5 As Variant, ByRef P6 As Variant, ByRef P7 As Variant)
-   On Error GoTo gaugeForm_BubblingEvent_Error
+   
+    Dim stdMessage As String: stdMessage = vbNullString
+    Dim stdSubject As String: stdSubject = vbNullString
+    
+    On Error GoTo gaugeForm_BubblingEvent_Error
 
     If gblIgnoreMouse = "1" Then Exit Sub
+    
+    stdMessage = "Right Click to open the menu and the preferences. CTRL+ Mouse scrollwheel UP/DOWN to resize. "
+    stdSubject = "You can turn off the balloon tooltips in the preferences."
     
     If EventName = "W_MouseMove" Then
         Select Case LCase$(Sender.Widget.Key)
             Case "lockingpin"
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
-                     TTIconInfo, widgetName & " locking pin Help", , , , True
-'            Case "prefsbutton"
-'                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to open the preferences utility. The configuration of the widget is performed using the preference utility.", _
-'                     TTIconInfo, widgetName & " Prefs Button Help", , , , True
-'            Case "tickbutton"
-'                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click here to toggle the tick type from once per second to a more fluid, continuous movement.", _
-'                     TTIconInfo, widgetName & " Tick Button Help", , , , True
-'            Case "switchfacesbutton"
-'                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This button is not allocated a function in this particular widget.", _
-'                     TTIconInfo, widgetName & " Switch Faces Button Help", , , , True
-'            Case "stopbutton"
-'                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This button stops all animated clock functions for this widget, hand movements &c .", _
-'                     TTIconInfo, widgetName & " Stop Button Help", , , , True
-'            Case "startbutton"
-'                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This button restarts all stopped clock functions for this widget, hand movement &c .", _
-'                     TTIconInfo, widgetName & " Start Button Help", , , , True
-'            Case "helpbutton"
-'                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This button opens the one-page help file for this widget. There is a further detailed CHM help file available from the right-click menu that contains all the information that you need to run this widget.", _
-'                     TTIconInfo, widgetName & " Help Button Help", , , , True
-            Case Else
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Right Click to open the menu and the preferences. CTRL+ Mouse scrollwheel UP/DOWN to resize. " _
-                    & vbCrLf & "You can turn off the balloon tooltips in the preferences.", _
+                     TTIconInfo, widgetName & " Locking pin Help", , , , True
+            Case "bell"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to toggle sound on/off.", _
+                     TTIconInfo, widgetName & " Sound Toggle Help", , , , True
+            Case "bellpushed"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to toggle sound on/off.", _
+                     TTIconInfo, widgetName & " Sound Toggle Help", , , , True
+            Case "lockingpinunlocked"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
+                     TTIconInfo, widgetName & " Locking pin Help", , , , True
+            Case "indicatorred"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Sound is muted.", _
+                     TTIconInfo, widgetName & " Locking pin Help", , , , True
+            Case "indicatorgreen"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Sound is unmuted.", _
+                     TTIconInfo, widgetName & " Locking pin Help", , , , True
+            Case "sliderset"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click and drag me left/right to change the volume.", _
+                     TTIconInfo, widgetName & " Locking pin Help", , , , True
+            Case "speaker", "cable", "bar", "pipes", "cablewheelset"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, stdMessage _
+                    & vbCrLf & stdSubject, _
                     TTIconInfo, widgetName & " Configuration Help", , , , True
         End Select
     End If
@@ -166,14 +175,12 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
         Select Case LCase$(Sender.Widget.Key)
             Case "lockingpin"
                 Call lockingpin_mouseDown(Sender)
-'            Case "prefsbutton"
-'                Call prefsbutton_mouseDown(Sender)
-'            Case "tickbutton"
-'                Call tickbutton_mouseDown(Sender)
-'            Case "switchfacesbutton"
-'                 Call switchfacesbutton_mouseDown(Sender)
-'            Case "stopbutton"
-'                Call stopbutton_mouseDown(Sender)
+            Case "lockingpinunlocked"
+                Call lockingpin_mouseDown(Sender)
+            Case "bell"
+                Call bell_mouseDown(Sender)
+'            Case "bellpushed"
+'                Call bellpushed_mouseDown(Sender)
             Case Else
                 Debug.Print Sender.Widget.Key
         End Select
@@ -181,9 +188,8 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
     
     If EventName = "W_MouseUp" Then
         Select Case LCase$(Sender.Widget.Key)
-'            Case "prefsbutton"
-'                Sender.Widget.Alpha = Val(gblOpacity) / 100
-'                Sender.Widget.Refresh
+            Case "bell"
+                Call bell_mouseUp(Sender)
 '            Case "switchfacesbutton"
 '                Call switchfacesbutton_mouseUp(Sender)
 '            Case "stopbutton"
@@ -233,133 +239,7 @@ End Sub
 'End Sub
 
 
-'---------------------------------------------------------------------------------------
-' Procedure : startbutton_click
-' Author    : beededea
-' Date      : 03/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Sub startbutton_click()
-'    On Error GoTo startbutton_click_Error
-'
-'    Dim fileToPlay As String: fileToPlay = vbNullString
-'
-'    Call TurnFunctionsOn
-'
-'    fileToPlay = "ting.wav"
-'    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
-'        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
-'    End If
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'startbutton_click_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure startbutton_click of Class Module cfAlpha"
-'
-'End Sub
 
-'---------------------------------------------------------------------------------------
-' Procedure : stopbutton_mouseUp
-' Author    : beededea
-' Date      : 03/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Sub stopbutton_mouseUp(ByRef Sender As Object)
-'    Dim fileToPlay As String: fileToPlay = vbNullString
-'
-'    On Error GoTo stopbutton_mouseUp_Error
-'
-'    Sender.Widget.Alpha = Val(gblOpacity) / 100
-'    Sender.Widget.Refresh
-'
-'    Call SwitchOff
-'
-'    fileToPlay = "stop.wav"
-'    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
-'        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
-'    End If
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'stopbutton_mouseUp_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure stopbutton_mouseUp of Class Module cfAlpha"
-'
-'End Sub
-'---------------------------------------------------------------------------------------
-' Procedure : stopbutton_mouseDown
-' Author    : beededea
-' Date      : 03/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Sub stopbutton_mouseDown(ByRef Sender As Object)
-'
-'    On Error GoTo stopbutton_mouseDown_Error
-'
-'    Sender.Widget.Alpha = 0
-'    Sender.Widget.Refresh
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'stopbutton_mouseDown_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure stopbutton_mouseDown of Class Module cfAlpha"
-'
-'End Sub
-'---------------------------------------------------------------------------------------
-' Procedure : switchfacesbutton_mouseDown
-' Author    : beededea
-' Date      : 03/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Sub switchfacesbutton_mouseDown(ByRef Sender As Object)
-'    On Error GoTo switchfacesbutton_mouseDown_Error
-'
-'    Sender.Widget.Alpha = 0
-'    Sender.Widget.Refresh
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'switchfacesbutton_mouseDown_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure switchfacesbutton_mouseDown of Class Module cfAlpha"
-'
-'End Sub
-'---------------------------------------------------------------------------------------
-' Procedure : switchfacesbutton_mouseUp
-' Author    : beededea
-' Date      : 03/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Sub switchfacesbutton_mouseUp(ByRef Sender As Object)
-'    Dim fileToPlay As String: fileToPlay = vbNullString
-'    On Error GoTo switchfacesbutton_mouseUp_Error
-'
-'    Sender.Widget.Alpha = Val(gblOpacity) / 100
-'    Sender.Widget.Refresh
-'
-'    fileToPlay = "till.wav"
-'    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
-'        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
-'    End If
-'   On Error GoTo 0
-'   Exit Sub
-'
-'switchfacesbutton_mouseUp_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure switchfacesbutton_mouseUp of Class Module cfAlpha"
-'
-'End Sub
 '---------------------------------------------------------------------------------------
 ' Procedure : lockingpin_mouseDown
 ' Author    : beededea
@@ -369,11 +249,20 @@ End Sub
 '
 Private Sub lockingpin_mouseDown(ByRef Sender As Object)
    On Error GoTo lockingpin_mouseDown_Error
+   
+    Dim fileToPlay As String: fileToPlay = vbNullString
+
+    fileToPlay = "lock.wav"
+    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
+        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
+    End If
     
     If overlayWidget.Locked = False Then
         Sender.Widget.Alpha = 0
+        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
     Else
         Sender.Widget.Alpha = Val(gblOpacity) / 100
+        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = 0
     End If
     Sender.Widget.Refresh ' this removes the delay in the lockingpin depressing
     Call lockWidget
@@ -386,6 +275,62 @@ lockingpin_mouseDown_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure lockingpin_mouseDown of Class Module cfAlpha"
 
 End Sub
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : bell_mouseDown
+' Author    : beededea
+' Date      : 03/08/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Private Sub bell_mouseDown(ByRef Sender As Object)
+   On Error GoTo bell_mouseDown_Error
+   
+    Dim fileToPlay As String: fileToPlay = vbNullString
+
+    fileToPlay = "buzzer.wav"
+    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
+        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
+    End If
+    
+    Sender.Widget.Alpha = 0
+
+    Sender.Widget.Refresh ' this removes the delay in the bell depressing
+    
+   On Error GoTo 0
+   Exit Sub
+
+bell_mouseDown_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure bell_mouseDown of Class Module cfAlpha"
+
+End Sub
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : bell_mouseUp
+' Author    : beededea
+' Date      : 03/08/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Private Sub bell_mouseUp(ByRef Sender As Object)
+   On Error GoTo bell_mouseUp_Error
+    
+    Sender.Widget.Alpha = Val(gblOpacity) / 100
+
+    Sender.Widget.Refresh ' this removes the delay in the bell depressing
+    
+   On Error GoTo 0
+   Exit Sub
+
+bell_mouseUp_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure bell_mouseUp of Class Module cfAlpha"
+
+End Sub
+
 '---------------------------------------------------------------------------------------
 ' Procedure : prefsbutton_mouseDown
 ' Author    : beededea
