@@ -199,6 +199,7 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
             Case "bell"
                 Call bell_mouseDown(Sender)
             Case "sliderset"
+                overlayWidget.Locked = True
                 slidersetMouseDown = True
             Case Else
                 Debug.Print Sender.Widget.Key
@@ -210,6 +211,7 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
             Case "bell"
                 Call bell_mouseUp(Sender)
             Case "sliderset"
+                overlayWidget.Locked = False
                 slidersetMouseDown = False
             Case Else
                 Debug.Print Sender.Widget.Key
