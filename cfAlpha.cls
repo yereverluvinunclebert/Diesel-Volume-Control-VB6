@@ -21,9 +21,14 @@ Public collPSDNonUIElements As cCollection, FX As Long, FY As Long, FZ As Single
 
 Private PSDWidth As Long
 Private PSDHeight As Long
-Private mGlowing As Boolean
 
-Private mMuted As Boolean
+Private mMute As Boolean
+
+Private RenderDev As cMMDevice
+Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVoume with events
+Attribute SystemVolume.VB_VarHelpID = -1
+Private slidersetMouseDown As Boolean
+
 
 '---------------------------------------------------------------------------------------
 ' Procedure : Class_Initialize
@@ -35,8 +40,13 @@ Private mMuted As Boolean
 Private Sub Class_Initialize()
    On Error GoTo Class_Initialize_Error
 
-    mGlowing = False ' when the alpha for the overlays arrives this might be usable
     Set collPSDNonUIElements = New_c.Collection(False)
+    
+    'retrieve (and Set) the Default-Renderdevice
+    Set RenderDev = New_c.MMDeviceEnumerator.GetDefaultAudioEndpoint(eRender, eMultimedia)
+    'retrieve (and Set) a cSimpleAudioVolume instance, to get access to Volume-Handling
+    Set SystemVolume = RenderDev.Activate(AudioEndpointVolume)
+    
 
    On Error GoTo 0
    Exit Sub
@@ -141,6 +151,12 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
     stdMessage = "Right Click to open the menu and the preferences. CTRL+ Mouse scrollwheel UP/DOWN to resize. "
     stdSubject = "You can turn off the balloon tooltips in the preferences."
     
+    If EventName = "W_MouseDrag" Then
+        Select Case LCase$(Sender.Widget.Key)
+            Case "sliderset"
+        End Select
+    End If
+    
     If EventName = "W_MouseMove" Then
         Select Case LCase$(Sender.Widget.Key)
             Case "lockingpin"
@@ -164,6 +180,10 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
             Case "sliderset"
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click and drag me left/right to change the volume.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
+                If slidersetMouseDown = True Then
+
+
+                End If
             Case "speaker", "cable", "bar", "pipes", "cablewheelset"
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, stdMessage _
                     & vbCrLf & stdSubject, _
@@ -179,8 +199,8 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
                 Call lockingpin_mouseDown(Sender)
             Case "bell"
                 Call bell_mouseDown(Sender)
-'            Case "bellpushed"
-'                Call bellpushed_mouseDown(Sender)
+            Case "sliderset"
+                slidersetMouseDown = True
             Case Else
                 Debug.Print Sender.Widget.Key
         End Select
@@ -190,25 +210,23 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
         Select Case LCase$(Sender.Widget.Key)
             Case "bell"
                 Call bell_mouseUp(Sender)
-'            Case "switchfacesbutton"
-'                Call switchfacesbutton_mouseUp(Sender)
-'            Case "stopbutton"
-'                Call stopbutton_mouseUp(Sender)
+            Case "sliderset"
+                slidersetMouseDown = False
             Case Else
                 Debug.Print Sender.Widget.Key
         End Select
     End If
     
-    If EventName = "W_Click" Then
-        Select Case LCase$(Sender.Widget.Key)
-'            Case "helpbutton"
-'                 Call helpbutton_click
-'            Case "startbutton"
-'                 Call startbutton_click
-            Case Else
-                Debug.Print Sender.Widget.Key
-        End Select
-    End If
+'    If EventName = "W_Click" Then
+'        Select Case LCase$(Sender.Widget.Key)
+''            Case "helpbutton"
+''                 Call helpbutton_click
+''            Case "startbutton"
+''                 Call startbutton_click
+'            Case Else
+'                Debug.Print Sender.Widget.Key
+'        End Select
+'    End If
    
    On Error GoTo 0
    Exit Sub
@@ -290,12 +308,18 @@ Private Sub bell_mouseDown(ByRef Sender As Object)
     Dim fileToPlay As String: fileToPlay = vbNullString
 
     fileToPlay = "buzzer.wav"
+
+    If Mute = True Then
+        Mute = False
+    Else
+        Mute = True
+    End If
+    
     If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
         PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
     End If
     
     Sender.Widget.Alpha = 0
-
     Sender.Widget.Refresh ' this removes the delay in the bell depressing
     
    On Error GoTo 0
@@ -319,7 +343,6 @@ Private Sub bell_mouseUp(ByRef Sender As Object)
    On Error GoTo bell_mouseUp_Error
     
     Sender.Widget.Alpha = Val(gblOpacity) / 100
-
     Sender.Widget.Refresh ' this removes the delay in the bell depressing
     
    On Error GoTo 0
@@ -331,78 +354,56 @@ bell_mouseUp_Error:
 
 End Sub
 
+
 '---------------------------------------------------------------------------------------
-' Procedure : prefsbutton_mouseDown
+' Property  : Mute
 ' Author    : beededea
-' Date      : 03/08/2023
+' Date      : 17/05/2023
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-'Private Sub prefsbutton_mouseDown(ByRef Sender As Object)
-'    Dim fileToPlay As String: fileToPlay = vbNullString
-'
-'    On Error GoTo prefsbutton_mouseDown_Error
-'
-'    Sender.Widget.Alpha = 0
-'    'Sender.Widget.Visible = False
-'    Sender.Widget.Refresh ' this removes the delay in the Button depressing
-'    fileToPlay = "winding.wav"
-'    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
-'        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
-'    End If
-'   'MsgBox "prefsbutton_mouseDown"
-'   Call makeProgramPreferencesAvailable
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'prefsbutton_mouseDown_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure prefsbutton_mouseDown of Class Module cfAlpha"
-'
-'End Sub
+Public Property Get Mute() As Boolean
+   On Error GoTo MuteGet_Error
+
+   Mute = mMute
+
+   On Error GoTo 0
+   Exit Property
+
+MuteGet_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
+End Property
 '---------------------------------------------------------------------------------------
-' Procedure : tickbutton_mouseDown
+' Property  : Mute
 ' Author    : beededea
-' Date      : 03/08/2023
+' Date      : 10/05/2023
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-'Private Sub tickbutton_mouseDown(ByRef Sender As Object)
-'    Dim fileToPlay As String: fileToPlay = vbNullString
-'
-'    On Error GoTo tickbutton_mouseDown_Error
-'
-'    If overlayWidget.SmoothSecondHand = True Then
-'        overlayWidget.SmoothSecondHand = False
-'        Sender.Widget.Alpha = Val(gblOpacity) / 100
-'        gblSmoothSecondHand = "0"
-'    Else
-'        overlayWidget.SmoothSecondHand = True
-'        Sender.Widget.Alpha = 0 ' sender is the referring control
-'        gblSmoothSecondHand = "1"
-'
-'    End If
-'    Sender.Widget.Refresh ' this removes the delay in the Button depressing
-'
-'    fileToPlay = "lock.wav"
-'    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
-'        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
-'    End If
-'
-'    sPutINISetting "Software\DieselVolumeControl", "smoothSecondHand", gblSmoothSecondHand, gblSettingsFile
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'tickbutton_mouseDown_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tickbutton_mouseDown of Class Module cfAlpha"
-'
-'End Sub
+Public Property Let Mute(ByVal newValue As Boolean)
+   On Error GoTo MuteLet_Error
 
-
+    If mMute <> newValue Then mMute = newValue Else Exit Property
     
+    SystemVolume.SetMute Abs(CInt(mMute))
+    
+    If SystemVolume.GetMute = 1 Then
+        fAlpha.gaugeForm.Widgets("indicatorgreen").Widget.Alpha = 0
+        fAlpha.gaugeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
+    Else
+        fAlpha.gaugeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
+        fAlpha.gaugeForm.Widgets("indicatorred").Widget.Alpha = 0
+    End If
+    fAlpha.gaugeForm.Refresh
+
+   On Error GoTo 0
+   Exit Property
+
+MuteLet_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
+End Property
 
 
 '---------------------------------------------------------------------------------------

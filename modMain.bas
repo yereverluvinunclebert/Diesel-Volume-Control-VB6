@@ -226,12 +226,6 @@ Private Sub initialiseGlobalVars()
     gblWidgetFunctions = vbNullString
     gblSmoothSecondHand = vbNullString
 
-'    gblClockFaceSwitchPref = vbNullString
-    gblMainGaugeTimeZone = vbNullString
-    gblMainDaylightSaving = vbNullString
-    'gblSecondaryGaugeTimeZone = vbNullString
-'    gblSecondaryDaylightSaving = vbNullString
-
     ' config
     gblEnableTooltips = vbNullString
     gblEnablePrefsTooltips = vbNullString
@@ -416,11 +410,9 @@ Public Sub adjustMainControls()
 '    overlayWidget.ZoomDirection = gblScrollWheelDirection
     
     If gblWidgetFunctions = "1" Then
-        overlayWidget.Ticking = True
         menuForm.mnuSwitchOff.Checked = False
         menuForm.mnuTurnFunctionsOn.Checked = True
     Else
-        overlayWidget.Ticking = False
         menuForm.mnuSwitchOff.Checked = True
         menuForm.mnuTurnFunctionsOn.Checked = False
     End If
@@ -442,7 +434,7 @@ Public Sub adjustMainControls()
     ' Note: set the Hover colour close to the original layer to avoid too much intrusion, 0 being grey
     With fAlpha.gaugeForm.Widgets("speaker").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-        .MousePointer = IDC_SIZEALL
+        .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
@@ -471,7 +463,8 @@ Public Sub adjustMainControls()
     With fAlpha.gaugeForm.Widgets("indicatorgreen").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
-         .Tag = 0.01
+         .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
    End With
           
     With fAlpha.gaugeForm.Widgets("cable").Widget
@@ -602,8 +595,6 @@ Public Sub readSettingsFile(ByVal location As String, ByVal gblSettingsFile As S
         
 
 '        gblClockFaceSwitchPref = fGetINISetting(location, "clockFaceSwitchPref", gblSettingsFile)
-        gblMainGaugeTimeZone = fGetINISetting(location, "mainGaugeTimeZone", gblSettingsFile)
-        gblMainDaylightSaving = fGetINISetting(location, "mainDaylightSaving", gblSettingsFile)
         'gblSecondaryGaugeTimeZone = fGetINISetting(location, "secondaryGaugeTimeZone", gblSettingsFile)
         'gblSecondaryDaylightSaving = fGetINISetting(location, "secondaryDaylightSaving", gblSettingsFile)
 
@@ -702,8 +693,6 @@ Public Sub validateInputs()
         If gblSmoothSecondHand = vbNullString Then gblSmoothSecondHand = "0"
         
         'If gblClockFaceSwitchPref = vbNullString Then gblClockFaceSwitchPref = "0"
-        If gblMainGaugeTimeZone = vbNullString Then gblMainGaugeTimeZone = "0"
-        If gblMainDaylightSaving = vbNullString Then gblMainDaylightSaving = "0"
 
         'If gblSecondaryGaugeTimeZone = vbNullString Then gblSecondaryGaugeTimeZone = "1"
         'If gblSecondaryDaylightSaving = vbNullString Then gblSecondaryDaylightSaving = "1"

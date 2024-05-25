@@ -294,8 +294,6 @@ Public gblSmoothSecondHand As String
 
 
 'Public gblClockFaceSwitchPref As String
-Public gblMainGaugeTimeZone As String
-Public gblMainDaylightSaving As String
 'Public gblSecondaryGaugeTimeZone As String
 'Public gblSecondaryDaylightSaving As String
 
@@ -2502,7 +2500,6 @@ Public Sub SwitchOff()
 
    On Error GoTo SwitchOff_Error
 
-    overlayWidget.Ticking = False
     menuForm.mnuSwitchOff.Checked = True
     menuForm.mnuTurnFunctionsOn.Checked = False
     
@@ -2537,7 +2534,6 @@ Public Sub TurnFunctionsOn()
         PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
     End If
 
-    overlayWidget.Ticking = True
     menuForm.mnuSwitchOff.Checked = False
     menuForm.mnuTurnFunctionsOn.Checked = True
     

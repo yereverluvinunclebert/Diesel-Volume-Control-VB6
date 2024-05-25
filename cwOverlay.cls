@@ -80,11 +80,7 @@ Private Sub Class_Initialize()
     Set W = Cairo.WidgetBase
         W.BackColor = -1  'we don't use any BackColor here, transparent
         W.ImplementsHitTest = True 'when at False, no HitTest-Event would be triggered
-                    
-    intervalValue = 500
 
-    Set tmrClock = Nothing
-    Set tmrClock = New_c.Timer(intervalValue, mTicking)
 
    On Error GoTo 0
    Exit Sub
@@ -134,105 +130,7 @@ Widgets_Error:
 End Property
 
 
-'---------------------------------------------------------------------------------------
-' Property : Ticking
-' Author    : beededea
-' Date      : 17/05/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Public Property Get Ticking() As Boolean
-   On Error GoTo TickingGet_Error
 
-  Ticking = mTicking
-
-   On Error GoTo 0
-   Exit Property
-
-TickingGet_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Ticking of Class Module cwOverlay"
-End Property
-'---------------------------------------------------------------------------------------
-' Property  : Ticking
-' Author    :
-' Date      : 09/05/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Public Property Let Ticking(ByVal newValue As Boolean)
-    'Dim intervalValue As Integer: intervalValue = 0
-    On Error GoTo TickingLet_Error
-
-    If mTicking <> newValue Then mTicking = newValue Else Exit Property
-    
-    If mTicking Then
-'        If mSmoothSecondHand Then
-'            'intervalValue = 100
-'        Else
-'            'intervalValue = 500
-'        End If
-
-        tmrClock.Enabled = True
-    Else
-        tmrClock.Enabled = False
-    End If
-
-   On Error GoTo 0
-   Exit Property
-
-TickingLet_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Ticking of Class Module cwOverlay"
-End Property ' the earth Ticking flag
-
-'---------------------------------------------------------------------------------------
-' Property : SmoothSecondHand
-' Author    : beededea
-' Date      : 17/05/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Public Property Get SmoothSecondHand() As Boolean
-   On Error GoTo SmoothSecondHandGet_Error
-
-    SmoothSecondHand = mSmoothSecondHand
-
-   On Error GoTo 0
-   Exit Property
-
-SmoothSecondHandGet_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property SmoothSecondHand of Class Module cwOverlay"
-End Property
-'---------------------------------------------------------------------------------------
-' Property  : SmoothSecondHand
-' Author    :
-' Date      : 09/05/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Public Property Let SmoothSecondHand(ByVal newValue As Boolean)
-    Dim intervalValue As Integer: intervalValue = 0
-    On Error GoTo SmoothSecondHandLet_Error
-
-    If mSmoothSecondHand <> newValue Then mSmoothSecondHand = newValue Else Exit Property
-    
-    If mSmoothSecondHand Then
-        intervalValue = 100
-    Else
-        intervalValue = 500
-    End If
-            
-    tmrClock.Interval = intervalValue
-    
-   On Error GoTo 0
-   Exit Property
-
-SmoothSecondHandLet_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property SmoothSecondHand of Class Module cwOverlay"
-End Property ' the earth SmoothSecondHand flag
 
 '---------------------------------------------------------------------------------------
 ' Property : Locked
@@ -387,29 +285,6 @@ Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As
             
             ' for specific keys perform rotation actions, clock hands &c
              Select Case Key
-                 Case "hourshadow", "hourhand" 'hours-shadow- and hour-hand
-                    
-                    ' draw the date and day in the windows just once to retain opacity
-                    If textDrawn = False Then ' has to be here to be underneath  all the hands and only run once
-                        CC.DrawText 260, 105, 200, 200, txtDayNumber, , , 2, True, , thisOpacity
-                        CC.DrawText 461, 309, 200, 200, txtMonthNumber, , , 2, True, , thisOpacity
-                        textDrawn = True
-                    End If
-                    
-                    Set Pat.Matrix = Pat.Matrix.TranslateCoords(19, 160) 'shift to the "rotation-point" within the Pattern
-                    CC.TranslateDrawings W.Width * cxPerc, W.Height * cyPerc 'shift to the center-point of the Overlay-Widget-area
-                    CC.RotateDrawingsDeg -7 + HDeg 'now we can rotate (the leading negative degrees are the rotation-offsets for 12 o'clock)
-                    
-                 Case "minuteshadow", "minutehand" 'minutes-shadow- and minutes-hand
-                    Set Pat.Matrix = Pat.Matrix.TranslateCoords(44, 105) 'shift to the "rotation-point" within the Pattern
-                    CC.TranslateDrawings W.Width * cxPerc, W.Height * cyPerc 'shift to the center-point of the Overlay-Widget-area
-                    CC.RotateDrawingsDeg -61 + MDeg
-                    
-                 Case "secondshadow", "secondhand" 'seconds-shadow- and seconds-hand
-                    Set Pat.Matrix = Pat.Matrix.TranslateCoords(60, 160) 'shift to the "rotation-point" within the Pattern
-                    CC.TranslateDrawings W.Width * cxPerc, W.Height * cyPerc 'shift to the center-point of the Overlay-Widget-area
-                    
-                    CC.RotateDrawingsDeg -50 + SDeg + MsDeg
     
                  Case Else 'plain output for everything else ... this includes the reflection-layers,
                      
