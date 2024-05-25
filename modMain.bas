@@ -478,6 +478,7 @@ Public Sub adjustMainControls()
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Tag = 0.01
+        .Moveable = True
     End With
     
     With fAlpha.gaugeForm.Widgets("bar").Widget
@@ -514,6 +515,14 @@ Public Sub adjustMainControls()
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
+    
+    With fAlpha.gaugeForm.Widgets("helppin").Widget
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Alpha = Val(gblOpacity) / 100
+        .Tag = 0.01
+    End With
+    
         
     If gblPreventDragging = "0" Then
         menuForm.mnuLockWidget.Checked = False

@@ -151,11 +151,11 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
     stdMessage = "Right Click to open the menu and the preferences. CTRL+ Mouse scrollwheel UP/DOWN to resize. "
     stdSubject = "You can turn off the balloon tooltips in the preferences."
     
-    If EventName = "W_MouseDrag" Then
-        Select Case LCase$(Sender.Widget.Key)
-            Case "sliderset"
-        End Select
-    End If
+'    If EventName = "W_MouseDrag" Then
+'        Select Case LCase$(Sender.Widget.Key)
+'            Case "sliderset"
+'        End Select
+'    End If
     
     If EventName = "W_MouseMove" Then
         Select Case LCase$(Sender.Widget.Key)
@@ -163,22 +163,19 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "bell"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to toggle sound on/off.", _
-                     TTIconInfo, widgetName & " Sound Toggle Help", , , , True
-            Case "bellpushed"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to toggle sound on/off.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the mute button. Click me to toggle sound on/off.", _
                      TTIconInfo, widgetName & " Sound Toggle Help", , , , True
             Case "lockingpinunlocked"
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "indicatorred"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Sound is muted.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the mute indicator. A green lamp means that the sound is unmuted. Red lamp means that mute is ON.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "indicatorgreen"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Sound is unmuted.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the mute indicator. Sound is unmuted.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "sliderset"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click and drag me left/right to change the volume.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the Volume Slider. Click and drag me left/right to change the volume.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
                 If slidersetMouseDown = True Then
 
@@ -195,6 +192,8 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
         Select Case LCase$(Sender.Widget.Key)
             Case "lockingpin"
                 Call lockingpin_mouseDown(Sender)
+            Case "helppin"
+                Call helppin_mouseDown(Sender)
             Case "lockingpinunlocked"
                 Call lockingpin_mouseDown(Sender)
             Case "bell"
@@ -293,7 +292,42 @@ lockingpin_mouseDown_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure lockingpin_mouseDown of Class Module cfAlpha"
 
 End Sub
+'---------------------------------------------------------------------------------------
+' Procedure : helppin_mouseDown
+' Author    : beededea
+' Date      : 03/08/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Private Sub helppin_mouseDown(ByRef Sender As Object)
+   On Error GoTo helppin_mouseDown_Error
+   
+    Dim fileToPlay As String: fileToPlay = vbNullString
 
+    fileToPlay = "lock.wav"
+    If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
+        PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
+    End If
+    
+'    If overlayWidget.Locked = False Then
+'        Sender.Widget.Alpha = 0
+'        fAlpha.gaugeForm.Widgets("helppinunlocked").Widget.Alpha = Val(gblOpacity) / 100
+'    Else
+'        Sender.Widget.Alpha = Val(gblOpacity) / 100
+'        fAlpha.gaugeForm.Widgets("helppinunlocked").Widget.Alpha = 0
+'    End If
+    Sender.Widget.Refresh ' this removes the delay in the helppin depressing
+    
+    Call helpSplash
+    
+   On Error GoTo 0
+   Exit Sub
+
+helppin_mouseDown_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure helppin_mouseDown of Class Module cfAlpha"
+
+End Sub
 
 '---------------------------------------------------------------------------------------
 ' Procedure : bell_mouseDown
