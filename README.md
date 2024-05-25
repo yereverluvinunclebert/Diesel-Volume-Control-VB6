@@ -9,12 +9,10 @@
 
  ![vb6-logo-200](https://github.com/yereverluvinunclebert/Panzer-JustClock-VB6/assets/2788342/7986e544-0b94-4a10-90bb-2d9fb60c294a)
  
- I created as a variation of the stopwatch clock I had previously created for the World of Tanks and War Thunder 
- communities. The Panzer Just Clock widget is an attractive dieselpunk VB6 widget for your desktop. 
- Functional and gorgeous at the same time. The graphics are my own, I took original inspiration from a clock face by Italo Fortana. It is all my code with some help from the chaps at VBForums (credits given). 
-  
- It will be a simple multi-timezone Simple Clock and clock. This Widget is a moveable widget that you can move anywhere 
- around the desktop as you require.
+ I created this as a development from the original Yahoo widget/ Konfabulator version I had previously created for the steampunk 
+ communities. This Yahoo widget inspired the Xwidget version which has now been replaced by this VB6 version.
+ 
+This widget is an attractive dieselpunk VB6 widget for your desktop. Functional and gorgeous at the same time. The graphics are my own, it is mostly my code with some help from the chaps at VBForums (credits given). This Widget is a moveable widget that you can move anywhere around the desktop as you require.
  
 ![dieselpunk-volume-400](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/61063cce-eeb7-4552-ac96-ab2a192eb14f)
 
@@ -29,19 +27,19 @@
  windows. Mouse hover over the widget and press CTRL+mousewheel up/down to resize. It works well on Windows XP 
  to Windows 11.
 
- The Panzer Just Clock VB6 gauge is Beta-grade software, under development, not yet 
+ The Volume widget is currently Beta-grade software, under development, not yet 
  ready to use on a production system - use at your own risk.
 
- This version was developed on Windows 7 using 32 bit VisualBasic 6 as a FOSS 
+ This version was developed on Windows 10 64bit using 32 bit VisualBasic 6 as a FOSS 
  project creating a WoW64 widget for the desktop. 
  
 ![diesel-volume-help](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/d2546c52-de2a-4b0e-b6eb-e21e3bd836b3)
 
  It is open source to allow easy configuration, bug-fixing, enhancement and 
  community contribution towards free-and-useful VB6 utilities that can be created
- by anyone. The first step was the creation of this template program to form the 
+ by anyone. The first step was the creation of a template program to form the 
  basis for the conversion of other desktop utilities or widgets. A future step 
- is new VB6 widgets with more functionality and then hopefully, conversion of 
+ are new VB6 widgets with more functionality and then hopefully, conversion of 
  each to RADBasic/TwinBasic for future-proofing and 64bit-ness. 
 
 ![dieselpunk-volume-menu001](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/20284008-b0a6-4ed9-bef4-4a2d954b221b)
