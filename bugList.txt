@@ -10,6 +10,11 @@ about us PNG updated
 ' -oOo-
 
 mute button on startup
+sliderset - constrain within current Y axis
+sliderset - constrain within bounds left/right
+add percentage in text 
+stretch the cable to match the sliderset
+add keypress commands L/R U & D
 
 ' update html code documentation using MZTools code documenter
 
