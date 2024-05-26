@@ -1,6 +1,6 @@
 Attribute VB_Name = "Module1"
 '@IgnoreModule IntegerDataType, ModuleWithoutFolder
-' gaugeForm_BubblingEvent ' leaving that here so I can copy/paste to find it
+' volumeForm_BubblingEvent ' leaving that here so I can copy/paste to find it
 
 '---------------------------------------------------------------------------------------
 ' Module    : Module1
@@ -1758,28 +1758,28 @@ Public Sub setMainTooltips()
         helpWidget.Widget.ToolTip = "Click on me to make me go away."
         aboutWidget.Widget.ToolTip = "Click on me to make me go away."
         
-        'fAlpha.gaugeForm.Widgets("tickbutton").Widget.ToolTip = "Choose smooth movement or regular ticks"
-        'fAlpha.gaugeForm.Widgets("helpbutton").Widget.ToolTip = "Press for a little help"
-        'fAlpha.gaugeForm.Widgets("startbutton").Widget.ToolTip = "Press to restart (when stopped)"
-        'fAlpha.gaugeForm.Widgets("stopbutton").Widget.ToolTip = "Press to stop clock operation."
-        'fAlpha.gaugeForm.Widgets("switchfacesbutton").Widget.ToolTip = "Press to do nothing at all."
-        fAlpha.gaugeForm.Widgets("lockingpin").Widget.ToolTip = "Press to lock the widget in place"
-        'fAlpha.gaugeForm.Widgets("prefsbutton").Widget.ToolTip = "Press to open the widget preferences"
-        'fAlpha.gaugeForm.Widgets("surround").Widget.ToolTip = "Ctrl + mouse scrollwheel up/down to resize, you can also drag me to a new position."
+        'fVolume.volumeForm.Widgets("tickbutton").Widget.ToolTip = "Choose smooth movement or regular ticks"
+        'fVolume.volumeForm.Widgets("helpbutton").Widget.ToolTip = "Press for a little help"
+        'fVolume.volumeForm.Widgets("startbutton").Widget.ToolTip = "Press to restart (when stopped)"
+        'fVolume.volumeForm.Widgets("stopbutton").Widget.ToolTip = "Press to stop clock operation."
+        'fVolume.volumeForm.Widgets("switchfacesbutton").Widget.ToolTip = "Press to do nothing at all."
+        fVolume.volumeForm.Widgets("lockingpin").Widget.ToolTip = "Press to lock the widget in place"
+        'fVolume.volumeForm.Widgets("prefsbutton").Widget.ToolTip = "Press to open the widget preferences"
+        'fVolume.volumeForm.Widgets("surround").Widget.ToolTip = "Ctrl + mouse scrollwheel up/down to resize, you can also drag me to a new position."
         
     Else
         overlayWidget.Widget.ToolTip = vbNullString
         helpWidget.Widget.ToolTip = vbNullString
         aboutWidget.Widget.ToolTip = vbNullString
         
-        'fAlpha.gaugeForm.Widgets("tickbutton").Widget.ToolTip = vbNullString
-        'fAlpha.gaugeForm.Widgets("helpbutton").Widget.ToolTip = vbNullString
-        'fAlpha.gaugeForm.Widgets("startbutton").Widget.ToolTip = vbNullString
-        'fAlpha.gaugeForm.Widgets("stopbutton").Widget.ToolTip = vbNullString
-        'fAlpha.gaugeForm.Widgets("switchfacesbutton").Widget.ToolTip = vbNullString
-        fAlpha.gaugeForm.Widgets("lockingpin").Widget.ToolTip = vbNullString
-        'fAlpha.gaugeForm.Widgets("prefsbutton").Widget.ToolTip = vbNullString
-        'fAlpha.gaugeForm.Widgets("surround").Widget.ToolTip = vbNullString
+        'fVolume.volumeForm.Widgets("tickbutton").Widget.ToolTip = vbNullString
+        'fVolume.volumeForm.Widgets("helpbutton").Widget.ToolTip = vbNullString
+        'fVolume.volumeForm.Widgets("startbutton").Widget.ToolTip = vbNullString
+        'fVolume.volumeForm.Widgets("stopbutton").Widget.ToolTip = vbNullString
+        'fVolume.volumeForm.Widgets("switchfacesbutton").Widget.ToolTip = vbNullString
+        fVolume.volumeForm.Widgets("lockingpin").Widget.ToolTip = vbNullString
+        'fVolume.volumeForm.Widgets("prefsbutton").Widget.ToolTip = vbNullString
+        'fVolume.volumeForm.Widgets("surround").Widget.ToolTip = vbNullString
         
     End If
     
@@ -1848,13 +1848,13 @@ Public Sub makeVisibleFormElements()
 
     monitorCount = fGetMonitorCount
     If monitorCount > 1 Then
-        Call adjustFormPositionToCorrectMonitor(fAlpha.gaugeForm.hwnd, formLeftPixels, formTopPixels)
+        Call adjustFormPositionToCorrectMonitor(fVolume.volumeForm.hwnd, formLeftPixels, formTopPixels)
     Else
-        fAlpha.gaugeForm.Left = formLeftPixels
-        fAlpha.gaugeForm.Top = formTopPixels
+        fVolume.volumeForm.Left = formLeftPixels
+        fVolume.volumeForm.Top = formTopPixels
     End If
     
-    fAlpha.gaugeForm.Show
+    fVolume.volumeForm.Show
 
     On Error GoTo 0
     Exit Sub
@@ -2054,47 +2054,47 @@ Public Sub mainScreen()
     If aspectRatio = "landscape" Then
         If gblWidgetLandscape = "1" Then
             If gblLandscapeFormHoffset <> vbNullString Then
-                fAlpha.gaugeForm.Left = Val(gblLandscapeFormHoffset)
-                fAlpha.gaugeForm.Top = Val(gblLandscapeFormVoffset)
+                fVolume.volumeForm.Left = Val(gblLandscapeFormHoffset)
+                fVolume.volumeForm.Top = Val(gblLandscapeFormVoffset)
             End If
         End If
         If gblAspectHidden = "2" Then
             Debug.Print "Hiding the widget for landscape mode"
-            fAlpha.gaugeForm.Visible = False
+            fVolume.volumeForm.Visible = False
         End If
     End If
     
     ' check if the widget has a lock for the screen type.
     If aspectRatio = "portrait" Then
         If gblWidgetPortrait = "1" Then
-            fAlpha.gaugeForm.Left = Val(gblPortraitHoffset)
-            fAlpha.gaugeForm.Top = Val(gblPortraitYoffset)
+            fVolume.volumeForm.Left = Val(gblPortraitHoffset)
+            fVolume.volumeForm.Top = Val(gblPortraitYoffset)
         End If
         If gblAspectHidden = "1" Then
             Debug.Print "Hiding the widget for portrait mode"
-            fAlpha.gaugeForm.Visible = False
+            fVolume.volumeForm.Visible = False
         End If
     End If
 
     ' calculate the on screen widget position
-    If fAlpha.gaugeForm.Left < 0 Then
-        fAlpha.gaugeForm.Left = 10
+    If fVolume.volumeForm.Left < 0 Then
+        fVolume.volumeForm.Left = 10
     End If
-    If fAlpha.gaugeForm.Top < 0 Then
-        fAlpha.gaugeForm.Top = 0
+    If fVolume.volumeForm.Top < 0 Then
+        fVolume.volumeForm.Top = 0
     End If
-    If fAlpha.gaugeForm.Left > screenWidthPixels - 50 Then
-        fAlpha.gaugeForm.Left = screenWidthPixels - 150
+    If fVolume.volumeForm.Left > screenWidthPixels - 50 Then
+        fVolume.volumeForm.Left = screenWidthPixels - 150
     End If
-    If fAlpha.gaugeForm.Top > screenHeightPixels - 50 Then
-        fAlpha.gaugeForm.Top = screenHeightPixels - 150
+    If fVolume.volumeForm.Top > screenHeightPixels - 50 Then
+        fVolume.volumeForm.Top = screenHeightPixels - 150
     End If
 
     ' calculate the current hlocation in % of the screen
     ' store the current hlocation in % of the screen
     If gblWidgetPosition = "1" Then
-        gblhLocationPercPrefValue = Str$(fAlpha.gaugeForm.Left / screenWidthPixels * 100)
-        gblvLocationPercPrefValue = Str$(fAlpha.gaugeForm.Top / screenHeightPixels * 100)
+        gblhLocationPercPrefValue = Str$(fVolume.volumeForm.Left / screenWidthPixels * 100)
+        gblvLocationPercPrefValue = Str$(fVolume.volumeForm.Top / screenHeightPixels * 100)
     End If
 
    On Error GoTo 0
@@ -2149,7 +2149,7 @@ Public Sub unloadAllForms(ByVal endItAll As Boolean)
     
     aboutWidget.Widgets.RemoveAll
     helpWidget.Widgets.RemoveAll
-    fAlpha.gaugeForm.Widgets.RemoveAll
+    fVolume.volumeForm.Widgets.RemoveAll
     
     ' unload the native VB6 and RC6 forms
     
@@ -2160,7 +2160,7 @@ Public Sub unloadAllForms(ByVal endItAll As Boolean)
 
     fMain.aboutForm.Unload  ' RC6's own method for killing forms
     fMain.helpForm.Unload
-    fAlpha.gaugeForm.Unload
+    fVolume.volumeForm.Unload
     fMain.licenceForm.Unload
     
     ' remove all variable references to each form in turn
@@ -2168,7 +2168,7 @@ Public Sub unloadAllForms(ByVal endItAll As Boolean)
     Set widgetPrefs = Nothing
     Set fMain.aboutForm = Nothing
     Set fMain.helpForm = Nothing
-    Set fAlpha.gaugeForm = Nothing
+    Set fVolume.volumeForm = Nothing
     Set fMain.licenceForm = Nothing
     
     'Set frmLicence = Nothing
@@ -2230,18 +2230,18 @@ Public Sub savePosition()
    On Error GoTo savePosition_Error
 
     If gblDpiAwareness = "1" Then
-        gblClockHighDpiXPos = Str$(fAlpha.gaugeForm.Left) ' saving in pixels
-        gblClockHighDpiYPos = Str$(fAlpha.gaugeForm.Top)
+        gblClockHighDpiXPos = Str$(fVolume.volumeForm.Left) ' saving in pixels
+        gblClockHighDpiYPos = Str$(fVolume.volumeForm.Top)
         sPutINISetting "Software\DieselVolumeControl", "clockHighDpiXPos", gblClockHighDpiXPos, gblSettingsFile
         sPutINISetting "Software\DieselVolumeControl", "clockHighDpiYPos", gblClockHighDpiYPos, gblSettingsFile
     Else
-        gblClockLowDpiXPos = Str$(fAlpha.gaugeForm.Left) ' saving in pixels
-        gblClockLowDpiYPos = Str$(fAlpha.gaugeForm.Top)
+        gblClockLowDpiXPos = Str$(fVolume.volumeForm.Left) ' saving in pixels
+        gblClockLowDpiYPos = Str$(fVolume.volumeForm.Top)
         sPutINISetting "Software\DieselVolumeControl", "clockLowDpiXPos", gblClockLowDpiXPos, gblSettingsFile
         sPutINISetting "Software\DieselVolumeControl", "clockLowDpiYPos", gblClockLowDpiYPos, gblSettingsFile
     End If
     
-    gblGaugeSize = Str$(fAlpha.gaugeForm.WidgetRoot.Zoom * 100)
+    gblGaugeSize = Str$(fVolume.volumeForm.WidgetRoot.Zoom * 100)
     sPutINISetting "Software\DieselVolumeControl", "gaugeSize", gblGaugeSize, gblSettingsFile
 
    On Error GoTo 0
@@ -2460,16 +2460,16 @@ Public Sub lockWidget()
         widgetPrefs.chkPreventDragging.Value = 0
         gblPreventDragging = "0"
         overlayWidget.Locked = False
-        fAlpha.gaugeForm.Widgets("lockingpin").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("lockingpin").Widget.Alpha = Val(gblOpacity) / 100
     Else
         menuForm.mnuLockWidget.Checked = True
         widgetPrefs.chkPreventDragging.Value = 1
         overlayWidget.Locked = True
         gblPreventDragging = "1"
-        fAlpha.gaugeForm.Widgets("lockingpin").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("lockingpin").Widget.Alpha = 0
     End If
     
-    fAlpha.gaugeForm.Refresh
+    fVolume.volumeForm.Refresh
     
     sPutINISetting "Software\DieselVolumeControl", "preventDragging", gblPreventDragging, gblSettingsFile
    

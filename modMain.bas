@@ -1,6 +1,6 @@
 Attribute VB_Name = "modMain"
 '@IgnoreModule IntegerDataType, ModuleWithoutFolder
-' gaugeForm_BubblingEvent ' leaving that here so I can copy/paste to find it
+' volumeForm_BubblingEvent ' leaving that here so I can copy/paste to find it
 
 Option Explicit
 
@@ -36,7 +36,7 @@ Public licenceWidget As cwLicence
 
 Public revealWidgetTimerCount As Integer
  
-Public fAlpha As New cfAlpha
+Public fVolume As New cfVolume
 Public overlayWidget As cwOverlay
 Public widgetName As String
 Private B() As Byte
@@ -79,9 +79,9 @@ Public Sub mainRoutine(ByVal restart As Boolean)
     
     widgetName = "Diesel Volume Control"
     thisPSDFullPath = App.path & "\Res\dieselVolumeMerged.psd"
-    fAlpha.FX = 222 'init position- and zoom-values (directly set on Public-Props of the Form-hosting Class)
-    fAlpha.FY = 111
-    fAlpha.FZ = 0.4
+    fVolume.FX = 222 'init position- and zoom-values (directly set on Public-Props of the Form-hosting Class)
+    fVolume.FY = 111
+    fVolume.FZ = 0.4
     
     prefsCurrentWidth = 9075
     prefsCurrentHeight = 16450
@@ -125,7 +125,7 @@ Public Sub mainRoutine(ByVal restart As Boolean)
     If restart = False Then Call loadExcludePathCollection ' no need to reload the collPSDNonUIElements layer name keys on a reload
     
     ' start the load of the PSD file using the RC6 PSD-Parser.instance
-    Call fAlpha.InitFromPSD(thisPSDFullPath)  ' no optional close layer as 3rd param
+    Call fVolume.InitFromPSD(thisPSDFullPath)  ' no optional close layer as 3rd param
 
     ' resolve VB6 sizing width bug
     Call determineScreenDimensions
@@ -134,7 +134,7 @@ Public Sub mainRoutine(ByVal restart As Boolean)
     Call createRCFormsOnCurrentDisplay
     
     ' check the selected monitor properties
-    Call monitorProperties(fAlpha.gaugeForm)  ' might use RC6 for this?
+    Call monitorProperties(fVolume.volumeForm)  ' might use RC6 for this?
     
     ' place the form at the saved location
     Call makeVisibleFormElements
@@ -405,7 +405,7 @@ Public Sub adjustMainControls()
     ' validate the inputs of any data from the input settings file
     Call validateInputs
     
-    fAlpha.AdjustZoom Val(gblGaugeSize) / 100
+    fVolume.AdjustZoom Val(gblGaugeSize) / 100
     
 '    overlayWidget.ZoomDirection = gblScrollWheelDirection
     
@@ -425,98 +425,98 @@ Public Sub adjustMainControls()
     End If
     
     If gblShowTaskbar = "0" Then
-        fAlpha.gaugeForm.ShowInTaskbar = False
+        fVolume.volumeForm.ShowInTaskbar = False
     Else
-        fAlpha.gaugeForm.ShowInTaskbar = True
+        fVolume.volumeForm.ShowInTaskbar = True
     End If
     
     ' set the characteristics of the interactive areas
     ' Note: set the Hover colour close to the original layer to avoid too much intrusion, 0 being grey
-    With fAlpha.gaugeForm.Widgets("speaker").Widget
+    With fVolume.volumeForm.Widgets("speaker").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
 
-    With fAlpha.gaugeForm.Widgets("bell").Widget
+    With fVolume.volumeForm.Widgets("bell").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
      
-    With fAlpha.gaugeForm.Widgets("bellpushed").Widget
+    With fVolume.volumeForm.Widgets("bellpushed").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
             
-    With fAlpha.gaugeForm.Widgets("indicatorred").Widget
+    With fVolume.volumeForm.Widgets("indicatorred").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
           
-    With fAlpha.gaugeForm.Widgets("indicatorgreen").Widget
+    With fVolume.volumeForm.Widgets("indicatorgreen").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
          .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
    End With
           
-    With fAlpha.gaugeForm.Widgets("cable").Widget
+    With fVolume.volumeForm.Widgets("cable").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
           
-    With fAlpha.gaugeForm.Widgets("sliderset").Widget
+    With fVolume.volumeForm.Widgets("sliderset").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Tag = 0.01
         .Moveable = True
     End With
     
-    With fAlpha.gaugeForm.Widgets("bar").Widget
+    With fVolume.volumeForm.Widgets("bar").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_SIZEALL
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
     
-    With fAlpha.gaugeForm.Widgets("pipes").Widget
+    With fVolume.volumeForm.Widgets("pipes").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_SIZEALL
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
     
-    With fAlpha.gaugeForm.Widgets("cablewheelset").Widget
+    With fVolume.volumeForm.Widgets("cablewheelset").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_SIZEALL
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
     
-    With fAlpha.gaugeForm.Widgets("lockingpin").Widget
+    With fVolume.volumeForm.Widgets("lockingpin").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
     
-    With fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget
+    With fVolume.volumeForm.Widgets("lockingpinunlocked").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
         .Tag = 0.01
     End With
     
-    With fAlpha.gaugeForm.Widgets("helppin").Widget
+    With fVolume.volumeForm.Widgets("helppin").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
         .Alpha = Val(gblOpacity) / 100
@@ -527,16 +527,16 @@ Public Sub adjustMainControls()
     If gblPreventDragging = "0" Then
         menuForm.mnuLockWidget.Checked = False
         overlayWidget.Locked = False
-        fAlpha.gaugeForm.Widgets("lockingpin").Widget.Alpha = Val(gblOpacity) / 100
-        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("lockingpin").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("lockingpinunlocked").Widget.Alpha = 0
     Else
         menuForm.mnuLockWidget.Checked = True
         overlayWidget.Locked = True ' this is just here for continuity's sake, it is also set at the time the control is selected
-        fAlpha.gaugeForm.Widgets("lockingpin").Widget.Alpha = 0
-        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("lockingpin").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
     End If
 
-    fAlpha.gaugeForm.Refresh
+    fVolume.volumeForm.Refresh
     
     ' set the z-ordering of the window
     Call setAlphaFormZordering
@@ -570,11 +570,11 @@ Public Sub setAlphaFormZordering()
    On Error GoTo setAlphaFormZordering_Error
 
     If Val(gblWindowLevel) = 0 Then
-        Call SetWindowPos(fAlpha.gaugeForm.hwnd, HWND_BOTTOM, 0&, 0&, 0&, 0&, OnTopFlags)
+        Call SetWindowPos(fVolume.volumeForm.hwnd, HWND_BOTTOM, 0&, 0&, 0&, 0&, OnTopFlags)
     ElseIf Val(gblWindowLevel) = 1 Then
-        Call SetWindowPos(fAlpha.gaugeForm.hwnd, HWND_TOP, 0&, 0&, 0&, 0&, OnTopFlags)
+        Call SetWindowPos(fVolume.volumeForm.hwnd, HWND_TOP, 0&, 0&, 0&, 0&, OnTopFlags)
     ElseIf Val(gblWindowLevel) = 2 Then
-        Call SetWindowPos(fAlpha.gaugeForm.hwnd, HWND_TOPMOST, 0&, 0&, 0&, 0&, OnTopFlags)
+        Call SetWindowPos(fVolume.volumeForm.hwnd, HWND_TOPMOST, 0&, 0&, 0&, 0&, OnTopFlags)
     End If
 
    On Error GoTo 0
@@ -990,7 +990,7 @@ Private Sub loadExcludePathCollection()
     'all of these will be rendered in cwOverlay in the same order as below
     On Error GoTo loadExcludePathCollection_Error
 
-    With fAlpha.collPSDNonUIElements ' the exclude list
+    With fVolume.collPSDNonUIElements ' the exclude list
     
 '        .Add Empty, "pipes"
 '        .Add Empty, "bar"

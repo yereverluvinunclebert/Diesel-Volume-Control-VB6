@@ -96,7 +96,7 @@ Private Sub revealWidgetTimer_Timer()
     If revealWidgetTimerCount >= (minutesToHide * 12) Then
         revealWidgetTimerCount = 0
 
-        fAlpha.gaugeForm.Visible = True
+        fVolume.volumeForm.Visible = True
         revealWidgetTimer.Enabled = False
         gblWidgetHidden = "0"
         sPutINISetting "Software\DieselVolumeControl", "widgetHidden", gblWidgetHidden, gblSettingsFile
@@ -169,7 +169,7 @@ Private Sub settingsTimer_Timer()
 
     If gblUnhide = "true" Then
         'overlayWidget.Hidden = False
-        fAlpha.gaugeForm.Visible = True
+        fVolume.volumeForm.Visible = True
         sPutINISetting "Software\DieselVolumeControl", "unhide", vbNullString, gblSettingsFile
     End If
 

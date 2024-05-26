@@ -6,7 +6,7 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "cfAlpha"
+Attribute VB_Name = "cfVolume"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
@@ -14,8 +14,8 @@ Attribute VB_Exposed = False
 '@IgnoreModule IntegerDataType, ModuleWithoutFolder
 Option Explicit 'simple Alpha-Form (...to be filled with (mostly Img-) Content via .Widgets.Add)
 
-Public WithEvents gaugeForm As cWidgetForm
-Attribute gaugeForm.VB_VarHelpID = -1
+Public WithEvents volumeForm As cWidgetForm
+Attribute volumeForm.VB_VarHelpID = -1
 
 Public collPSDNonUIElements As cCollection, FX As Long, FY As Long, FZ As Single  'available on the outside, even after the Form was closed
 
@@ -53,7 +53,7 @@ Private Sub Class_Initialize()
 
 Class_Initialize_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Class_Initialize of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Class_Initialize of Class Module cfVolume"
 End Sub
 
 '---------------------------------------------------------------------------------------
@@ -77,8 +77,8 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
     On Error GoTo InitFromPSD_Error
 
     'create the Alpha-capable Top-Level-Form
-    Set gaugeForm = Cairo.WidgetForms.Create(IIf(App.LogMode, AlphaNoTaskbarEntry, AlphaWithTaskbarEntry), widgetName, True, 1, 1)
-        gaugeForm.WidgetRoot.BackColor = -1
+    Set volumeForm = Cairo.WidgetForms.Create(IIf(App.LogMode, AlphaNoTaskbarEntry, AlphaWithTaskbarEntry), widgetName, True, 1, 1)
+        volumeForm.WidgetRoot.BackColor = -1
  
     With New_c.SimplePSD(PSD_FileNameOrByteArray)  'create a new PSD-Parser.instance (and load the passed content)
         PSDWidth = .Width
@@ -96,8 +96,8 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
                         collPSDNonUIElements(.LayerPath(I)) = Array(.LayerX(I), .LayerY(I), Val(gblOpacity) / 100)  'here we update the so far empty slots with the PSD-offsets
                 
                     Else 'everything not in the exclude-list will get its own Widget-instance
-                        Set W = gaugeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
-                        'Set W = gaugeForm.Widgets.Add(New_W("cwAlphaImg"), LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
+                        Set W = volumeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
+                        'Set W = volumeForm.Widgets.Add(New_W("cwAlphaImg"), LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
                             W.ImageKey = W.Key 'W.Key equals ImageList-Key, set above - and LayerPath(i) at this point ... set it also as the ImageKey of our new created Widget
                         If gblOpacity < 1 Then
                             W.Alpha = Val(gblOpacity) / 100
@@ -119,7 +119,7 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
         Next I
     End With '<-- the Parser-instance will be destroyed here (freeing the Memory, the internal PSD-Layers have occupied)
     
-    Set overlayWidget = gaugeForm.Widgets.Add(New cwOverlay, "Overlay", 0, 0, PSDWidth, PSDHeight)
+    Set overlayWidget = volumeForm.Widgets.Add(New cwOverlay, "Overlay", 0, 0, PSDWidth, PSDHeight)
     Set overlayWidget.cCollOverlayImages = collPSDNonUIElements 'make the excluded PSD-Surface-Paths known to the Overlay-Widget
         overlayWidget.cxPerc = 0.4940476 'define the relative center (within cwOverlay, which has the same size as the Form and the PSD...) this is used for clock-hand-positioning
         overlayWidget.cyPerc = 0.4727272
@@ -129,22 +129,22 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
 
 InitFromPSD_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure InitFromPSD of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure InitFromPSD of Class Module cfVolume"
 End Sub
 '
 '---------------------------------------------------------------------------------------
-' Procedure : gaugeForm_BubblingEvent
+' Procedure : volumeForm_BubblingEvent
 ' Author    : beededea
 ' Date      : 31/07/2023
 ' Purpose   : central handling of all Click-Events
 '---------------------------------------------------------------------------------------
 '
-Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As String, ByRef P1 As Variant, ByRef P2 As Variant, ByRef P3 As Variant, ByRef P4 As Variant, ByRef P5 As Variant, ByRef P6 As Variant, ByRef P7 As Variant)
+Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As String, ByRef P1 As Variant, ByRef P2 As Variant, ByRef P3 As Variant, ByRef P4 As Variant, ByRef P5 As Variant, ByRef P6 As Variant, ByRef P7 As Variant)
    
     Dim stdMessage As String: stdMessage = vbNullString
     Dim stdSubject As String: stdSubject = vbNullString
     
-    On Error GoTo gaugeForm_BubblingEvent_Error
+    On Error GoTo volumeForm_BubblingEvent_Error
 
     If gblIgnoreMouse = "1" Then Exit Sub
     
@@ -160,29 +160,29 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
     If EventName = "W_MouseMove" Then
         Select Case LCase$(Sender.Widget.Key)
             Case "lockingpin"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "bell"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the mute button. Click me to toggle sound on/off.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "This is the mute button. Click me to toggle sound on/off.", _
                      TTIconInfo, widgetName & " Sound Toggle Help", , , , True
             Case "lockingpinunlocked"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "indicatorred"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the mute indicator. A green lamp means that the sound is unmuted. Red lamp means that mute is ON.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "This is the mute indicator. A green lamp means that the sound is unmuted. Red lamp means that mute is ON.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "indicatorgreen"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the mute indicator. Sound is unmuted.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "This is the mute indicator. Sound is unmuted.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
             Case "sliderset"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, "This is the Volume Slider. Click and drag me left/right to change the volume.", _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "This is the Volume Slider. Click and drag me left/right to change the volume.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
                 If slidersetMouseDown = True Then
 
 
                 End If
             Case "speaker", "cable", "bar", "pipes", "cablewheelset"
-                If gblEnableBalloonTooltips = "1" Then CreateToolTip gaugeForm.hwnd, stdMessage _
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, stdMessage _
                     & vbCrLf & stdSubject, _
                     TTIconInfo, widgetName & " Configuration Help", , , , True
         End Select
@@ -232,9 +232,9 @@ Private Sub gaugeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As S
    On Error GoTo 0
    Exit Sub
 
-gaugeForm_BubblingEvent_Error:
+volumeForm_BubblingEvent_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure gaugeForm_BubblingEvent of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_BubblingEvent of Class Module cfVolume"
 End Sub
 '---------------------------------------------------------------------------------------
 ' Procedure : helpbutton_click
@@ -253,7 +253,7 @@ End Sub
 '
 'helpbutton_click_Error:
 '
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure helpbutton_click of Class Module cfAlpha"
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure helpbutton_click of Class Module cfVolume"
 '
 'End Sub
 
@@ -278,10 +278,10 @@ Private Sub lockingpin_mouseDown(ByRef Sender As Object)
     
     If overlayWidget.Locked = False Then
         Sender.Widget.Alpha = 0
-        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
     Else
         Sender.Widget.Alpha = Val(gblOpacity) / 100
-        fAlpha.gaugeForm.Widgets("lockingpinunlocked").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("lockingpinunlocked").Widget.Alpha = 0
     End If
     Sender.Widget.Refresh ' this removes the delay in the lockingpin depressing
     Call lockWidget
@@ -291,7 +291,7 @@ Private Sub lockingpin_mouseDown(ByRef Sender As Object)
 
 lockingpin_mouseDown_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure lockingpin_mouseDown of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure lockingpin_mouseDown of Class Module cfVolume"
 
 End Sub
 '---------------------------------------------------------------------------------------
@@ -313,10 +313,10 @@ Private Sub helppin_mouseDown(ByRef Sender As Object)
     
 '    If overlayWidget.Locked = False Then
 '        Sender.Widget.Alpha = 0
-'        fAlpha.gaugeForm.Widgets("helppinunlocked").Widget.Alpha = Val(gblOpacity) / 100
+'        fVolume.volumeForm.Widgets("helppinunlocked").Widget.Alpha = Val(gblOpacity) / 100
 '    Else
 '        Sender.Widget.Alpha = Val(gblOpacity) / 100
-'        fAlpha.gaugeForm.Widgets("helppinunlocked").Widget.Alpha = 0
+'        fVolume.volumeForm.Widgets("helppinunlocked").Widget.Alpha = 0
 '    End If
     Sender.Widget.Refresh ' this removes the delay in the helppin depressing
     
@@ -327,7 +327,7 @@ Private Sub helppin_mouseDown(ByRef Sender As Object)
 
 helppin_mouseDown_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure helppin_mouseDown of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure helppin_mouseDown of Class Module cfVolume"
 
 End Sub
 
@@ -363,7 +363,7 @@ Private Sub bell_mouseDown(ByRef Sender As Object)
 
 bell_mouseDown_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure bell_mouseDown of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure bell_mouseDown of Class Module cfVolume"
 
 End Sub
 
@@ -386,7 +386,7 @@ Private Sub bell_mouseUp(ByRef Sender As Object)
 
 bell_mouseUp_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure bell_mouseUp of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure bell_mouseUp of Class Module cfVolume"
 
 End Sub
 
@@ -425,13 +425,13 @@ Public Property Let Mute(ByVal newValue As Boolean)
     SystemVolume.SetMute Abs(CInt(mMute))
     
     If SystemVolume.GetMute = 1 Then
-        fAlpha.gaugeForm.Widgets("indicatorgreen").Widget.Alpha = 0
-        fAlpha.gaugeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
     Else
-        fAlpha.gaugeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
-        fAlpha.gaugeForm.Widgets("indicatorred").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
     End If
-    fAlpha.gaugeForm.Refresh
+    fVolume.volumeForm.Refresh
 
    On Error GoTo 0
    Exit Property
@@ -443,17 +443,17 @@ End Property
 
 
 '---------------------------------------------------------------------------------------
-' Procedure : gaugeForm_DblClick
+' Procedure : volumeForm_DblClick
 ' Author    : beededea
 ' Date      : 05/05/2023
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub gaugeForm_DblClick()
+Private Sub volumeForm_DblClick()
     Dim userprof As String: userprof = vbNullString
     Dim thisCommand As String: thisCommand = vbNullString
     
-    On Error GoTo gaugeForm_DblClick_Error
+    On Error GoTo volumeForm_DblClick_Error
 
     '    If gblIgnoreMouse = "1" Then Exit Sub
 
@@ -474,19 +474,19 @@ Private Sub gaugeForm_DblClick()
     
     If SHIFT_1 = True Then
         SHIFT_1 = False
-        Call ShellExecute(fAlpha.gaugeForm.hwnd, "Open", gblOpenFile, vbNullString, App.path, 1)
+        Call ShellExecute(fVolume.volumeForm.hwnd, "Open", gblOpenFile, vbNullString, App.path, 1)
     Else
-        Call ShellExecute(fAlpha.gaugeForm.hwnd, "runas", thisCommand, vbNullString, App.path, 1)
+        Call ShellExecute(fVolume.volumeForm.hwnd, "runas", thisCommand, vbNullString, App.path, 1)
     End If
 
     On Error GoTo 0
     Exit Sub
 
-gaugeForm_DblClick_Error:
+volumeForm_DblClick_Error:
 
     With Err
          If .Number <> 0 Then
-            MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure gaugeForm_DblClick of Class Module cfMain"
+            MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_DblClick of Class Module cfMain"
             Resume Next
           End If
     End With
@@ -494,92 +494,92 @@ End Sub
 
 
 '---------------------------------------------------------------------------------------
-' Procedure : gaugeForm_KeyDown
+' Procedure : volumeForm_KeyDown
 ' Author    : beededea
 ' Date      : 01/06/2019
 ' Purpose   : get F5 and SHIFT keypresses
 '---------------------------------------------------------------------------------------
 '
-Private Sub gaugeForm_KeyDown(ByRef KeyCode As Integer, ByRef Shift As Integer)
-    On Error GoTo gaugeForm_KeyDown_Error
+Private Sub volumeForm_KeyDown(ByRef KeyCode As Integer, ByRef Shift As Integer)
+    On Error GoTo volumeForm_KeyDown_Error
 
     Call getKeyPress(KeyCode, Shift) ' will not catch Shift or CTRL keypresses on their own, must be combination with another key.
 
     On Error GoTo 0
     Exit Sub
 
-gaugeForm_KeyDown_Error:
+volumeForm_KeyDown_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure gaugeForm_KeyDown of Class Module cfMain"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_KeyDown of Class Module cfMain"
 End Sub
 ''
 '---------------------------------------------------------------------------------------
-' Procedure : gaugeForm_MouseUp
+' Procedure : volumeForm_MouseUp
 ' Author    : beededea
 ' Date      : 05/05/2023
 ' Purpose   : save the form x,y position when ever the globe/form is dragged
 '---------------------------------------------------------------------------------------
 '
-Private Sub gaugeForm_MouseUp(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
-    On Error GoTo gaugeForm_MouseUp_Error
+Private Sub volumeForm_MouseUp(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
+    On Error GoTo volumeForm_MouseUp_Error
     
     Call savePosition
 
     On Error GoTo 0
     Exit Sub
 
-gaugeForm_MouseUp_Error:
+volumeForm_MouseUp_Error:
 
     With Err
          If .Number <> 0 Then
-            MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure gaugeForm_MouseUp of Class Module cfMain"
+            MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_MouseUp of Class Module cfMain"
             Resume Next
           End If
     End With
 End Sub
 
 '---------------------------------------------------------------------------------------
-' Procedure : gaugeForm_MouseMove
+' Procedure : volumeForm_MouseMove
 ' Author    : beededea
 ' Date      : 31/07/2023
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub gaugeForm_MouseMove(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
+Private Sub volumeForm_MouseMove(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
   Static x0 As Single, y0 As Single: If Button = 0 Then x0 = x: y0 = y 'just store the offsets when no button is down
   
-   On Error GoTo gaugeForm_MouseMove_Error
+   On Error GoTo volumeForm_MouseMove_Error
     
     If overlayWidget.Locked = True Then Exit Sub
     If gblIgnoreMouse = "1" Then Exit Sub
 
-    If Button = vbLeftButton And Not gaugeForm.ActiveWidget Is Nothing Then 'Form-Dragging (under certain conditions)
+    If Button = vbLeftButton And Not volumeForm.ActiveWidget Is Nothing Then 'Form-Dragging (under certain conditions)
 
-      FX = (x - x0) * gaugeForm.WidgetRoot.Zoom + gaugeForm.Left
-      FY = (y - y0) * gaugeForm.WidgetRoot.Zoom + gaugeForm.Top
-      gaugeForm.Move FX, FY
+      FX = (x - x0) * volumeForm.WidgetRoot.Zoom + volumeForm.Left
+      FY = (y - y0) * volumeForm.WidgetRoot.Zoom + volumeForm.Top
+      volumeForm.Move FX, FY
     End If
 
 
    On Error GoTo 0
    Exit Sub
 
-gaugeForm_MouseMove_Error:
+volumeForm_MouseMove_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure gaugeForm_MouseMove of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_MouseMove of Class Module cfVolume"
 End Sub
 
 '---------------------------------------------------------------------------------------
-' Procedure : gaugeForm_MouseWheel
+' Procedure : volumeForm_MouseWheel
 ' Author    : beededea
 ' Date      : 31/07/2023
 ' Purpose   : rotate forward positive = smaller
 '---------------------------------------------------------------------------------------
 '
-Private Sub gaugeForm_MouseWheel(ByVal MouseKeys As Long, ByVal Rotation As Long, ByVal Xpos As Single, ByVal Ypos As Single)
+Private Sub volumeForm_MouseWheel(ByVal MouseKeys As Long, ByVal Rotation As Long, ByVal Xpos As Single, ByVal Ypos As Single)
    Dim RotationDirection As Long: RotationDirection = 0
    
-   On Error GoTo gaugeForm_MouseWheel_Error
+   On Error GoTo volumeForm_MouseWheel_Error
 
     If gblScrollWheelDirection = "1" Then
         If Rotation > 0 Then
@@ -596,29 +596,29 @@ Private Sub gaugeForm_MouseWheel(ByVal MouseKeys As Long, ByVal Rotation As Long
    On Error GoTo 0
    Exit Sub
 
-gaugeForm_MouseWheel_Error:
+volumeForm_MouseWheel_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure gaugeForm_MouseWheel of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_MouseWheel of Class Module cfVolume"
 End Sub
 ''
 ''---------------------------------------------------------------------------------------
-'' Procedure : gaugeForm_ResizeWithDimensionsDIP
+'' Procedure : volumeForm_ResizeWithDimensionsDIP
 '' Author    : beededea
 '' Date      : 31/07/2023
 '' Purpose   : put any other resizing action in here - unused
 ''---------------------------------------------------------------------------------------
 ''
-'Private Sub gaugeForm_ResizeWithDimensionsDIP(ByVal dx As Single, ByVal dy As Single)
-'   On Error GoTo gaugeForm_ResizeWithDimensionsDIP_Error
+'Private Sub volumeForm_ResizeWithDimensionsDIP(ByVal dx As Single, ByVal dy As Single)
+'   On Error GoTo volumeForm_ResizeWithDimensionsDIP_Error
 '
 '  'If Not CloseWidget Is Nothing Then CloseWidget.Move dx - 32, 0, 32, 32 'place the close-widget at the top-right of the form
 '
 '   On Error GoTo 0
 '   Exit Sub
 '
-'gaugeForm_ResizeWithDimensionsDIP_Error:
+'volumeForm_ResizeWithDimensionsDIP_Error:
 '
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure gaugeForm_ResizeWithDimensionsDIP of Class Module cfAlpha"
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_ResizeWithDimensionsDIP of Class Module cfVolume"
 'End Sub
 
 '---------------------------------------------------------------------------------------
@@ -633,8 +633,8 @@ Public Sub AdjustZoom(ByVal NewZoom As Single)
 
   FZ = NewZoom
   If FZ < 0.05 Then FZ = 0.05 Else If FZ > 3 Then FZ = 3 'keep FZ within a sane ZoomInterval
-  gaugeForm.WidgetRoot.Zoom = FZ '* gaugeForm.WidgetRoot.CurrentMonitor.Zoom '<-- if the multiplicator is activated, we'd have DPI-awareness on high-res monitors
-  gaugeForm.Move gaugeForm.Left, gaugeForm.Top, PSDWidth * gaugeForm.WidgetRoot.Zoom, PSDHeight * gaugeForm.WidgetRoot.Zoom
+  volumeForm.WidgetRoot.Zoom = FZ '* volumeForm.WidgetRoot.CurrentMonitor.Zoom '<-- if the multiplicator is activated, we'd have DPI-awareness on high-res monitors
+  volumeForm.Move volumeForm.Left, volumeForm.Top, PSDWidth * volumeForm.WidgetRoot.Zoom, PSDHeight * volumeForm.WidgetRoot.Zoom
 
   ' when resized from the gauge scroll up/down it needs to write it back so the size is correct when prefs opened.
   gblGaugeSize = LTrim$(Str$(NewZoom * 100))
@@ -646,7 +646,7 @@ Public Sub AdjustZoom(ByVal NewZoom As Single)
 
 AdjustZoom_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure AdjustZoom of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure AdjustZoom of Class Module cfVolume"
 End Sub
 '---------------------------------------------------------------------------------------
 ' Procedure : W_MouseDown
@@ -655,7 +655,7 @@ End Sub
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Private Sub gaugeForm_MouseDown(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
+Private Sub volumeForm_MouseDown(ByRef Button As Integer, ByRef Shift As Integer, ByRef x As Single, ByRef y As Single)
    On Error GoTo W_MouseDown_Error
 
     If Button = vbRightButton Then

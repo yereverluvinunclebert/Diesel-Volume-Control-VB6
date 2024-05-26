@@ -1741,7 +1741,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@IgnoreModule IntegerDataType, ModuleWithoutFolder
 
-' gaugeForm_BubblingEvent ' leaving that here so I can copy/paste to find it
+' volumeForm_BubblingEvent ' leaving that here so I can copy/paste to find it
 
 '---------------------------------------------------------------------------------------
 ' Module    : widgetPrefs
@@ -1944,8 +1944,8 @@ Public Sub positionPrefsMonitor()
     End If
     
     If formLeftTwips = 0 Then
-        If ((fAlpha.gaugeForm.Left + fAlpha.gaugeForm.Width) * screenTwipsPerPixelX) + 200 + widgetPrefs.Width > screenWidthTwips Then
-            widgetPrefs.Left = (fAlpha.gaugeForm.Left * screenTwipsPerPixelX) - (widgetPrefs.Width + 200)
+        If ((fVolume.volumeForm.Left + fVolume.volumeForm.Width) * screenTwipsPerPixelX) + 200 + widgetPrefs.Width > screenWidthTwips Then
+            widgetPrefs.Left = (fVolume.volumeForm.Left * screenTwipsPerPixelX) - (widgetPrefs.Width + 200)
         End If
     End If
 
@@ -2471,11 +2471,11 @@ Private Sub chkPreventDragging_Click()
         gblPreventDragging = "1"
         menuForm.mnuLockWidget.Checked = True
         If aspectRatio = "landscape" Then
-            txtLandscapeHoffset.Text = fAlpha.gaugeForm.Left
-            txtLandscapeVoffset.Text = fAlpha.gaugeForm.Top
+            txtLandscapeHoffset.Text = fVolume.volumeForm.Left
+            txtLandscapeVoffset.Text = fVolume.volumeForm.Top
         Else
-            txtPortraitHoffset.Text = fAlpha.gaugeForm.Left
-            txtPortraitYoffset.Text = fAlpha.gaugeForm.Top
+            txtPortraitHoffset.Text = fVolume.volumeForm.Left
+            txtPortraitYoffset.Text = fVolume.volumeForm.Top
         End If
     End If
 
@@ -2507,13 +2507,13 @@ Private Sub chkWidgetHidden_Click()
 
     If chkWidgetHidden.Value = 0 Then
         'overlayWidget.Hidden = False
-        fAlpha.gaugeForm.Visible = True
+        fVolume.volumeForm.Visible = True
 
         frmTimer.revealWidgetTimer.Enabled = False
         gblWidgetHidden = "0"
     Else
         'overlayWidget.Hidden = True
-        fAlpha.gaugeForm.Visible = False
+        fVolume.volumeForm.Visible = False
 
 
         frmTimer.revealWidgetTimer.Enabled = True
@@ -2546,13 +2546,13 @@ Private Sub cmbAspectHidden_Click()
 
     If cmbAspectHidden.ListIndex = 1 And aspectRatio = "portrait" Then
         'overlayWidget.Hidden = True
-        fAlpha.gaugeForm.Visible = False
+        fVolume.volumeForm.Visible = False
     ElseIf cmbAspectHidden.ListIndex = 2 And aspectRatio = "landscape" Then
         'overlayWidget.Hidden = True
-        fAlpha.gaugeForm.Visible = False
+        fVolume.volumeForm.Visible = False
     Else
         'overlayWidget.Hidden = False
-        fAlpha.gaugeForm.Visible = True
+        fVolume.volumeForm.Visible = True
     End If
 
     btnSave.Enabled = True ' enable the save button
@@ -3281,8 +3281,8 @@ Private Sub adjustPrefsControls()
         
     If gblPreventDragging = "1" Then
         If aspectRatio = "landscape" Then
-'            txtLandscapeHoffset.Text = fAlpha.gaugeForm.Left
-'            txtLandscapeVoffset.Text = fAlpha.gaugeForm.Top
+'            txtLandscapeHoffset.Text = fVolume.volumeForm.Left
+'            txtLandscapeVoffset.Text = fVolume.volumeForm.Top
             If gblDpiAwareness = "1" Then
                 txtLandscapeHoffset.ToolTipText = "Last Sampled Form X Horizontal Position : " & gblClockHighDpiXPos & "px"
                 txtLandscapeVoffset.ToolTipText = "Last Sampled Form Y Vertical Position : " & gblClockHighDpiYPos & "px"
@@ -3291,8 +3291,8 @@ Private Sub adjustPrefsControls()
                 txtLandscapeVoffset.ToolTipText = "Last Sampled Form Y Vertical Position : " & gblClockLowDpiYPos & "px"
             End If
         Else
-'            txtPortraitHoffset.Text = fAlpha.gaugeForm.Left
-'            txtPortraitYoffset.Text = fAlpha.gaugeForm.Top
+'            txtPortraitHoffset.Text = fVolume.volumeForm.Left
+'            txtPortraitYoffset.Text = fVolume.volumeForm.Top
             If gblDpiAwareness = "1" Then
                 txtPortraitHoffset.ToolTipText = "Last Sampled Form X Horizontal Position : " & gblClockHighDpiXPos & "px"
                 txtPortraitYoffset.ToolTipText = "Last Sampled Form Y Vertical Position : " & gblClockHighDpiYPos & "px"
@@ -3968,7 +3968,7 @@ Private Sub sliGaugeSize_Change()
 
     btnSave.Enabled = True ' enable the save button
     
-    If gblAllowSizeChangeFlg = True Then Call fAlpha.AdjustZoom(sliGaugeSize.Value / 100)
+    If gblAllowSizeChangeFlg = True Then Call fVolume.AdjustZoom(sliGaugeSize.Value / 100)
 
     On Error GoTo 0
     Exit Sub

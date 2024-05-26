@@ -17,12 +17,12 @@ Attribute VB_Exposed = False
 ' Author    : beededea
 ' Date      : 31/07/2023
 ' Purpose   : create a fully click-through Widget, which allows for all kind of
-'             things to render on top of the PSD-generated Widgets created in cfAlpha
+'             things to render on top of the PSD-generated Widgets created in cfVolume
 '---------------------------------------------------------------------------------------
 
 Option Explicit
 
-'these Public Properties are set in the Parent (here, cfAlpha)
+'these Public Properties are set in the Parent (here, cfVolume)
 Public cCollOverlayImages As cCollection
 Public cxPerc As Single
 Public cyPerc As Single
@@ -274,7 +274,7 @@ Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As
     txtDayNumber = Day(DateAdd("m", tzDelta, Now))
     txtMonthNumber = Month(DateAdd("m", tzDelta, Now))
 
-    For I = 0 To cCollOverlayImages.Count - 1 ' this is the ExcludedPaths collection populated in cfAlpha by duplicating collPSDNonUIElements.
+    For I = 0 To cCollOverlayImages.Count - 1 ' this is the ExcludedPaths collection populated in cfVolume by duplicating collPSDNonUIElements.
       Arr = cCollOverlayImages.ItemByIndex(I)
       Key = cCollOverlayImages.KeyByIndex(I)
       

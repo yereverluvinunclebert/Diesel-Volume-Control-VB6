@@ -403,7 +403,7 @@ Private Sub licenceForm_MouseMove(ByRef Button As Integer, ByRef Shift As Intege
 
 licenceForm_MouseMove_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure licenceForm_MouseMove of Class Module cfAlpha"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure licenceForm_MouseMove of Class Module cfVolume"
 End Sub
 
 

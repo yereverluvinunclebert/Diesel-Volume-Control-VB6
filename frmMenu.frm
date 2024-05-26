@@ -295,7 +295,7 @@ Private Sub mnuHideWidget_Click()
     On Error GoTo mnuHideWidget_Click_Error
        
     'overlayWidget.Hidden = True
-    fAlpha.gaugeForm.Visible = False
+    fVolume.volumeForm.Visible = False
     frmTimer.revealWidgetTimer.Enabled = True
     gblWidgetHidden = "1"
     ' we have to save the value here
