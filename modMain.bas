@@ -477,7 +477,7 @@ Public Sub adjustMainControls()
     With fVolume.volumeForm.Widgets("sliderset").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
         .MousePointer = IDC_HAND
-        .Tag = 0.01
+        .Tag = 0#
         .Moveable = True
     End With
     

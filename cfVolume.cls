@@ -187,12 +187,6 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
     stdMessage = "Right Click to open the menu and the preferences. CTRL+ Mouse scrollwheel UP/DOWN to resize. "
     stdSubject = "You can turn off the balloon tooltips in the preferences."
     
-'    If EventName = "W_MouseDrag" Then
-'        Select Case LCase$(Sender.Widget.Key)
-'            Case "sliderset"
-'        End Select
-'    End If
-    
     If EventName = "W_MouseMove" Then
         Select Case LCase$(Sender.Widget.Key)
             Case "lockingpin"
@@ -662,16 +656,15 @@ End Sub
 Public Sub AdjustZoom(ByVal NewZoom As Single)
    On Error GoTo AdjustZoom_Error
 
-  FZ = NewZoom
-  If FZ < 0.05 Then FZ = 0.05 Else If FZ > 3 Then FZ = 3 'keep FZ within a sane ZoomInterval
-  volumeForm.WidgetRoot.Zoom = FZ '* volumeForm.WidgetRoot.CurrentMonitor.Zoom '<-- if the multiplicator is activated, we'd have DPI-awareness on high-res monitors
-  volumeForm.Move volumeForm.Left, volumeForm.Top, PSDWidth * volumeForm.WidgetRoot.Zoom, PSDHeight * volumeForm.WidgetRoot.Zoom
-
-  ' when resized from the gauge scroll up/down it needs to write it back so the size is correct when prefs opened.
-  gblGaugeSize = LTrim$(Str$(NewZoom * 100))
-  If widgetPrefs.IsVisible = True Then widgetPrefs.sliGaugeSize = Val(gblGaugeSize)
-
+    FZ = NewZoom
+    If FZ < 0.05 Then FZ = 0.05 Else If FZ > 3 Then FZ = 3 'keep FZ within a sane ZoomInterval
+    volumeForm.WidgetRoot.Zoom = FZ '* volumeForm.WidgetRoot.CurrentMonitor.Zoom '<-- if the multiplicator is activated, we'd have DPI-awareness on high-res monitors
+    volumeForm.Move volumeForm.Left, volumeForm.Top, PSDWidth * volumeForm.WidgetRoot.Zoom, PSDHeight * volumeForm.WidgetRoot.Zoom
     
+    ' when resized from the gauge scroll up/down it needs to write it back so the size is correct when prefs opened.
+    gblGaugeSize = LTrim$(Str$(NewZoom * 100))
+    If widgetPrefs.IsVisible = True Then widgetPrefs.sliGaugeSize = Val(gblGaugeSize)
+
    On Error GoTo 0
    Exit Sub
 
@@ -704,30 +697,65 @@ W_MouseDown_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure W_MouseDown of Class Module cwOverlay"
 End Sub
 
-
-'*********** Slider-related Event-Handlers and Public Props *************
+' ----------------------------------------------------------------
+' Procedure Name: SliderSet_Moving
+' Purpose:
+' Procedure Kind: Sub
+' Procedure Access: Private
+' Author: beededea
+' Date: 26/05/2024
+' ----------------------------------------------------------------
 Private Sub SliderSet_Moving() 'this is an explcit Event-Handler on the single Widget-instance (derived in the routine above)
+    On Error GoTo SliderSet_Moving_Error
   sldX = SliderSet.Left
   If sldX < sldXMin Then sldX = sldXMin Else If sldX > sldXMax Then sldX = sldXMax 'keep sldX "in range"
  
   VolumePerc = (sldX - sldXMin) / (sldXMax - sldXMin) 'assign the new Value to the Public Prop, to trigger all the necessary refreshs
+    
+    On Error GoTo 0
+    Exit Sub
+
+SliderSet_Moving_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure SliderSet_Moving, line " & Erl & "."
+
 End Sub
 
 Public Property Get VolumePerc() As Currency
   VolumePerc = mVolumePerc
 End Property
+
+' ----------------------------------------------------------------
+' Procedure Name: VolumePerc
+' Purpose:
+' Procedure Kind: Property (Let)
+' Procedure Access: Public
+' Parameter RHS (Currency):
+' Author: beededea
+' Date: 26/05/2024
+' ----------------------------------------------------------------
 Public Property Let VolumePerc(ByVal RHS As Currency)
-  If RHS < 0 Then RHS = 0 Else If RHS > 1 Then RHS = 1 'keep RHS "in range"
-  sldX = RHS * (sldXMax - sldXMin) + sldXMin
-  overlayWidget.sldCurWidth = sldXMax - sldX 'inform the Overlay about the new current "Cable-Width"
-  SliderSet.Move sldX, sldFixedTop 'move the SliderSet-widget accordingly
-  If mVolumePerc <> RHS Then mVolumePerc = RHS Else Exit Property  'only refresh, when there was a change to the previous value
-  
-  volumeForm.Widgets("pipes").Widget.ToolTip = "Volume: " & Format$(VolumePerc, "0%")
-  If Not Cairo.ToolTipForm Is Nothing Then Cairo.ToolTipForm.Visible = False
-  volumeForm.Refresh
-  
-  HandleVolumeChangeForHardware
+    On Error GoTo VolumePerc_Error
+    
+    If RHS < 0 Then RHS = 0 Else If RHS > 1 Then RHS = 1 'keep RHS "in range"
+    sldX = RHS * (sldXMax - sldXMin) + sldXMin
+    overlayWidget.sldCurWidth = sldXMax - sldX 'inform the Overlay about the new current "Cable-Width"
+    SliderSet.Move sldX, sldFixedTop 'move the SliderSet-widget accordingly
+    If mVolumePerc <> RHS Then mVolumePerc = RHS Else Exit Property  'only refresh, when there was a change to the previous value
+    
+    volumeForm.Widgets("pipes").Widget.ToolTip = "Volume: " & Format$(VolumePerc, "0%")
+    If Not Cairo.ToolTipForm Is Nothing Then Cairo.ToolTipForm.Visible = False
+    volumeForm.Refresh
+    
+    HandleVolumeChangeForHardware
+    
+    On Error GoTo 0
+    Exit Property
+
+VolumePerc_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure VolumePerc, line " & Erl & "."
+
 End Property
 
 Private Sub HandleVolumeChangeForHardware()

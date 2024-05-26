@@ -33,38 +33,8 @@ Private WithEvents W As cWidgetBase
 Attribute W.VB_VarHelpID = -1
 Private WithEvents tmrClock As cTimer
 Attribute tmrClock.VB_VarHelpID = -1
-Private HDeg As Double
-Private MDeg As Double
-Private SDeg As Double
-Private MsDeg As Double
-
-'------------------------------------------------------ STARTS
-Private Type SYSTEMTIME
-   wYear As Integer
-   wMonth As Integer
-   wDayOfWeek As Integer
-   wDay As Integer
-   wHour As Integer
-   wMinute As Integer
-   wSecond As Integer
-   wMilliseconds As Integer
-End Type
-
-Private Type TIME_ZONE_INFORMATION
-    bias                    As Long
-    StandardName(0 To 63)   As Byte
-    StandardDate            As SYSTEMTIME
-    StandardBias            As Long
-    DaylightName(0 To 63)   As Byte
-    DaylightDate            As SYSTEMTIME
-    DaylightBias            As Long
-End Type
-
-Private Declare Sub GetSystemTime Lib "kernel32" (lpSystemTime As SYSTEMTIME)
-'------------------------------------------------------ ENDS
 
 Private mTicking As Boolean ' property Ticking
-Private mSmoothSecondHand As Boolean ' property SmoothSecondHand
 Private mLocked As Boolean ' property Locked
 Private mHidden As Boolean ' property Hidden
 
@@ -82,7 +52,6 @@ Private Sub Class_Initialize()
     Set W = Cairo.WidgetBase
         W.BackColor = -1  'we don't use any BackColor here, transparent
         W.ImplementsHitTest = True 'when at False, no HitTest-Event would be triggered
-
 
    On Error GoTo 0
    Exit Sub
