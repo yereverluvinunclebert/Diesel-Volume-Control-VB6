@@ -424,7 +424,7 @@ Public Property Let Mute(ByVal newValue As Boolean)
     
     SystemVolume.SetMute Abs(CInt(mMute))
     
-    If SystemVolume.GetMute = 1 Then
+    If mMute = True Then
         fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
         fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
     Else

@@ -535,6 +535,14 @@ Public Sub adjustMainControls()
         fVolume.volumeForm.Widgets("lockingpin").Widget.Alpha = 0
         fVolume.volumeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
     End If
+    
+    If fVolume.Mute = True Then
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
+    Else
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
+    End If
 
     fVolume.volumeForm.Refresh
     
