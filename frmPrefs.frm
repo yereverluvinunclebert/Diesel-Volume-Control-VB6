@@ -17,7 +17,7 @@ Begin VB.Form widgetPrefs
    Begin VB.Frame fraGeneral 
       Caption         =   "General"
       ForeColor       =   &H80000008&
-      Height          =   2010
+      Height          =   2430
       Left            =   75
       TabIndex        =   50
       Top             =   1200
@@ -25,13 +25,13 @@ Begin VB.Form widgetPrefs
       Width           =   7995
       Begin VB.Frame fraGeneralInner 
          BorderStyle     =   0  'None
-         Height          =   1290
+         Height          =   1965
          Left            =   465
          TabIndex        =   51
          Top             =   300
          Width           =   6750
          Begin VB.CheckBox chkWidgetFunctions 
-            Caption         =   "When checked this box enables the clock hands - That's it! *"
+            Caption         =   "Toggle to enable/disable"
             Height          =   390
             Left            =   1995
             TabIndex        =   52
@@ -40,21 +40,30 @@ Begin VB.Form widgetPrefs
             Width           =   3405
          End
          Begin VB.CheckBox chkGenStartup 
-            Caption         =   "Run the Just Clock Widget at Windows Startup "
+            Caption         =   "Run the Dieselpunk Volume Widget at Windows Startup "
             Height          =   465
             Left            =   1995
             TabIndex        =   92
             ToolTipText     =   "Check this box to enable the automatic start of the program when Windows is started."
-            Top             =   720
+            Top             =   1260
+            Width           =   4590
+         End
+         Begin VB.Label lblGeneral 
+            Caption         =   "When checked this box enables the functionality of this widget to control audio - That's it! *"
+            Height          =   465
+            Index           =   1
+            Left            =   1995
+            TabIndex        =   151
+            Top             =   675
             Width           =   4020
          End
          Begin VB.Label lblGeneral 
-            Caption         =   "Gauge Functions :"
+            Caption         =   "Widget Functions :"
             Height          =   315
             Index           =   6
             Left            =   510
             TabIndex        =   94
-            Top             =   165
+            Top             =   255
             Width           =   1320
          End
          Begin VB.Label lblGeneral 
@@ -64,7 +73,7 @@ Begin VB.Form widgetPrefs
             Left            =   960
             TabIndex        =   93
             Tag             =   "lblRefreshInterval"
-            Top             =   840
+            Top             =   1380
             Width           =   1740
          End
       End

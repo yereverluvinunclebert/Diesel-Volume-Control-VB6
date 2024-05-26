@@ -28,6 +28,9 @@ Private RenderDev As cMMDevice
 Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVoume with events
 Attribute SystemVolume.VB_VarHelpID = -1
 Private slidersetMouseDown As Boolean
+Private lblPercent As cwLabel
+Private lblPercentShadow As cwLabel
+
 
 
 '---------------------------------------------------------------------------------------
@@ -71,7 +74,7 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
     Const AlphaWithTaskbarEntry As Integer = 6
     Const AlphaNoTaskbarEntry As Integer = 7
   
-    Dim I As Long: I = 0
+    Dim i As Long: i = 0
     Dim W As cWidgetBase
    
     On Error GoTo InitFromPSD_Error
@@ -84,19 +87,19 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
         PSDWidth = .Width
         PSDHeight = .Height       'store the original Psd-Pixel-Width/Height in Private vars (as the base from which we calculate the zoomed Form-Width/Height)
     
-        For I = 0 To .LayersCount - 1 ' loop through each of the Layers in the PSD
-            If .LayerByteSize(I) Then  ' this is a true Alpha-Surface-Layer and not just a PSD layer 'group'
-                If .LayerAlphaPercent(I) > 0 Then ' only handles layers that have an opacity greater than 0 - need to note this for the future, this will cause a problem!
+        For i = 0 To .LayersCount - 1 ' loop through each of the Layers in the PSD
+            If .LayerByteSize(i) Then  ' this is a true Alpha-Surface-Layer and not just a PSD layer 'group'
+                If .LayerAlphaPercent(i) > 0 Then ' only handles layers that have an opacity greater than 0 - need to note this for the future, this will cause a problem!
                     'add each current Layer path and surface object into the global ImageList collection (using LayerPath as the ImageKey)
-                    Cairo.ImageList.AddSurface .LayerPath(I), .LayerSurface(I)
+                    Cairo.ImageList.AddSurface .LayerPath(i), .LayerSurface(i)
                     
-                    If collPSDNonUIElements.Exists(.LayerPath(I)) Then ' we do not create Widgets for those in this exclude list.
+                    If collPSDNonUIElements.Exists(.LayerPath(i)) Then ' we do not create Widgets for those in this exclude list.
                         
                         'we add layer info. (used in cwOverlay) to the "excluded paths" previously defined in Sub Main,
-                        collPSDNonUIElements(.LayerPath(I)) = Array(.LayerX(I), .LayerY(I), Val(gblOpacity) / 100)  'here we update the so far empty slots with the PSD-offsets
+                        collPSDNonUIElements(.LayerPath(i)) = Array(.LayerX(i), .LayerY(i), Val(gblOpacity) / 100)  'here we update the so far empty slots with the PSD-offsets
                 
                     Else 'everything not in the exclude-list will get its own Widget-instance
-                        Set W = volumeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
+                        Set W = volumeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(i)), .LayerX(i), .LayerY(i), .LayerWidth(i), .LayerHeight(i)).Widget
                         'Set W = volumeForm.Widgets.Add(New_W("cwAlphaImg"), LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
                             W.ImageKey = W.Key 'W.Key equals ImageList-Key, set above - and LayerPath(i) at this point ... set it also as the ImageKey of our new created Widget
                         If gblOpacity < 1 Then
@@ -116,8 +119,30 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
                     End If
                 End If
             End If
-        Next I
+        Next i
     End With '<-- the Parser-instance will be destroyed here (freeing the Memory, the internal PSD-Layers have occupied)
+    
+    Set lblPercentShadow = volumeForm.Widgets.Add(New_W("cwLabel"), "lblPercentShadow", 252, 92, 100, 50)
+    Set lblPercent = volumeForm.Widgets.Add(New_W("cwLabel"), "lblPercent", 250, 90, 100, 50)
+    
+    lblPercent.Widget.FontSize = 38
+    lblPercent.Caption = "33%"
+    lblPercent.Widget.FontName = "times new roman"
+    lblPercent.borderWidth = 0
+    lblPercent.Widget.FontBold = True
+    lblPercent.Widget.ForeColor = vbWhite
+    lblPercent.Widget.BackColor = -1
+    lblPercent.Widget.ToolTip = "This is the current volume in %."
+    'lblPercent.TextShadowColor = vbBlack '&H80000010
+    
+    lblPercentShadow.Widget.FontSize = 38
+    lblPercentShadow.Caption = "33%"
+    lblPercentShadow.Widget.FontName = "times new roman"
+    lblPercentShadow.borderWidth = 0
+    lblPercentShadow.Widget.FontBold = True
+    lblPercentShadow.Widget.ForeColor = vbBlack ' &H80000010
+    lblPercentShadow.Widget.BackColor = -1
+    lblPercentShadow.Widget.ToolTip = "This is the current volume in %."
     
     Set overlayWidget = volumeForm.Widgets.Add(New cwOverlay, "Overlay", 0, 0, PSDWidth, PSDHeight)
     Set overlayWidget.cCollOverlayImages = collPSDNonUIElements 'make the excluded PSD-Surface-Paths known to the Overlay-Widget
