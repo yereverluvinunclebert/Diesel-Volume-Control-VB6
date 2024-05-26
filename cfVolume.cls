@@ -22,14 +22,17 @@ Public collPSDNonUIElements As cCollection, FX As Long, FY As Long, FZ As Single
 Private PSDWidth As Long
 Private PSDHeight As Long
 
-Private mMute As Boolean
+Private mMute As Boolean ' property
 
 Private RenderDev As cMMDevice
 Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVoume with events
 Attribute SystemVolume.VB_VarHelpID = -1
-Private slidersetMouseDown As Boolean
+
 Private lblPercent As cwLabel
 Private lblPercentShadow As cwLabel
+
+Private WithEvents SliderSet As cWidgetBase, sldFixedTop#, sldXMax#, sldXMin#, sldX#, mVolumePerc As Currency 'Slider-related Private-Vars
+Attribute SliderSet.VB_VarHelpID = -1
 
 
 
@@ -148,6 +151,14 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
     Set overlayWidget.cCollOverlayImages = collPSDNonUIElements 'make the excluded PSD-Surface-Paths known to the Overlay-Widget
         overlayWidget.cxPerc = 0.4940476 'define the relative center (within cwOverlay, which has the same size as the Form and the PSD...) this is used for clock-hand-positioning
         overlayWidget.cyPerc = 0.4727272
+        
+    'the next 5 lines will init a "moving Slider" (which was defined as "sliderset"-layer in the PSD)
+    Set SliderSet = volumeForm.Widgets("sliderset").Widget 'store the already (in PSD-Loop created) Widget-reference in an explicit "WithEvents-Variable"
+        SliderSet.Moveable = True 'make it "moveable"
+    sldFixedTop = SliderSet.Top   'and store the initial position-data for y-direction (which will not be changed)
+    sldXMax = SliderSet.Left      'as well as the x-direction related pos (which is initially at the "100%-Volume, right-endswitch" )
+    sldXMin = sldXMax - 300       'the Min-Value is simply the Max-Value minus Slider-Range (the 300pxl-range was determined by "probing")
+         
 
    On Error GoTo 0
    Exit Sub
@@ -202,10 +213,7 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
             Case "sliderset"
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "This is the Volume Slider. Click and drag me left/right to change the volume.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
-                If slidersetMouseDown = True Then
 
-
-                End If
             Case "speaker", "cable", "bar", "pipes", "cablewheelset"
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, stdMessage _
                     & vbCrLf & stdSubject, _
@@ -225,7 +233,6 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
                 Call bell_mouseDown(Sender)
             Case "sliderset"
                 overlayWidget.Locked = True
-                slidersetMouseDown = True
             Case Else
                 Debug.Print Sender.Widget.Key
         End Select
@@ -237,7 +244,6 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
                 Call bell_mouseUp(Sender)
             Case "sliderset"
                 overlayWidget.Locked = False
-                slidersetMouseDown = False
             Case Else
                 Debug.Print Sender.Widget.Key
         End Select
@@ -699,3 +705,31 @@ W_MouseDown_Error:
 End Sub
 
 
+'*********** Slider-related Event-Handlers and Public Props *************
+Private Sub SliderSet_Moving() 'this is an explcit Event-Handler on the single Widget-instance (derived in the routine above)
+  sldX = SliderSet.Left
+  If sldX < sldXMin Then sldX = sldXMin Else If sldX > sldXMax Then sldX = sldXMax 'keep sldX "in range"
+ 
+  VolumePerc = (sldX - sldXMin) / (sldXMax - sldXMin) 'assign the new Value to the Public Prop, to trigger all the necessary refreshs
+End Sub
+
+Public Property Get VolumePerc() As Currency
+  VolumePerc = mVolumePerc
+End Property
+Public Property Let VolumePerc(ByVal RHS As Currency)
+  If RHS < 0 Then RHS = 0 Else If RHS > 1 Then RHS = 1 'keep RHS "in range"
+  sldX = RHS * (sldXMax - sldXMin) + sldXMin
+  overlayWidget.sldCurWidth = sldXMax - sldX 'inform the Overlay about the new current "Cable-Width"
+  SliderSet.Move sldX, sldFixedTop 'move the SliderSet-widget accordingly
+  If mVolumePerc <> RHS Then mVolumePerc = RHS Else Exit Property  'only refresh, when there was a change to the previous value
+  
+  volumeForm.Widgets("pipes").Widget.ToolTip = "Volume: " & Format$(VolumePerc, "0%")
+  If Not Cairo.ToolTipForm Is Nothing Then Cairo.ToolTipForm.Visible = False
+  volumeForm.Refresh
+  
+  HandleVolumeChangeForHardware
+End Property
+
+Private Sub HandleVolumeChangeForHardware()
+   Debug.Print VolumePerc 'here, currently only a PrintOut of the [0-1]-percentage
+End Sub

@@ -24,6 +24,8 @@ Option Explicit
 
 'these Public Properties are set in the Parent (here, cfVolume)
 Public cCollOverlayImages As cCollection
+Public sldCurWidth As Double
+
 Public cxPerc As Single
 Public cyPerc As Single
 
@@ -249,50 +251,36 @@ End Sub
 '---------------------------------------------------------------------------------------
 '
 Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As Single, ByVal dx_Aligned As Single, ByVal dy_Aligned As Single, UserObj As Object)
-    Dim I As Long: I = 0
+    Dim i As Long: i = 0
     Dim Arr As Variant
     Dim Key As String: Key = vbNullString
     Dim Pat As cCairoPattern
-    Dim txtDayNumber As String: txtDayNumber = vbNullString
-    Dim txtMonthNumber As String: txtMonthNumber = vbNullString
-    Dim textDrawn As Boolean:   textDrawn = False
-    Dim thisOpacity As Double: thisOpacity = 0
-    
-    Const cream As String = "&HFFF5F5F5"
-   
+       
     On Error GoTo W_Paint_Error
     
-    'set some Font- and ForeColor-Properties and draw some Text on the Widget
-    W.FontName = "arial"
-    W.ForeColor = cream
-    W.FontSize = 18
-    W.FontBold = True
-    W.SelectFontSettingsInto CC
-    W.Refresh
-    thisOpacity = (Val(gblOpacity) / 100) * 0.75
-    
-    txtDayNumber = Day(DateAdd("m", tzDelta, Now))
-    txtMonthNumber = Month(DateAdd("m", tzDelta, Now))
-
-    For I = 0 To cCollOverlayImages.Count - 1 ' this is the ExcludedPaths collection populated in cfVolume by duplicating collPSDNonUIElements.
-      Arr = cCollOverlayImages.ItemByIndex(I)
-      Key = cCollOverlayImages.KeyByIndex(I)
+    For i = 0 To cCollOverlayImages.Count - 1 ' this is the ExcludedPaths collection populated in cfVolume by duplicating collPSDNonUIElements.
+      Arr = cCollOverlayImages.ItemByIndex(i)
+      Key = cCollOverlayImages.KeyByIndex(i)
       
       If IsArray(Arr) Then
              CC.Save
              'derive a Pattern-Obj from each retrieved ImageList-Surface-reference
              Set Pat = Cairo.ImageList(Key).CreateSurfacePattern
             
-            ' for specific keys perform rotation actions, clock hands &c
+            ' for specific keys perform actions &c
              Select Case Key
-    
-                 Case Else 'plain output for everything else ... this includes the reflection-layers,
+                Case "cable"
+                   Set Pat = Cairo.ImageList(Key).CropSurface(10, 0, 140, 27).CreateSurfacePattern 'cut-out a nice (repeatable) part of the original "cable"-image (via CropSurface)
+                   Set Pat.Matrix = Pat.Matrix.TranslateCoords(sldCurWidth, -Arr(1)) 'sldCurWidth in the x-Coord will ensure that nice "spooling-effect"
+                       Pat.Extend = CAIRO_EXTEND_REPEAT
+                   'since we've set CAIRO_EXTEND_REPEAT, we now have to clip the range it is "allowed to extend to"
+                   CC.ClipExplicit Arr(0) + 10 - sldCurWidth, Arr(1), 249 + sldCurWidth, 27
+                Case Else 'plain output for everything else ... this includes the reflection-layers,
                        
                     Set Pat.Matrix = Pat.Matrix.TranslateCoords(-Arr(0), -Arr(1)) 'here we only shift the Pattern via the original PSD-Offsets (stored in Arr(0) and Arr(1))
              End Select
-             CC.Paint Arr(2), Pat 'finally we render the Pattern with the current PSD-LayerAlpha, present in Arr(2)
-             
-             CC.Restore
+            CC.Paint W.AlphaInherited * Arr(2), Pat  'finally we render the Pattern with the current PSD-LayerAlpha, present in Arr(2)
+            CC.Restore
       End If
      Next
 

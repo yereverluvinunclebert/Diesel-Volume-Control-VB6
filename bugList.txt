@@ -5,18 +5,20 @@ help image cut off - done
 help pin added - done
 mute button balloon text - done
 mute button code - done
-about us PNG updated
-
-mute button on startup
+about us PNG updated - done
+mute button on startup - done
+add percentage in text - done
 
 ' -oOo-
 
 sliderset - constrain within current Y axis
 sliderset - constrain within bounds left/right
-add percentage in text
+
 stretch the cable to match the sliderset
 add keypress commands L/R U & D
-add frequent timer to detect change to volume state and set button state automatically
+add frequent timer to detect change to system volume state and set button state automatically
+
+https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6     - XP /ReactOS version using old APIs
 
 ' update html code documentation using MZTools code documenter
 
