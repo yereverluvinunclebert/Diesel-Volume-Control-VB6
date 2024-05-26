@@ -474,12 +474,12 @@ Public Sub adjustMainControls()
 '        .Tag = 0.01
 '    End With
           
-    With fVolume.volumeForm.Widgets("sliderset").Widget
-        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
-        .MousePointer = IDC_HAND
-        .Tag = 0#
-        .Moveable = True
-    End With
+'    With fVolume.volumeForm.Widgets("sliderset").Widget
+'        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+'        .MousePointer = IDC_HAND
+'        .Tag = 0.01
+'        '.Moveable = True
+'    End With
     
     With fVolume.volumeForm.Widgets("bar").Widget
         .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
@@ -544,6 +544,10 @@ Public Sub adjustMainControls()
         fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
     End If
 
+    ' obtain the system volume and set the slider position accordingly
+    fVolume.VolumePerc = fVolume.SystemAudioLevel
+
+    ' refresh the form in order to show the above changes immediately
     fVolume.volumeForm.Refresh
     
     ' set the z-ordering of the window

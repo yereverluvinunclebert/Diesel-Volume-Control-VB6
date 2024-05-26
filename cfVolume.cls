@@ -23,16 +23,23 @@ Private PSDWidth As Long
 Private PSDHeight As Long
 
 Private mMute As Boolean ' property
+Private mSystemAudioLevel As Currency ' property
 
 Private RenderDev As cMMDevice
 Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVoume with events
 Attribute SystemVolume.VB_VarHelpID = -1
 
-Private lblPercent As cwLabel
-Private lblPercentShadow As cwLabel
+'Private lblPercent As cwLabel
+'Private lblPercentShadow As cwLabel
 
-Private WithEvents SliderSet As cWidgetBase, sldFixedTop#, sldXMax#, sldXMin#, sldX#, mVolumePerc As Currency 'Slider-related Private-Vars
+'Slider-related Private-Vars
+Private WithEvents SliderSet As cWidgetBase
 Attribute SliderSet.VB_VarHelpID = -1
+Private sldFixedTop As Double
+Private sldXMax As Double
+Private sldXMin As Double
+Private sldX As Double
+Private mVolumePerc As Currency
 
 
 
@@ -50,6 +57,7 @@ Private Sub Class_Initialize()
     
     'retrieve (and Set) the Default-Renderdevice
     Set RenderDev = New_c.MMDeviceEnumerator.GetDefaultAudioEndpoint(eRender, eMultimedia)
+    
     'retrieve (and Set) a cSimpleAudioVolume instance, to get access to Volume-Handling
     Set SystemVolume = RenderDev.Activate(AudioEndpointVolume)
     
@@ -124,29 +132,7 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
             End If
         Next i
     End With '<-- the Parser-instance will be destroyed here (freeing the Memory, the internal PSD-Layers have occupied)
-    
-    Set lblPercentShadow = volumeForm.Widgets.Add(New_W("cwLabel"), "lblPercentShadow", 252, 92, 100, 50)
-    Set lblPercent = volumeForm.Widgets.Add(New_W("cwLabel"), "lblPercent", 250, 90, 100, 50)
-    
-    lblPercent.Widget.FontSize = 38
-    lblPercent.Caption = "33%"
-    lblPercent.Widget.FontName = "times new roman"
-    lblPercent.borderWidth = 0
-    lblPercent.Widget.FontBold = True
-    lblPercent.Widget.ForeColor = vbWhite
-    lblPercent.Widget.BackColor = -1
-    lblPercent.Widget.ToolTip = "This is the current volume in %."
-    'lblPercent.TextShadowColor = vbBlack '&H80000010
-    
-    lblPercentShadow.Widget.FontSize = 38
-    lblPercentShadow.Caption = "33%"
-    lblPercentShadow.Widget.FontName = "times new roman"
-    lblPercentShadow.borderWidth = 0
-    lblPercentShadow.Widget.FontBold = True
-    lblPercentShadow.Widget.ForeColor = vbBlack ' &H80000010
-    lblPercentShadow.Widget.BackColor = -1
-    lblPercentShadow.Widget.ToolTip = "This is the current volume in %."
-    
+        
     Set overlayWidget = volumeForm.Widgets.Add(New cwOverlay, "Overlay", 0, 0, PSDWidth, PSDHeight)
     Set overlayWidget.cCollOverlayImages = collPSDNonUIElements 'make the excluded PSD-Surface-Paths known to the Overlay-Widget
         overlayWidget.cxPerc = 0.4940476 'define the relative center (within cwOverlay, which has the same size as the Form and the PSD...) this is used for clock-hand-positioning
@@ -154,11 +140,17 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
         
     'the next 5 lines will init a "moving Slider" (which was defined as "sliderset"-layer in the PSD)
     Set SliderSet = volumeForm.Widgets("sliderset").Widget 'store the already (in PSD-Loop created) Widget-reference in an explicit "WithEvents-Variable"
-        SliderSet.Moveable = True 'make it "moveable"
+        
+    With SliderSet
+        .Moveable = True 'make it "moveable"
+        .HoverColor = 0 ' set the hover colour to grey - this may change later with new RC6
+        .MousePointer = IDC_HAND
+        .Tag = 0.01
+    End With
+    
     sldFixedTop = SliderSet.Top   'and store the initial position-data for y-direction (which will not be changed)
     sldXMax = SliderSet.Left      'as well as the x-direction related pos (which is initially at the "100%-Volume, right-endswitch" )
     sldXMin = sldXMax - 300       'the Min-Value is simply the Max-Value minus Slider-Range (the 300pxl-range was determined by "probing")
-         
 
    On Error GoTo 0
    Exit Sub
@@ -242,17 +234,6 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
                 Debug.Print Sender.Widget.Key
         End Select
     End If
-    
-'    If EventName = "W_Click" Then
-'        Select Case LCase$(Sender.Widget.Key)
-''            Case "helpbutton"
-''                 Call helpbutton_click
-''            Case "startbutton"
-''                 Call startbutton_click
-'            Case Else
-'                Debug.Print Sender.Widget.Key
-'        End Select
-'    End If
    
    On Error GoTo 0
    Exit Sub
@@ -261,26 +242,7 @@ volumeForm_BubblingEvent_Error:
 
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_BubblingEvent of Class Module cfVolume"
 End Sub
-'---------------------------------------------------------------------------------------
-' Procedure : helpbutton_click
-' Author    : beededea
-' Date      : 03/08/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-'Private Sub helpbutton_click()
-'   On Error GoTo helpbutton_click_Error
-'
-'   Call helpSplash
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'helpbutton_click_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure helpbutton_click of Class Module cfVolume"
-'
-'End Sub
+
 
 
 
@@ -625,26 +587,8 @@ volumeForm_MouseWheel_Error:
 
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_MouseWheel of Class Module cfVolume"
 End Sub
-''
-''---------------------------------------------------------------------------------------
-'' Procedure : volumeForm_ResizeWithDimensionsDIP
-'' Author    : beededea
-'' Date      : 31/07/2023
-'' Purpose   : put any other resizing action in here - unused
-''---------------------------------------------------------------------------------------
-''
-'Private Sub volumeForm_ResizeWithDimensionsDIP(ByVal dx As Single, ByVal dy As Single)
-'   On Error GoTo volumeForm_ResizeWithDimensionsDIP_Error
-'
-'  'If Not CloseWidget Is Nothing Then CloseWidget.Move dx - 32, 0, 32, 32 'place the close-widget at the top-right of the form
-'
-'   On Error GoTo 0
-'   Exit Sub
-'
-'volumeForm_ResizeWithDimensionsDIP_Error:
-'
-'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure volumeForm_ResizeWithDimensionsDIP of Class Module cfVolume"
-'End Sub
+
+
 
 '---------------------------------------------------------------------------------------
 ' Procedure : AdjustZoom
@@ -707,10 +651,10 @@ End Sub
 ' ----------------------------------------------------------------
 Private Sub SliderSet_Moving() 'this is an explcit Event-Handler on the single Widget-instance (derived in the routine above)
     On Error GoTo SliderSet_Moving_Error
-  sldX = SliderSet.Left
-  If sldX < sldXMin Then sldX = sldXMin Else If sldX > sldXMax Then sldX = sldXMax 'keep sldX "in range"
- 
-  VolumePerc = (sldX - sldXMin) / (sldXMax - sldXMin) 'assign the new Value to the Public Prop, to trigger all the necessary refreshs
+     sldX = SliderSet.Left
+     If sldX < sldXMin Then sldX = sldXMin Else If sldX > sldXMax Then sldX = sldXMax 'keep sldX "in range"
+    
+     VolumePerc = (sldX - sldXMin) / (sldXMax - sldXMin) 'assign the new Value to the Public Prop, to trigger all the necessary refreshs
     
     On Error GoTo 0
     Exit Sub
@@ -720,9 +664,75 @@ SliderSet_Moving_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure SliderSet_Moving, line " & Erl & "."
 
 End Sub
+'---------------------------------------------------------------------------------------
+' Property  : SystemAudioLevel
+' Author    : beededea
+' Date      : 17/05/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Public Property Let SystemAudioLevel(ByVal newValue As Currency)
+   On Error GoTo SystemAudioLevelLet_Error
 
+   If mSystemAudioLevel <> newValue Then mSystemAudioLevel = newValue Else Exit Property
+
+   On Error GoTo 0
+   Exit Property
+
+SystemAudioLevelLet_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property SystemAudioLevel of Class Module cwGlobe"
+End Property
+
+' ----------------------------------------------------------------
+' Procedure Name: SystemAudioLevel
+' Purpose:
+' Procedure Kind: Property (Get)
+' Procedure Access: Public
+' Return Type: Currency
+' Author: beededea
+' Date: 26/05/2024
+' ----------------------------------------------------------------
+Public Property Get SystemAudioLevel() As Currency
+    
+    On Error GoTo SystemAudioLevel_Error
+    
+    mSystemAudioLevel = SystemVolume.GetMasterVolume
+    SystemAudioLevel = mSystemAudioLevel
+    
+    On Error GoTo 0
+    Exit Property
+
+SystemAudioLevel_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure SystemAudioLevel, line " & Erl & "."
+
+End Property
+
+
+
+' ----------------------------------------------------------------
+' Procedure Name: VolumePerc
+' Purpose:
+' Procedure Kind: Property (Get)
+' Procedure Access: Public
+' Return Type: Currency
+' Author: beededea
+' Date: 26/05/2024
+' ----------------------------------------------------------------
 Public Property Get VolumePerc() As Currency
-  VolumePerc = mVolumePerc
+    
+    On Error GoTo VolumePerc_Error
+    
+    VolumePerc = mVolumePerc
+    
+    On Error GoTo 0
+    Exit Property
+
+VolumePerc_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure VolumePerc, line " & Erl & "."
+
 End Property
 
 ' ----------------------------------------------------------------
@@ -743,11 +753,13 @@ Public Property Let VolumePerc(ByVal RHS As Currency)
     SliderSet.Move sldX, sldFixedTop 'move the SliderSet-widget accordingly
     If mVolumePerc <> RHS Then mVolumePerc = RHS Else Exit Property  'only refresh, when there was a change to the previous value
     
-    volumeForm.Widgets("pipes").Widget.ToolTip = "Volume: " & Format$(VolumePerc, "0%")
+'    lblPercent.Caption = Int(mVolumePerc * 100) & "%"
+'    lblPercentShadow.Caption = Int(mVolumePerc * 100) & "%"
+    
     If Not Cairo.ToolTipForm Is Nothing Then Cairo.ToolTipForm.Visible = False
     volumeForm.Refresh
     
-    HandleVolumeChangeForHardware
+    Call HandleVolumeChangeForHardware
     
     On Error GoTo 0
     Exit Property
@@ -758,6 +770,9 @@ VolumePerc_Error:
 
 End Property
 
+
 Private Sub HandleVolumeChangeForHardware()
-   Debug.Print VolumePerc 'here, currently only a PrintOut of the [0-1]-percentage
+
+   SystemVolume.SetMasterVolume VolumePerc
+
 End Sub

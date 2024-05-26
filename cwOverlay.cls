@@ -31,8 +31,7 @@ Public cyPerc As Single
 
 Private WithEvents W As cWidgetBase
 Attribute W.VB_VarHelpID = -1
-Private WithEvents tmrClock As cTimer
-Attribute tmrClock.VB_VarHelpID = -1
+'Private WithEvents tmrClock As cTimer
 
 Private mTicking As Boolean ' property Ticking
 Private mLocked As Boolean ' property Locked
@@ -99,9 +98,6 @@ Widgets_Error:
 
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Widgets of Class Module cwOverlay"
 End Property
-
-
-
 
 '---------------------------------------------------------------------------------------
 ' Property : Locked
@@ -224,8 +220,29 @@ Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As
     Dim Arr As Variant
     Dim Key As String: Key = vbNullString
     Dim Pat As cCairoPattern
+    Dim someOpacity As Double: someOpacity = 0
+    Dim cream As String: cream = vbNullString
+    Dim thisVolumeLevel As Integer: thisVolumeLevel = 0
        
     On Error GoTo W_Paint_Error
+    
+    cream = RGB(235, 217, 179) ' cannot create a constant from an RGB value
+    
+    'set some Font- and ForeColor-Properties and draw some Text on the Widget
+    With W
+        .FontSize = 38
+        .FontName = "times new roman"
+        .FontBold = True
+        .ForeColor = vbBlack
+        .BackColor = -1
+        .Tag = 0.01
+        .HoverColor = 0
+        .SelectFontSettingsInto CC
+        .Refresh
+    End With
+
+    someOpacity = (Val(gblOpacity) / 100) * 0.75
+    thisVolumeLevel = Int(fVolume.SystemAudioLevel * 100)
     
     For i = 0 To cCollOverlayImages.Count - 1 ' this is the ExcludedPaths collection populated in cfVolume by duplicating collPSDNonUIElements.
       Arr = cCollOverlayImages.ItemByIndex(i)
@@ -239,14 +256,30 @@ Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As
             ' for specific keys perform actions &c
              Select Case Key
                 Case "cable"
-                   Set Pat = Cairo.ImageList(Key).CropSurface(10, 0, 140, 27).CreateSurfacePattern 'cut-out a nice (repeatable) part of the original "cable"-image (via CropSurface)
-                   Set Pat.Matrix = Pat.Matrix.TranslateCoords(sldCurWidth, -Arr(1)) 'sldCurWidth in the x-Coord will ensure that nice "spooling-effect"
-                       Pat.Extend = CAIRO_EXTEND_REPEAT
-                   'since we've set CAIRO_EXTEND_REPEAT, we now have to clip the range it is "allowed to extend to"
-                   CC.ClipExplicit Arr(0) + 10 - sldCurWidth, Arr(1), 249 + sldCurWidth, 27
+                    Set Pat = Cairo.ImageList(Key).CropSurface(10, 0, 140, 27).CreateSurfacePattern 'cut-out a nice (repeatable) part of the original "cable"-image (via CropSurface)
+                   
+                    ' volume level text shadow
+                    CC.DrawText 253, 18, 200, 200, thisVolumeLevel & "%", , , 2, True, , someOpacity
+
+                    With W
+                        .ForeColor = cream
+                        .SelectFontSettingsInto CC
+                        .Refresh
+                    End With
+                    
+                    ' volume level text
+                    CC.DrawText 250, 15, 200, 200, thisVolumeLevel & "%", , , 2, True, , someOpacity
+
+                    Set Pat.Matrix = Pat.Matrix.TranslateCoords(sldCurWidth, -Arr(1)) 'sldCurWidth in the x-Coord will ensure that nice "spooling-effect"
+                        Pat.Extend = CAIRO_EXTEND_REPEAT
+                    
+                    'since we've set CAIRO_EXTEND_REPEAT, we now have to clip the range it is "allowed to extend to"
+                    CC.ClipExplicit Arr(0) + 10 - sldCurWidth, Arr(1), 249 + sldCurWidth, 27
+                   
                 Case Else 'plain output for everything else ... this includes the reflection-layers,
                        
                     Set Pat.Matrix = Pat.Matrix.TranslateCoords(-Arr(0), -Arr(1)) 'here we only shift the Pattern via the original PSD-Offsets (stored in Arr(0) and Arr(1))
+                    
              End Select
             CC.Paint W.AlphaInherited * Arr(2), Pat  'finally we render the Pattern with the current PSD-LayerAlpha, present in Arr(2)
             CC.Restore
