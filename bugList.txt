@@ -7,14 +7,16 @@ mute button balloon text - done
 mute button code - done
 about us PNG updated
 
+mute button on startup
+
 ' -oOo-
 
-mute button on startup
 sliderset - constrain within current Y axis
 sliderset - constrain within bounds left/right
-add percentage in text 
+add percentage in text
 stretch the cable to match the sliderset
 add keypress commands L/R U & D
+add frequent timer to detect change to volume state and set button state automatically
 
 ' update html code documentation using MZTools code documenter
 
