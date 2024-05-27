@@ -11,12 +11,13 @@ add percentage in text - done
 sliderset - constrain within current Y axis - done
 sliderset - constrain within bounds left/right - done
 stretch the cable to match the sliderset - done
+slider in relation to external sound changes - done
+add frequent timer to detect change to system volume state and set button state automatically - done
 
 ' -oOo-
 
-slider in relation to external sound changes
 add keypress commands L/R U & D
-add frequent timer to detect change to system volume state and set button state automatically
+
 create HTML documentation
 create CHM documentation
 

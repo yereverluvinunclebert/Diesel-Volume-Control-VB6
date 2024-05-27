@@ -1981,7 +1981,13 @@ Public Sub getKeyPress(ByVal KeyCode As Integer, ByVal Shift As Integer)
             CTRL_1 = True
         Case vbKeyShift
             SHIFT_1 = True
-        Case 82 ' R
+        Case 37, 40 ' Left cursor key
+            ' move the slider left
+            fVolume.VolumePerc = fVolume.VolumePerc - 0.05
+        Case 39, 38 ' Right cursor key
+            ' move the slider right
+            fVolume.VolumePerc = fVolume.VolumePerc + 0.05
+        Case 82 ' Shift+R for a hard Restart
             If Shift = 1 Then Call hardRestart
         Case 116
             Call reloadWidget 'f5 refresh button as per all browsers
