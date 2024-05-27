@@ -22,7 +22,7 @@ Public collPSDNonUIElements As cCollection, FX As Long, FY As Long, FZ As Single
 Private PSDWidth As Long
 Private PSDHeight As Long
 
-Private mMute As Boolean ' property
+Private mMute As Integer ' property
 Private mSystemAudioLevel As Currency ' property
 
 Private RenderDev As cMMDevice
@@ -41,7 +41,10 @@ Private sldXMin As Double
 Private sldX As Double
 Private mVolumePerc As Currency
 
-
+Private WithEvents tmrSampleAudioVolume As cTimer
+Attribute tmrSampleAudioVolume.VB_VarHelpID = -1
+Private WithEvents tmrSampleAudioMute As cTimer
+Attribute tmrSampleAudioMute.VB_VarHelpID = -1
 
 '---------------------------------------------------------------------------------------
 ' Procedure : Class_Initialize
@@ -61,6 +64,11 @@ Private Sub Class_Initialize()
     'retrieve (and Set) a cSimpleAudioVolume instance, to get access to Volume-Handling
     Set SystemVolume = RenderDev.Activate(AudioEndpointVolume)
     
+    Set tmrSampleAudioVolume = Nothing
+    Set tmrSampleAudioVolume = New_c.Timer(1000, True) ' interval is one second.
+    
+    Set tmrSampleAudioMute = Nothing
+    Set tmrSampleAudioMute = New_c.Timer(1000, True) ' interval is one second.
 
    On Error GoTo 0
    Exit Sub
@@ -85,7 +93,7 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
     Const AlphaWithTaskbarEntry As Integer = 6
     Const AlphaNoTaskbarEntry As Integer = 7
   
-    Dim i As Long: i = 0
+    Dim I As Long: I = 0
     Dim W As cWidgetBase
    
     On Error GoTo InitFromPSD_Error
@@ -98,19 +106,19 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
         PSDWidth = .Width
         PSDHeight = .Height       'store the original Psd-Pixel-Width/Height in Private vars (as the base from which we calculate the zoomed Form-Width/Height)
     
-        For i = 0 To .LayersCount - 1 ' loop through each of the Layers in the PSD
-            If .LayerByteSize(i) Then  ' this is a true Alpha-Surface-Layer and not just a PSD layer 'group'
-                If .LayerAlphaPercent(i) > 0 Then ' only handles layers that have an opacity greater than 0 - need to note this for the future, this will cause a problem!
+        For I = 0 To .LayersCount - 1 ' loop through each of the Layers in the PSD
+            If .LayerByteSize(I) Then  ' this is a true Alpha-Surface-Layer and not just a PSD layer 'group'
+                If .LayerAlphaPercent(I) > 0 Then ' only handles layers that have an opacity greater than 0 - need to note this for the future, this will cause a problem!
                     'add each current Layer path and surface object into the global ImageList collection (using LayerPath as the ImageKey)
-                    Cairo.ImageList.AddSurface .LayerPath(i), .LayerSurface(i)
+                    Cairo.ImageList.AddSurface .LayerPath(I), .LayerSurface(I)
                     
-                    If collPSDNonUIElements.Exists(.LayerPath(i)) Then ' we do not create Widgets for those in this exclude list.
+                    If collPSDNonUIElements.Exists(.LayerPath(I)) Then ' we do not create Widgets for those in this exclude list.
                         
                         'we add layer info. (used in cwOverlay) to the "excluded paths" previously defined in Sub Main,
-                        collPSDNonUIElements(.LayerPath(i)) = Array(.LayerX(i), .LayerY(i), Val(gblOpacity) / 100)  'here we update the so far empty slots with the PSD-offsets
+                        collPSDNonUIElements(.LayerPath(I)) = Array(.LayerX(I), .LayerY(I), Val(gblOpacity) / 100)  'here we update the so far empty slots with the PSD-offsets
                 
                     Else 'everything not in the exclude-list will get its own Widget-instance
-                        Set W = volumeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(i)), .LayerX(i), .LayerY(i), .LayerWidth(i), .LayerHeight(i)).Widget
+                        Set W = volumeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
                         'Set W = volumeForm.Widgets.Add(New_W("cwAlphaImg"), LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
                             W.ImageKey = W.Key 'W.Key equals ImageList-Key, set above - and LayerPath(i) at this point ... set it also as the ImageKey of our new created Widget
                         If gblOpacity < 1 Then
@@ -130,7 +138,7 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
                     End If
                 End If
             End If
-        Next i
+        Next I
     End With '<-- the Parser-instance will be destroyed here (freeing the Memory, the internal PSD-Layers have occupied)
         
     Set overlayWidget = volumeForm.Widgets.Add(New cwOverlay, "Overlay", 0, 0, PSDWidth, PSDHeight)
@@ -181,6 +189,9 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
     
     If EventName = "W_MouseMove" Then
         Select Case LCase$(Sender.Widget.Key)
+            Case "helppin"
+                If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "This button opens the one-page help file for this widget. There is a further detailed CHM help file available from the right-click menu that contains all the information that you need to run this widget.", _
+                     TTIconInfo, widgetName & " Help Pin Help", , , , True
             Case "lockingpin"
                 If gblEnableBalloonTooltips = "1" Then CreateToolTip volumeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
                      TTIconInfo, widgetName & " Locking pin Help", , , , True
@@ -378,55 +389,7 @@ bell_mouseUp_Error:
 End Sub
 
 
-'---------------------------------------------------------------------------------------
-' Property  : Mute
-' Author    : beededea
-' Date      : 17/05/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Public Property Get Mute() As Boolean
-   On Error GoTo MuteGet_Error
 
-   Mute = mMute
-
-   On Error GoTo 0
-   Exit Property
-
-MuteGet_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
-End Property
-'---------------------------------------------------------------------------------------
-' Property  : Mute
-' Author    : beededea
-' Date      : 10/05/2023
-' Purpose   :
-'---------------------------------------------------------------------------------------
-'
-Public Property Let Mute(ByVal newValue As Boolean)
-   On Error GoTo MuteLet_Error
-
-    If mMute <> newValue Then mMute = newValue Else Exit Property
-    
-    SystemVolume.SetMute Abs(CInt(mMute))
-    
-    If mMute = True Then
-        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
-        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
-    Else
-        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
-        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
-    End If
-    fVolume.volumeForm.Refresh
-
-   On Error GoTo 0
-   Exit Property
-
-MuteLet_Error:
-
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
-End Property
 
 
 '---------------------------------------------------------------------------------------
@@ -699,6 +662,7 @@ Public Property Get SystemAudioLevel() As Currency
     
     mSystemAudioLevel = SystemVolume.GetMasterVolume
     SystemAudioLevel = mSystemAudioLevel
+
     
     On Error GoTo 0
     Exit Property
@@ -709,6 +673,56 @@ SystemAudioLevel_Error:
 
 End Property
 
+'---------------------------------------------------------------------------------------
+' Property  : Mute
+' Author    : beededea
+' Date      : 10/05/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Public Property Let Mute(ByVal newValue As Integer)
+   On Error GoTo MuteLet_Error
+   
+    If mMute <> newValue Then mMute = newValue Else Exit Property
+   
+   On Error GoTo 0
+   Exit Property
+
+MuteLet_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
+End Property
+
+'---------------------------------------------------------------------------------------
+' Property  : Mute
+' Author    : beededea
+' Date      : 17/05/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Public Property Get Mute() As Integer
+   On Error GoTo MuteGet_Error
+
+    Mute = mMute
+   
+    SystemVolume.SetMute mMute
+    
+    If mMute = 1 Then
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
+    Else
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
+    End If
+    fVolume.volumeForm.Refresh
+
+   On Error GoTo 0
+   Exit Property
+
+MuteGet_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
+End Property
 
 
 ' ----------------------------------------------------------------
@@ -753,9 +767,6 @@ Public Property Let VolumePerc(ByVal RHS As Currency)
     SliderSet.Move sldX, sldFixedTop 'move the SliderSet-widget accordingly
     If mVolumePerc <> RHS Then mVolumePerc = RHS Else Exit Property  'only refresh, when there was a change to the previous value
     
-'    lblPercent.Caption = Int(mVolumePerc * 100) & "%"
-'    lblPercentShadow.Caption = Int(mVolumePerc * 100) & "%"
-    
     If Not Cairo.ToolTipForm Is Nothing Then Cairo.ToolTipForm.Visible = False
     volumeForm.Refresh
     
@@ -771,8 +782,89 @@ VolumePerc_Error:
 End Property
 
 
+' ----------------------------------------------------------------
+' Procedure Name: HandleVolumeChangeForHardware
+' Purpose:
+' Procedure Kind: Sub
+' Procedure Access: Private
+' Author: beededea
+' Date: 27/05/2024
+' ----------------------------------------------------------------
 Private Sub HandleVolumeChangeForHardware()
 
-   SystemVolume.SetMasterVolume VolumePerc
+    On Error GoTo HandleVolumeChangeForHardware_Error
+   
+    SystemVolume.SetMasterVolume VolumePerc
+    
+    On Error GoTo 0
+    Exit Sub
 
+HandleVolumeChangeForHardware_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure HandleVolumeChangeForHardware, line " & Erl & "."
+
+End Sub
+
+
+    
+'---------------------------------------------------------------------------------------
+' Procedure : tmrSampleAudioVolume_Timer
+' Author    :
+' Date      : 30/07/2023
+' Purpose   : regular check to reflect changes to system volume
+'---------------------------------------------------------------------------------------
+'
+Private Sub tmrSampleAudioVolume_Timer()
+
+    On Error GoTo tmrSampleAudioVolume_Timer_Error
+    
+    If mSystemAudioLevel = SystemVolume.GetMasterVolume Then Exit Sub
+    
+    mSystemAudioLevel = SystemVolume.GetMasterVolume
+    
+    sldX = mSystemAudioLevel * (sldXMax - sldXMin) + sldXMin
+    overlayWidget.sldCurWidth = sldXMax - sldX 'inform the Overlay about the new current "Cable-Width"
+    SliderSet.Move sldX, sldFixedTop 'move the SliderSet-widget accordingly
+    
+    fVolume.volumeForm.Refresh
+
+   On Error GoTo 0
+   Exit Sub
+
+tmrSampleAudioVolume_Timer_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrSampleAudioVolume_Timer of Class Module cwOverlayTemp"
+End Sub
+
+    
+'---------------------------------------------------------------------------------------
+' Procedure : tmrSampleAudioMute_Timer
+' Author    :
+' Date      : 30/07/2023
+' Purpose   : regular check to reflect changes to system volume
+'---------------------------------------------------------------------------------------
+'
+Private Sub tmrSampleAudioMute_Timer()
+
+    On Error GoTo tmrSampleAudioMute_Timer_Error
+    
+    If mMute = SystemVolume.GetMute Then Exit Sub
+    
+    mMute = SystemVolume.GetMute
+    If mMute = 1 Then
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
+    Else
+        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
+        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
+    End If
+
+    fVolume.volumeForm.Refresh
+
+   On Error GoTo 0
+   Exit Sub
+
+tmrSampleAudioMute_Timer_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrSampleAudioMute_Timer of Class Module cwOverlayTemp"
 End Sub

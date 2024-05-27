@@ -8,15 +8,17 @@ mute button code - done
 about us PNG updated - done
 mute button on startup - done
 add percentage in text - done
+sliderset - constrain within current Y axis - done
+sliderset - constrain within bounds left/right - done
+stretch the cable to match the sliderset - done
 
 ' -oOo-
 
-sliderset - constrain within current Y axis
-sliderset - constrain within bounds left/right
-
-stretch the cable to match the sliderset
+slider in relation to external sound changes
 add keypress commands L/R U & D
 add frequent timer to detect change to system volume state and set button state automatically
+create HTML documentation
+create CHM documentation
 
 https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6     - XP /ReactOS version using old APIs
 

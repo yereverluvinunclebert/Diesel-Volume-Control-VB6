@@ -31,7 +31,6 @@ Public cyPerc As Single
 
 Private WithEvents W As cWidgetBase
 Attribute W.VB_VarHelpID = -1
-'Private WithEvents tmrClock As cTimer
 
 Private mTicking As Boolean ' property Ticking
 Private mLocked As Boolean ' property Locked
@@ -212,11 +211,11 @@ End Sub
 ' Procedure : W_Paint
 ' Author    : olaf schmidt
 ' Date      : 01/08/2023
-' Purpose   :
+' Purpose   : this is run when the graphics are initially placed on the screen, refreshing and when a mouse cursor is interacting
 '---------------------------------------------------------------------------------------
 '
 Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As Single, ByVal dx_Aligned As Single, ByVal dy_Aligned As Single, UserObj As Object)
-    Dim i As Long: i = 0
+    Dim I As Long: I = 0
     Dim Arr As Variant
     Dim Key As String: Key = vbNullString
     Dim Pat As cCairoPattern
@@ -244,9 +243,9 @@ Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As
     someOpacity = (Val(gblOpacity) / 100) * 0.75
     thisVolumeLevel = Int(fVolume.SystemAudioLevel * 100)
     
-    For i = 0 To cCollOverlayImages.Count - 1 ' this is the ExcludedPaths collection populated in cfVolume by duplicating collPSDNonUIElements.
-      Arr = cCollOverlayImages.ItemByIndex(i)
-      Key = cCollOverlayImages.KeyByIndex(i)
+    For I = 0 To cCollOverlayImages.Count - 1 ' this is the ExcludedPaths collection populated in cfVolume by duplicating collPSDNonUIElements.
+      Arr = cCollOverlayImages.ItemByIndex(I)
+      Key = cCollOverlayImages.KeyByIndex(I)
       
       If IsArray(Arr) Then
              CC.Save
