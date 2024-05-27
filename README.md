@@ -1,6 +1,6 @@
 # Diesel-Volume-Control-VB6
  
-  A FOSS Clock VB6 WoW64 Widget for Reactos, XP, Win7, 8 and 10/11+.
+  A FOSS Desktop Utility VB6 WoW64 Widget for Reactos, XP, Win7, 8 and 10/11+.
  
  My current VB6/RC6 PSD program being worked upon now, in progress, you can download as it is complete and operating - except for documentation.
  This is based upon the Yahoo widget of the same design.
