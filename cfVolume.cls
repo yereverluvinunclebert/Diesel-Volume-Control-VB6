@@ -41,9 +41,9 @@ Private sldXMin As Double
 Private sldX As Double
 Private mVolumePerc As Currency
 
-Private WithEvents tmrSampleAudioVolume As cTimer
+Public WithEvents tmrSampleAudioVolume As cTimer
 Attribute tmrSampleAudioVolume.VB_VarHelpID = -1
-Private WithEvents tmrSampleAudioMute As cTimer
+Public WithEvents tmrSampleAudioMute As cTimer
 Attribute tmrSampleAudioMute.VB_VarHelpID = -1
 
 '---------------------------------------------------------------------------------------
@@ -230,6 +230,7 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
                 Call bell_mouseDown(Sender)
             Case "sliderset"
                 overlayWidget.Locked = True
+                fVolume.tmrSampleAudioVolume.Enabled = False
             Case Else
                 Debug.Print Sender.Widget.Key
         End Select
@@ -241,6 +242,7 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
                 Call bell_mouseUp(Sender)
             Case "sliderset"
                 overlayWidget.Locked = False
+                fVolume.tmrSampleAudioVolume.Enabled = True
             Case Else
                 Debug.Print Sender.Widget.Key
         End Select
@@ -340,13 +342,15 @@ Private Sub bell_mouseDown(ByRef Sender As Object)
    On Error GoTo bell_mouseDown_Error
    
     Dim fileToPlay As String: fileToPlay = vbNullString
-
+    
+    tmrSampleAudioMute.Enabled = False
+    
     fileToPlay = "buzzer.wav"
 
-    If Mute = True Then
-        Mute = False
+    If Mute = 1 Then
+        Mute = 0
     Else
-        Mute = True
+        Mute = 1
     End If
     
     If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
@@ -355,6 +359,8 @@ Private Sub bell_mouseDown(ByRef Sender As Object)
     
     Sender.Widget.Alpha = 0
     Sender.Widget.Refresh ' this removes the delay in the bell depressing
+    
+    tmrSampleAudioMute.Enabled = True
     
    On Error GoTo 0
    Exit Sub
@@ -684,6 +690,12 @@ Public Property Let Mute(ByVal newValue As Integer)
    On Error GoTo MuteLet_Error
    
     If mMute <> newValue Then mMute = newValue Else Exit Property
+    
+    Mute = mMute
+   
+    SystemVolume.SetMute mMute
+    
+    Call setLamps
    
    On Error GoTo 0
    Exit Property
@@ -704,17 +716,10 @@ Public Property Get Mute() As Integer
    On Error GoTo MuteGet_Error
 
     Mute = mMute
-   
+    
     SystemVolume.SetMute mMute
     
-    If mMute = 1 Then
-        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
-        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
-    Else
-        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
-        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
-    End If
-    fVolume.volumeForm.Refresh
+    Call setLamps
 
    On Error GoTo 0
    Exit Property
@@ -814,7 +819,7 @@ End Sub
 ' Purpose   : regular check to reflect changes to system volume
 '---------------------------------------------------------------------------------------
 '
-Private Sub tmrSampleAudioVolume_Timer()
+Public Sub tmrSampleAudioVolume_Timer()
 
     On Error GoTo tmrSampleAudioVolume_Timer_Error
     
@@ -844,13 +849,36 @@ End Sub
 ' Purpose   : regular check to reflect changes to system volume
 '---------------------------------------------------------------------------------------
 '
-Private Sub tmrSampleAudioMute_Timer()
+Public Sub tmrSampleAudioMute_Timer()
 
     On Error GoTo tmrSampleAudioMute_Timer_Error
     
     If mMute = SystemVolume.GetMute Then Exit Sub
     
     mMute = SystemVolume.GetMute
+    
+    Call setLamps
+    
+   On Error GoTo 0
+   Exit Sub
+
+tmrSampleAudioMute_Timer_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrSampleAudioMute_Timer of Class Module cwOverlayTemp"
+End Sub
+
+
+' ----------------------------------------------------------------
+' Procedure Name: setLamps
+' Purpose:
+' Procedure Kind: Sub
+' Procedure Access: Private
+' Author: beededea
+' Date: 28/05/2024
+' ----------------------------------------------------------------
+Private Sub setLamps()
+    
+    On Error GoTo setLamps_Error
     If mMute = 1 Then
         fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
         fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
@@ -860,11 +888,12 @@ Private Sub tmrSampleAudioMute_Timer()
     End If
 
     fVolume.volumeForm.Refresh
+    
+    On Error GoTo 0
+    Exit Sub
 
-   On Error GoTo 0
-   Exit Sub
+setLamps_Error:
 
-tmrSampleAudioMute_Timer_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure setLamps, line " & Erl & "."
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrSampleAudioMute_Timer of Class Module cwOverlayTemp"
 End Sub
