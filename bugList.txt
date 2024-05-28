@@ -16,6 +16,8 @@ add frequent timer to detect change to system volume state and set button state 
 add keypress commands L/R U & D - done
 create HTML documentation - done
 create CHM documentation - done
+width of the help in low dpi mode - done
+removal of prefs positioning to top, bottom &c - done
 
 ' -oOo-
 

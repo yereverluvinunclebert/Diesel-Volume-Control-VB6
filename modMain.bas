@@ -758,7 +758,7 @@ Public Sub validateInputs()
                 
         ' development
         If gblDebug = vbNullString Then gblDebug = "0"
-        If gblDblClickCommand = vbNullString Then gblDblClickCommand = "%systemroot%\system32\timedate.cpl"
+        If gblDblClickCommand = vbNullString Then gblDblClickCommand = "mmsys.cpl"
         If gblOpenFile = vbNullString Then gblOpenFile = vbNullString
         If gblDefaultEditor = vbNullString Then gblDefaultEditor = vbNullString
         

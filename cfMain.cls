@@ -131,7 +131,7 @@ Public Sub initAndShowHelpForm(ByVal x As Long, ByVal y As Long, Optional ByVal 
     On Error GoTo initAndShowHelpForm_Error
     
     If gblDpiAwareness = "0" Then
-        helpFormWidth = 900
+        helpFormWidth = 1000
         helpFormHeight = 800
         If helpFormWidth > screenWidthPixels Then helpFormWidth = screenWidthPixels
         If helpFormHeight > screenHeightPixels Then helpFormHeight = screenHeightPixels
