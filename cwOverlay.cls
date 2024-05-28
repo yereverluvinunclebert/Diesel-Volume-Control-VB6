@@ -257,18 +257,21 @@ Private Sub W_Paint(CC As RC6.cCairoContext, ByVal xAbs As Single, ByVal yAbs As
                 Case "cable"
                     Set Pat = Cairo.ImageList(Key).CropSurface(10, 0, 140, 27).CreateSurfacePattern 'cut-out a nice (repeatable) part of the original "cable"-image (via CropSurface)
                    
-                    ' volume level text shadow
-                    CC.DrawText 253, 18, 200, 200, thisVolumeLevel & "%", , , 2, True, , someOpacity
-
-                    With W
-                        .ForeColor = cream
-                        .SelectFontSettingsInto CC
-                        .Refresh
-                    End With
+                    If gblNumericDisplay = "1" Then
                     
-                    ' volume level text
-                    CC.DrawText 250, 15, 200, 200, thisVolumeLevel & "%", , , 2, True, , someOpacity
-
+                        ' volume level text shadow
+                        CC.DrawText 253, 18, 200, 200, thisVolumeLevel & "%", , , 2, True, , someOpacity
+    
+                        With W
+                            .ForeColor = cream
+                            .SelectFontSettingsInto CC
+                            .Refresh
+                        End With
+                        
+                        ' volume level text
+                        CC.DrawText 250, 15, 200, 200, thisVolumeLevel & "%", , , 2, True, , someOpacity
+                    End If
+                    
                     Set Pat.Matrix = Pat.Matrix.TranslateCoords(sldCurWidth, -Arr(1)) 'sldCurWidth in the x-Coord will ensure that nice "spooling-effect"
                         Pat.Extend = CAIRO_EXTEND_REPEAT
                     

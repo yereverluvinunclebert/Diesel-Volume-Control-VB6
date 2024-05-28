@@ -224,6 +224,8 @@ Private Sub initialiseGlobalVars()
     ' general
     gblStartup = vbNullString
     gblWidgetFunctions = vbNullString
+    gblNumericDisplay = vbNullString
+    
     gblSmoothSecondHand = vbNullString
 
     ' config
@@ -612,6 +614,8 @@ Public Sub readSettingsFile(ByVal location As String, ByVal gblSettingsFile As S
         ' general
         gblStartup = fGetINISetting(location, "startup", gblSettingsFile)
         gblWidgetFunctions = fGetINISetting(location, "widgetFunctions", gblSettingsFile)
+        gblNumericDisplay = fGetINISetting(location, "numericDisplay", gblSettingsFile)
+        
         gblSmoothSecondHand = fGetINISetting(location, "smoothSecondHand", gblSettingsFile)
         
 
@@ -711,6 +715,8 @@ Public Sub validateInputs()
         If gblWidgetFunctions = vbNullString Then gblWidgetFunctions = "1" ' always turn
 '        If gblAnimationInterval = vbNullString Then gblAnimationInterval = "130"
         If gblStartup = vbNullString Then gblStartup = "1"
+        If gblNumericDisplay = vbNullString Then gblNumericDisplay = "1"
+        
         If gblSmoothSecondHand = vbNullString Then gblSmoothSecondHand = "0"
         
         'If gblClockFaceSwitchPref = vbNullString Then gblClockFaceSwitchPref = "0"
