@@ -14,16 +14,15 @@ stretch the cable to match the sliderset - done
 slider in relation to external sound changes - done
 add frequent timer to detect change to system volume state and set button state automatically - done
 add keypress commands L/R U & D - done
+create HTML documentation - done
+create CHM documentation - done
 
 ' -oOo-
 
-create HTML documentation
-create CHM documentation
+' update html code documentation using MZTools code documenter
 
 Create a XP /ReactOS version using old APIs
 https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6
-
-' update html code documentation using MZTools code documenter
 
 ' add second monitor - wip find cable!
 ' sync. E6410 win 7
