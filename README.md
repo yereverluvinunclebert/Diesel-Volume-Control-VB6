@@ -2,7 +2,7 @@
  
   A FOSS Desktop Utility VB6 WoW64 Widget for Windows Vista, Win7, 8 and 10/11+. 
 
- My current VB6/RC6 PSD program being worked upon now, in progress, you can download as it is complete and operating - except for testing on multi monitor systems.
+ My current VB6/RC6 PSD program being worked upon now, in progress, you can download as it is complete and operating - except for testing and changes for multi monitor systems.
  This is based upon the Yahoo widget of the same design.
 
  Why VB6? Well, with a 64 bit, modern-language improvement upgrade on the way with 100% compatible TwinBasic coupled with support for transparent PNGs via RC/Cairo, VB6 code has an amazing future.
