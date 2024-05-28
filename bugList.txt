@@ -13,15 +13,15 @@ sliderset - constrain within bounds left/right - done
 stretch the cable to match the sliderset - done
 slider in relation to external sound changes - done
 add frequent timer to detect change to system volume state and set button state automatically - done
+add keypress commands L/R U & D - done
 
 ' -oOo-
-
-add keypress commands L/R U & D
 
 create HTML documentation
 create CHM documentation
 
-https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6     - XP /ReactOS version using old APIs
+Create a XP /ReactOS version using old APIs
+https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6
 
 ' update html code documentation using MZTools code documenter
 

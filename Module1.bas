@@ -1981,10 +1981,10 @@ Public Sub getKeyPress(ByVal KeyCode As Integer, ByVal Shift As Integer)
             CTRL_1 = True
         Case vbKeyShift
             SHIFT_1 = True
-        Case 37, 40 ' Left cursor key
+        Case 37, 40 ' Left and down cursor key
             ' move the slider left
             fVolume.VolumePerc = fVolume.VolumePerc - 0.05
-        Case 39, 38 ' Right cursor key
+        Case 39, 38 ' Right and Up cursor key
             ' move the slider right
             fVolume.VolumePerc = fVolume.VolumePerc + 0.05
         Case 82 ' Shift+R for a hard Restart
