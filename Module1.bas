@@ -2161,10 +2161,10 @@ Public Sub unloadAllForms(ByVal endItAll As Boolean)
     
     ' unload the native VB6 and RC6 forms
     
+    Unload frmMessage
     Unload widgetPrefs
     Unload frmTimer
     Unload menuForm
-    Unload frmTimer
 
     fMain.aboutForm.Unload  ' RC6's own method for killing forms
     fMain.helpForm.Unload
@@ -2181,7 +2181,7 @@ Public Sub unloadAllForms(ByVal endItAll As Boolean)
     Set widgetPrefs = Nothing
     Set frmTimer = Nothing
     Set menuForm = Nothing
-    Set frmTimer = Nothing
+    Set frmMessage = Nothing
     
     If endItAll = True Then End
 
