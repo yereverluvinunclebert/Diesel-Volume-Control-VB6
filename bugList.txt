@@ -18,10 +18,10 @@ create HTML documentation - done
 create CHM documentation - done
 width of the help in low dpi mode - done
 removal of prefs positioning to top, bottom &c - done
+' update html code documentation using MZTools code documenter  - done
+' setup2go create setup.exe  - done
 
 ' -oOo-
-
-' update html code documentation using MZTools code documenter
 
 Create a XP /ReactOS version using old APIs
 https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6
