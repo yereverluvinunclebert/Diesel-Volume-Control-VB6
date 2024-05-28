@@ -1,7 +1,7 @@
 # Diesel-Volume-Control-VB6
  
-  A FOSS Desktop Utility VB6 WoW64 Widget for Reactos, XP, Win7, 8 and 10/11+.
- 
+  A FOSS Desktop Utility VB6 WoW64 Widget for Windows Vista, Win7, 8 and 10/11+. 
+
  My current VB6/RC6 PSD program being worked upon now, in progress, you can download as it is complete and operating - except for documentation.
  This is based upon the Yahoo widget of the same design.
 
@@ -24,8 +24,8 @@ This widget is an attractive dieselpunk VB6 widget for your desktop. Functional 
  fire up. The first time you run it there will be no assigned function and so it 
  will state as such and then pop up the preferences so that you can enter the 
  command of your choice. The widget takes command line-style commands for 
- windows. Mouse hover over the widget and press CTRL+mousewheel up/down to resize. It works well on Windows XP 
- to Windows 11.
+ windows. Mouse hover over the widget and press CTRL+mousewheel up/down to resize. It works well on Windows Vista
+ to Windows 11. There will be another version for ReactOS and Windows XP, not yet built, watch this space.
 
  The Volume widget is currently Beta-grade software, under development, not yet 
  ready to use on a production system - use at your own risk.
@@ -76,11 +76,9 @@ This widget is an attractive dieselpunk VB6 widget for your desktop. Functional 
  
  Tested on :
  
-	ReactOS 0.4.14 32bit on virtualBox    
 	Windows 7 Professional 32bit on Intel    
 	Windows 7 Ultimate 64bit on Intel    
 	Windows 7 Professional 64bit on Intel    
-	Windows XP SP3 32bit on Intel    
 	Windows 10 Home 64bit on Intel    
 	Windows 10 Home 64bit on AMD    
 	Windows 11 64bit on Intel  
@@ -116,7 +114,7 @@ This widget is an attractive dieselpunk VB6 widget for your desktop. Functional 
  
  Dependencies:
  
- o A windows-alike o/s such as Windows XP, 7-11 or Apple Mac OSX 11. 
+ o A windows-alike o/s such as Windows Vista 7-11 or Apple Mac OSX 11. 
  
  o Microsoft VB6 IDE installed with its runtime components. The program runs 
  without any additional Microsoft OCX components, just the basic controls that 
