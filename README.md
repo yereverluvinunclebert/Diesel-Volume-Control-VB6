@@ -2,7 +2,7 @@
  
   A FOSS Desktop Utility VB6 WoW64 Widget for Windows Vista, Win7, 8 and 10/11+. 
 
- My current VB6/RC6 PSD program being worked upon now, in progress, you can download as it is complete and operating - except for documentation.
+ My current VB6/RC6 PSD program being worked upon now, in progress, you can download as it is complete and operating - except for testing on multi monitor systems.
  This is based upon the Yahoo widget of the same design.
 
  Why VB6? Well, with a 64 bit, modern-language improvement upgrade on the way with 100% compatible TwinBasic coupled with support for transparent PNGs via RC/Cairo, VB6 code has an amazing future.
@@ -12,7 +12,7 @@
  I created this as a development from the original Yahoo widget/ Konfabulator version I had previously created for the steampunk 
  communities. This Yahoo widget inspired the Xwidget version which has now been replaced by this VB6 version.
  
-This widget is an attractive dieselpunk VB6 widget for your desktop. Functional and gorgeous at the same time. The graphics are my own, it is mostly my code with some help from the chaps at VBForums (credits given). This Widget is a moveable widget that you can move anywhere around the desktop as you require.
+This widget is an attractive dieselpunk VB6 widget for your desktop. Functional and gorgeous at the same time. The graphics are my own, it is almost all my code with some help from the chaps at VBForums (credits given). This Widget is a moveable widget that you can move anywhere around the desktop as you require.
  
 ![dieselpunk-volume-400](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/61063cce-eeb7-4552-ac96-ab2a192eb14f)
 
