@@ -29,6 +29,8 @@ This widget is an attractive dieselpunk VB6 widget for your desktop. Functional 
  windows. Mouse hover over the widget and press CTRL+mousewheel up/down to resize. It works well on Windows Vista
  to Windows 11. There will be another version for ReactOS and Windows XP, not yet built, watch this space.
 
+ ![Xwidgetvolumecontrol002](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/96282ef7-7f9f-43d7-839c-d194c4583668)
+
  The Volume widget is currently Beta-grade software, under development, not yet 
  ready to use on a production system - use at your own risk.
 
