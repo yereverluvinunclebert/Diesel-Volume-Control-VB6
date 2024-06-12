@@ -26,8 +26,11 @@ startup - done
 
 ' -oOo-
 
-Create a XP /ReactOS version using old APIs
+Create a XP /ReactOS version using old APIs - wip
 obtain a XP test system
+create two new functions as below
+https://www.tek-tips.com/viewthread.cfm?qid=258233
+this is overly complex and beyond scope of a volume control
 https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6
 
 create
