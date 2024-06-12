@@ -22,6 +22,7 @@ update html code documentation using MZTools code documenter  - done
 setup2go create setup.exe  - done
 Prefs scale altered from 5-100 - done
 fmrMessage unloaded - done
+startup - done
 
 ' -oOo-
 
