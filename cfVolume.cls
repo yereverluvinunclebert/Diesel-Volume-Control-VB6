@@ -24,9 +24,10 @@ Private PSDHeight As Long
 
 Private mMute As Integer ' property
 Private mSystemAudioLevel As Currency ' property
+Private mResetAudio As Boolean
 
 Private RenderDev As cMMDevice
-Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVoume with events
+Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVolume with events
 Attribute SystemVolume.VB_VarHelpID = -1
 
 'Private lblPercent As cwLabel
@@ -58,11 +59,7 @@ Private Sub Class_Initialize()
 
     Set collPSDNonUIElements = New_c.Collection(False)
     
-    'retrieve (and Set) the Default-Renderdevice
-    Set RenderDev = New_c.MMDeviceEnumerator.GetDefaultAudioEndpoint(eRender, eMultimedia)
-    
-    'retrieve (and Set) a cSimpleAudioVolume instance, to get access to Volume-Handling
-    Set SystemVolume = RenderDev.Activate(AudioEndpointVolume)
+    Call obtainAudioDevice
     
     Set tmrSampleAudioVolume = Nothing
     Set tmrSampleAudioVolume = New_c.Timer(1000, True) ' interval is one second.
@@ -76,6 +73,32 @@ Private Sub Class_Initialize()
 Class_Initialize_Error:
 
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Class_Initialize of Class Module cfVolume"
+End Sub
+
+'---------------------------------------------------------------------------------------
+' Procedure : obtainAudioDevice
+' Author    : beededea
+' Date      : 22/02/2025
+' Purpose   : obtain the audio device and set the SystemVolume object as an RC6 cSimpleAudioVolume object
+'---------------------------------------------------------------------------------------
+'
+Private Sub obtainAudioDevice()
+        
+   On Error GoTo obtainAudioDevice_Error
+
+    'retrieve (and Set) the Default-Renderdevice
+    Set RenderDev = New_c.MMDeviceEnumerator.GetDefaultAudioEndpoint(eRender, eMultimedia)
+    
+    'retrieve (and Set) a cSimpleAudioVolume instance, to get access to Volume-Handling
+    Set SystemVolume = RenderDev.Activate(AudioEndpointVolume)
+
+   On Error GoTo 0
+   Exit Sub
+
+obtainAudioDevice_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure obtainAudioDevice of Class Module cfVolume"
+
 End Sub
 
 '---------------------------------------------------------------------------------------
@@ -650,7 +673,7 @@ Public Property Let SystemAudioLevel(ByVal newValue As Currency)
 
 SystemAudioLevelLet_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property SystemAudioLevel of Class Module cwGlobe"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property SystemAudioLevel of Class Module cfVolume"
 End Property
 
 ' ----------------------------------------------------------------
@@ -702,7 +725,7 @@ Public Property Let Mute(ByVal newValue As Integer)
 
 MuteLet_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cfVolume"
 End Property
 
 '---------------------------------------------------------------------------------------
@@ -726,7 +749,7 @@ Public Property Get Mute() As Integer
 
 MuteGet_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cwGlobe"
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property Mute of Class Module cfVolume"
 End Property
 
 
@@ -786,7 +809,52 @@ VolumePerc_Error:
 
 End Property
 
+'---------------------------------------------------------------------------------------
+' Property  : resetAudio
+' Author    : beededea
+' Date      : 10/05/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Public Property Let resetAudio(ByVal newValue As Boolean)
+   On Error GoTo resetAudioLet_Error
+   
+    If mResetAudio <> newValue Then mResetAudio = newValue Else Exit Property
+    
+    resetAudio = mResetAudio
+    
+    If mResetAudio = True Then
+        Call obtainAudioDevice
+        mResetAudio = False
+    End If
+   
+   On Error GoTo 0
+   Exit Property
 
+resetAudioLet_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property resetAudio of Class Module cfVolume"
+End Property
+
+'---------------------------------------------------------------------------------------
+' Property  : Mute
+' Author    : beededea
+' Date      : 17/05/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Public Property Get resetAudio() As Boolean
+   On Error GoTo resetAudioGet_Error
+
+    resetAudio = mResetAudio
+
+   On Error GoTo 0
+   Exit Property
+
+resetAudioGet_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in Property resetAudio of Class Module cfVolume"
+End Property
 ' ----------------------------------------------------------------
 ' Procedure Name: HandleVolumeChangeForHardware
 ' Purpose:

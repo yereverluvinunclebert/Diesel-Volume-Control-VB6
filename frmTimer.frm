@@ -15,7 +15,7 @@ Begin VB.Form frmTimer
       Interval        =   3000
       Left            =   105
       Tag             =   "stores and compares the last time to see if the PC has slept"
-      Top             =   1575
+      Top             =   1560
    End
    Begin VB.Timer settingsTimer 
       Enabled         =   0   'False
@@ -228,6 +228,9 @@ Private Sub sleepTimer_Timer()
     If lngSecondsGap > 60 Then
         'MsgBox "System has just woken up from a sleep" ' awoken, awake
         fVolume.volumeForm.Refresh
+        
+        fVolume.resetAudio = True
+        
         'MessageBox Me.hwnd, "System has just woken up from a sleep - animatedIconsRaised =" & animatedIconsRaised, "SteamyDock Information Message", vbOKOnly
     End If
     

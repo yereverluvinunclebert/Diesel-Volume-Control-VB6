@@ -26,6 +26,8 @@ startup - done
 
 ' -oOo-
 
+on rare occasions, with sxFi, the vol. control becomes disconnected from the sound APIs and no longer can cotrol the volume
+
 Create a XP /ReactOS version using old APIs - wip
 obtain a XP test system
 create two new functions as below
@@ -55,7 +57,15 @@ End With
 ' adjustFormPositionToCorrectMonitor - about form
 ' adjustFormPositionToCorrectMonitor - help form
 
+' -oOo-
 
+' hard restart as per steampunk clock/calendar
+'
+' when volume c ontrol is lost due to an external volume controller then re-establish it automatically.
+
+' Closing the program , timers &c as per clock/cal
+
+' ChangeToolTipWidgetDefaultSettings - control the font size/style of the RC widget tooltips
 
 ' -oOo-
 
