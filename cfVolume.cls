@@ -837,7 +837,7 @@ resetAudioLet_Error:
 End Property
 
 '---------------------------------------------------------------------------------------
-' Property  : Mute
+' Property  : resetAudio
 ' Author    : beededea
 ' Date      : 17/05/2023
 ' Purpose   :

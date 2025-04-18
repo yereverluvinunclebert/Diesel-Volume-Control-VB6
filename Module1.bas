@@ -2152,6 +2152,22 @@ End Sub
 Public Sub unloadAllForms(ByVal endItAll As Boolean)
     
    On Error GoTo unloadAllForms_Error
+   
+    ' stop all VB6 timers in the timer form
+    frmTimer.revealWidgetTimer.Enabled = False
+    frmTimer.rotationTimer.Enabled = False
+    frmTimer.settingsTimer.Enabled = False
+    frmTimer.sleepTimer.Enabled = False
+    
+    ' stop all VB6 timers in the prefs form
+    
+    widgetPrefs.themeTimer.Enabled = False
+    widgetPrefs.positionTimer.Enabled = False
+    
+    ' stop RC timers for testing external changes to volume and mute
+    
+    fVolume.tmrSampleAudioVolume.Enabled = False
+    fVolume.tmrSampleAudioMute.Enabled = False
 
     'unload the RC6 widgets on the RC6 forms first
     
@@ -2166,7 +2182,9 @@ Public Sub unloadAllForms(ByVal endItAll As Boolean)
     Unload frmTimer
     Unload menuForm
 
-    fMain.aboutForm.Unload  ' RC6's own method for killing forms
+    ' RC6's own method for killing forms
+    
+    fMain.aboutForm.Unload
     fMain.helpForm.Unload
     fVolume.volumeForm.Unload
     fMain.licenceForm.Unload
@@ -2178,10 +2196,14 @@ Public Sub unloadAllForms(ByVal endItAll As Boolean)
     Set fVolume.volumeForm = Nothing
     Set fMain.licenceForm = Nothing
     
+    ' remove all variable references to each VB6 form in turn
+    
     Set widgetPrefs = Nothing
     Set frmTimer = Nothing
     Set menuForm = Nothing
     Set frmMessage = Nothing
+    
+    On Error Resume Next
     
     If endItAll = True Then End
 
