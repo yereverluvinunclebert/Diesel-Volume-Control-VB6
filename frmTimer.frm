@@ -213,8 +213,6 @@ End Sub
 Private Sub sleepTimer_Timer()
     Dim strTimeNow As Date: strTimeNow = #1/1/2000 12:00:00 PM#  'set a variable to compare for the NOW time
     Dim lngSecondsGap As Long: lngSecondsGap = 0  ' set a variable for the difference in time
-    Dim answer As VbMsgBoxResult: answer = vbNo
-    Dim answerMsg As String: answerMsg = vbNullString
     
     Static strTimeThen As Date
     
@@ -222,23 +220,19 @@ Private Sub sleepTimer_Timer()
 
     If strTimeThen = "00:00:00" Then strTimeThen = Now(): Exit Sub
     sleepTimer.Enabled = False
-    
-    answer = vbYes
-    answerMsg = " The system has just woken up from a sleep, resulting in the audio control being reset."
-    
+        
     strTimeNow = Now()
     
     lngSecondsGap = DateDiff("s", strTimeThen, strTimeNow)
-    strTimeThen = Now()
 
     If lngSecondsGap > 60 Then
 
         fVolume.volumeForm.Refresh
         fVolume.resetAudio = True
         
-        MsgBox (answerMsg)
-        'answer = msgBoxA(answerMsg, vbExclamation + vbYesNo, "SteamyDock Information Message", True, "sleepTimer_Timer")
     End If
+    
+    strTimeThen = Now()
     
     sleepTimer.Enabled = True
 
