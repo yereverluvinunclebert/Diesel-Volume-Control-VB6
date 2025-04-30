@@ -24,9 +24,12 @@ Prefs scale altered from 5-100 - done
 fmrMessage unloaded - done
 startup - done
 
-' -oOo-
+' on wake from sleep when volume control is lost due to an external volume controller then re-establish it automatically.
 
-on rare occasions, with sxFi, the vol. control becomes disconnected from the sound APIs and no longer can cotrol the volume
+create a timer to reset audio - on rare occasions, with sxFi, the vol. control becomes disconnected from the sound APIs and no longer control the volume
+add prefs options to control the 3 minute audio reset.
+
+' -oOo-
 
 Create a XP /ReactOS version using old APIs - wip
 obtain a XP test system
@@ -51,6 +54,9 @@ End With
 
 ' https://www.vbforums.com/showthread.php?900892-VB6-Simple-way-to-make-your-VB6-application-quot-Per-Monitor-DPI-Aware-quot
 
+widget prefs starts up top let first run.
+widgetprefs second run, starts up in the middle of the virtual screen rather than the  middle of the main monitor it sits upon
+
 ' adjustFormPositionToCorrectMonitor, make it work and observe the result as per FCW - wip
 
 ' adjustFormPositionToCorrectMonitor - licence form
@@ -60,8 +66,6 @@ End With
 ' -oOo-
 
 ' hard restart as per steampunk clock/calendar
-'
-' when volume c ontrol is lost due to an external volume controller then re-establish it automatically.
 
 ' Closing the program , timers &c as per clock/cal
 
