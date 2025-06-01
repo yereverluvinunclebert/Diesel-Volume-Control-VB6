@@ -1851,7 +1851,7 @@ Public Sub makeVisibleFormElements()
 
     monitorCount = fGetMonitorCount
     If monitorCount > 1 Then
-        Call adjustFormPositionToCorrectMonitor(fVolume.volumeForm.hwnd, formLeftPixels, formTopPixels)
+        Call SetFormOnMonitor(fVolume.volumeForm.hwnd, formLeftPixels, formTopPixels)
     Else
         fVolume.volumeForm.Left = formLeftPixels
         fVolume.volumeForm.Top = formTopPixels
@@ -2396,15 +2396,15 @@ Public Sub writePrefsPosition()
 
     If widgetPrefs.WindowState = vbNormal Then ' when vbMinimised the value = -48000  !
         If gblDpiAwareness = "1" Then
-            gblFormHighDpiXPosTwips = Str$(widgetPrefs.Left)
-            gblFormHighDpiYPosTwips = Str$(widgetPrefs.Top)
+            gblFormHighDpiXPosTwips = CStr(widgetPrefs.Left)
+            gblFormHighDpiYPosTwips = CStr(widgetPrefs.Top)
             
             ' now write those params to the toolSettings.ini
             sPutINISetting "Software\DieselVolumeControl", "formHighDpiXPosTwips", gblFormHighDpiXPosTwips, gblSettingsFile
             sPutINISetting "Software\DieselVolumeControl", "formHighDpiYPosTwips", gblFormHighDpiYPosTwips, gblSettingsFile
         Else
-            gblFormLowDpiXPosTwips = Str$(widgetPrefs.Left)
-            gblFormLowDpiYPosTwips = Str$(widgetPrefs.Top)
+            gblFormLowDpiXPosTwips = CStr(widgetPrefs.Left)
+            gblFormLowDpiYPosTwips = CStr(widgetPrefs.Top)
             
             ' now write those params to the toolSettings.ini
             sPutINISetting "Software\DieselVolumeControl", "formLowDpiXPosTwips", gblFormLowDpiXPosTwips, gblSettingsFile
