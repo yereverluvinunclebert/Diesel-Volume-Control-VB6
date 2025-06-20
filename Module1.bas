@@ -427,8 +427,6 @@ Public gblWindowLevelWasChanged As Boolean
 '------------------------------------------------------ ENDS
                             
 
-
-
 ' Flag for debug mode '.06 DAEB 19/04/2021 common.bas moved to the common area so that it can be used by each of the utilities
 Private mbDebugMode As Boolean ' .30 DAEB 03/03/2021 frmMain.frm replaced the inIDE function that used a variant to one without
 
@@ -437,7 +435,9 @@ Public tzDelta1 As Long
 
 Public msgBoxADynamicSizingFlg As Boolean
 
-
+' vars to obtain the virtual (multi-monitor) width twips
+Public gblVirtualScreenHeightTwips As Long
+Public gblVirtualScreenWidthTwips As Long
 
 
 '---------------------------------------------------------------------------------------
@@ -2024,14 +2024,17 @@ Public Sub determineScreenDimensions()
     'If debugflg = 1 Then msgbox "% sub determineScreenDimensions"
 
     ' only calling TwipsPerPixelX/Y functions once on startup
-    screenTwipsPerPixelX = fTwipsPerPixelX
-    screenTwipsPerPixelY = fTwipsPerPixelY
+    gblScreenTwipsPerPixelX = fTwipsPerPixelX
+    gblScreenTwipsPerPixelY = fTwipsPerPixelY
     
     screenHeightPixels = GetDeviceCaps(menuForm.hdc, VERTRES) ' we use the name of any form that we don't mind being loaded at this point
     screenWidthPixels = GetDeviceCaps(menuForm.hdc, HORZRES)
 
-    screenHeightTwips = screenHeightPixels * screenTwipsPerPixelY
-    screenWidthTwips = screenWidthPixels * screenTwipsPerPixelX
+    screenHeightTwips = screenHeightPixels * gblScreenTwipsPerPixelY
+    screenWidthTwips = screenWidthPixels * gblScreenTwipsPerPixelX
+    
+    gblVirtualScreenHeightTwips = fVirtualScreenHeight(False)
+    gblVirtualScreenWidthTwips = fVirtualScreenWidth(False)
     
     oldScreenHeightPixels = screenHeightPixels ' will be used to check for orientation changes
     oldScreenWidthPixels = screenWidthPixels
