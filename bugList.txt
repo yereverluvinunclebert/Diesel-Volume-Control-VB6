@@ -31,6 +31,8 @@ add prefs options to control the 3 minute audio reset.
 
 ' -oOo-
 
+when you reconnect the audio hardware - test for current mute and volume
+
 Create a XP /ReactOS version using old APIs - wip
 obtain a XP test system
 create two new functions as below
