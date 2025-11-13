@@ -123,11 +123,11 @@ This widget is an attractive dieselpunk VB6 widget for your desktop. Functional 
 
  Development:
 
- A full description of this project, created by Devin, can be found here: 
+ A full description of this project, created using Devin, can be found here: 
  
- ![devin400](https://github.com/user-attachments/assets/29e3df3b-86ef-4a27-b24a-c94e17c26397)https://deepwiki.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/1-overview
+ ![devin400](https://github.com/user-attachments/assets/29e3df3b-86ef-4a27-b24a-c94e17c26397)
+ (https://deepwiki.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/1-overview)
  
-
  Development Dependencies:
   
  o Microsoft VB6 IDE installed with its runtime components. The program runs 
@@ -228,4 +228,5 @@ The above is only for development, for ordinary users, during runtime there is n
 
 
  
+
 
