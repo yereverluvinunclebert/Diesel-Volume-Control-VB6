@@ -220,6 +220,8 @@ The above is only for development, for ordinary users, during runtime there is n
 	OLE Automation  
 	vbRichClient6  
  
+ <img width="445" height="359" alt="projectReferences" src="https://github.com/user-attachments/assets/51a33785-2e3c-4b32-9fd0-6c4b0ebb8531" />
+
  
  LICENCE AGREEMENTS:
  
@@ -236,6 +238,7 @@ The above is only for development, for ordinary users, during runtime there is n
 
 
  
+
 
 
 
