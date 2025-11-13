@@ -151,9 +151,9 @@ This widget is an attractive dieselpunk VB6 widget for your desktop. Functional 
  referenced using modRC6regfree.bas which is compiled into the binary.	
  
  
- Requires a PzJustclock folder in C:\Users\<user>\AppData\Roaming\ 
- eg: C:\Users\<user>\AppData\Roaming\PzJustclock
- Requires a settings.ini file to exist in C:\Users\<user>\AppData\Roaming\PzJustclock
+ Requires a DieselVolumeControl folder in C:\Users\<user>\AppData\Roaming\ 
+ eg: C:\Users\<user>\AppData\Roaming\DieselVolumeControl
+ Requires a settings.ini file to exist in C:\Users\<user>\AppData\Roaming\DieselVolumeControl
  The above will be created automatically by the compiled program when run for the 
  first time.
  
@@ -176,6 +176,11 @@ at design time and the sliders will function as intended (if this ocx is
 not registered correctly then the relevant controls will be replaced by picture boxes).
 
 The above is only for development, for ordinary users, during runtime there is no need to do the above. The OCX will reside in the program folder. The program reference to this OCX is contained within the supplied resource file, Diesel-volume-control.RES. The reference to this file is already compiled into the binary. As long as the OCX is in the same folder as the binary the program will run without the need to register the OCX manually.
+ 
+ <img width="451" height="406" alt="components" src="https://github.com/user-attachments/assets/0dad6c34-439c-4fbd-8522-23036269a89e" />
+ 
+ Project References Window showing the ccrSlider OCX selected 
+
  
  * OLEGuids.tlb
  
@@ -231,6 +236,7 @@ The above is only for development, for ordinary users, during runtime there is n
 
 
  
+
 
 
 
