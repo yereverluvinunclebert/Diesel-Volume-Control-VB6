@@ -128,7 +128,7 @@ This widget is an attractive dieselpunk VB6 widget for your desktop. Functional 
 [![Picture of summary document for the volume control
 ](https://github.com/user-attachments/assets/29e3df3b-86ef-4a27-b24a-c94e17c26397
 "Click to open the summary document")
-](https://deepwiki.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/1-overview{target=_blank})
+](https://deepwiki.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/1-overview)
 
 
  Development Dependencies:
@@ -231,6 +231,7 @@ The above is only for development, for ordinary users, during runtime there is n
 
 
  
+
 
 
 
