@@ -1748,7 +1748,8 @@ End Sub
 Public Sub getKeyPress(ByVal KeyCode As Integer, ByVal Shift As Integer)
     Dim answer As VbMsgBoxResult: answer = vbNo
     Dim answerMsg As String: answerMsg = vbNullString
-   
+    Dim a As Currency
+    
     On Error GoTo getkeypress_Error
 
     If gblCTRL_1 Or gblSHIFT_1 Then
@@ -1779,19 +1780,43 @@ Public Sub getKeyPress(ByVal KeyCode As Integer, ByVal Shift As Integer)
             End If
         Case vbKeyUp
             If Shift = 1 Then
+                ' move the volume control upward
                 fVolume.volumeForm.Top = fVolume.volumeForm.Top - 5
+            Else
+                ' increase the volume
+                a = fVolume.VolumePerc
+                a = a + 0.02
+                fVolume.VolumePerc = a
             End If
         Case vbKeyDown
             If Shift = 1 Then
+                ' move the volume control downward
                 fVolume.volumeForm.Top = fVolume.volumeForm.Top + 5
+            Else
+                ' decrease the volume
+                a = fVolume.VolumePerc
+                a = a - 0.02
+                fVolume.VolumePerc = a
             End If
         Case vbKeyLeft
              If Shift = 1 Then
+                ' move the volume control to the left
                 fVolume.volumeForm.Left = fVolume.volumeForm.Left - 5
+            Else
+                ' decrease the volume
+                a = fVolume.VolumePerc
+                a = a - 0.02
+                fVolume.VolumePerc = a
             End If
         Case vbKeyRight
             If Shift = 1 Then
+                ' move the volume control to the right
                 fVolume.volumeForm.Left = fVolume.volumeForm.Left + 5
+            Else
+                ' increase the volume
+                a = fVolume.VolumePerc
+                a = a + 0.02
+                fVolume.VolumePerc = a
             End If
         
     End Select
