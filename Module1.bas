@@ -48,7 +48,7 @@ End Type
 
 Private Type FONTSTRUC
   lStructSize As Long
-  hWnd As Long
+  hwnd As Long
   hDC As Long
   lpLogFont As Long
   iPointSize As Long
@@ -141,7 +141,7 @@ End Enum
 
 '------------------------------------------------------ STARTS
 ' APIs for useful functions START
-Public Declare Function ShellExecute Lib "Shell32.dll" Alias "ShellExecuteA" (ByVal hWnd As Long, ByVal lpOperation As String, ByVal lpFile As String, ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
+Public Declare Function ShellExecute Lib "Shell32.dll" Alias "ShellExecuteA" (ByVal hwnd As Long, ByVal lpOperation As String, ByVal lpFile As String, ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
 ' APIs for useful functions END
 '------------------------------------------------------ ENDS
 
@@ -1562,7 +1562,7 @@ Public Sub mnuCoffee_ClickEvent()
     answer = msgBoxA(answerMsg, vbExclamation + vbYesNo, "Request to Donate a Kofi", True, "mnuCoffeeClickEvent")
 
     If answer = vbYes Then
-        Call ShellExecute(menuForm.hWnd, "Open", "https://www.ko-fi.com/yereverluvinunclebert", vbNullString, App.Path, 1)
+        Call ShellExecute(menuForm.hwnd, "Open", "https://www.ko-fi.com/yereverluvinunclebert", vbNullString, App.Path, 1)
     End If
 
    On Error GoTo 0
@@ -1592,7 +1592,7 @@ Public Sub mnuSupport_ClickEvent()
     answer = msgBoxA(answerMsg, vbExclamation + vbYesNo, "Request to Contact Support", True, "mnuSupportClickEvent")
 
     If answer = vbYes Then
-        Call ShellExecute(menuForm.hWnd, "Open", "https://github.com/yereverluvinunclebert/Diesel-Volume-Control-" & gblCodingEnvironment & "/issues", vbNullString, App.Path, 1)
+        Call ShellExecute(menuForm.hwnd, "Open", "https://github.com/yereverluvinunclebert/Diesel-Volume-Control-" & gblCodingEnvironment & "/issues", vbNullString, App.Path, 1)
     End If
 
    On Error GoTo 0
@@ -1715,7 +1715,7 @@ Public Sub makeVisibleFormElements()
 
     gblMonitorCount = fGetMonitorCount
     If gblMonitorCount > 1 Then
-        Call SetFormOnMonitor(fVolume.volumeForm.hWnd, formLeftPixels, formTopPixels)
+        Call SetFormOnMonitor(fVolume.volumeForm.hwnd, formLeftPixels, formTopPixels)
     Else
         fVolume.volumeForm.Left = formLeftPixels
         fVolume.volumeForm.Top = formTopPixels
@@ -1777,6 +1777,23 @@ Public Sub getKeyPress(ByVal KeyCode As Integer, ByVal Shift As Integer)
             Else
                 Call reloadProgram 'f5 refresh button as per all browsers
             End If
+        Case vbKeyUp
+            If Shift = 1 Then
+                fVolume.volumeForm.Top = fVolume.volumeForm.Top - 5
+            End If
+        Case vbKeyDown
+            If Shift = 1 Then
+                fVolume.volumeForm.Top = fVolume.volumeForm.Top + 5
+            End If
+        Case vbKeyLeft
+             If Shift = 1 Then
+                fVolume.volumeForm.Left = fVolume.volumeForm.Left - 5
+            End If
+        Case vbKeyRight
+            If Shift = 1 Then
+                fVolume.volumeForm.Left = fVolume.volumeForm.Left + 5
+            End If
+        
     End Select
  
     On Error GoTo 0
@@ -2449,7 +2466,7 @@ Public Sub hardRestart()
     If fFExists(thisCommand) Then
         
         ' run the selected program
-        Call ShellExecute(widgetPrefs.hWnd, "open", thisCommand, "Diesel-Volume-Control-VB6.exe prefs", "", 1)
+        Call ShellExecute(widgetPrefs.hwnd, "open", thisCommand, "Diesel-Volume-Control-VB6.exe prefs", "", 1)
     Else
         'answer = MsgBox(thisCommand & " is missing", vbOKOnly + vbExclamation)
         answerMsg = thisCommand & " is missing"
@@ -2614,9 +2631,9 @@ Public Function ArrayString(ParamArray tokens()) As String()
     On Error GoTo ArrayString_Error
 
     ReDim Arr(UBound(tokens)) As String
-    Dim I As Long
-    For I = 0 To UBound(tokens)
-        Arr(I) = tokens(I)
+    Dim i As Long
+    For i = 0 To UBound(tokens)
+        Arr(i) = tokens(i)
     Next
     ArrayString = Arr
 

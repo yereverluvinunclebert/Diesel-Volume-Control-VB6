@@ -257,29 +257,28 @@ Private Sub volumeForm_BubblingEvent(ByRef Sender As Object, ByRef EventName As 
     If EventName = "W_MouseMove" Then
         Select Case LCase$(Sender.Widget.Key)
             Case "helppin"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, "This button opens the one-page help file for this widget. There is a further detailed CHM help file available from the right-click menu that contains all the information that you need to run this widget.", _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, "This button opens the one-page help file for this widget. There is a further detailed CHM help file available from the right-click menu that contains all the information that you need to run this widget.", _
                      TTIconInfo, gblWidgetName & " Help Pin Help", , , , True
             Case "lockingpin"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
                      TTIconInfo, gblWidgetName & " Locking pin Help", , , , True
             Case "bell"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, "This is the mute button. Click me to toggle sound on/off.", _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, "This is the mute button. Click me to toggle sound on/off.", _
                      TTIconInfo, gblWidgetName & " Sound Toggle Help", , , , True
             Case "lockingpinunlocked"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, "Click me to lock the widget in place. This lock can be released by clicking again on the locking pin, or in the preferences. A locking sound will denote the button's operation.", _
                      TTIconInfo, gblWidgetName & " Locking pin Help", , , , True
             Case "indicatorred"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, "This is the mute indicator. A green lamp means that the sound is unmuted. Red lamp means that mute is ON.", _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, "This is the mute indicator. A green lamp means that the sound is unmuted. Red lamp means that mute is ON.", _
                      TTIconInfo, gblWidgetName & " Locking pin Help", , , , True
             Case "indicatorgreen"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, "This is the mute indicator. Sound is unmuted.", _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, "This is the mute indicator. Sound is unmuted.", _
                      TTIconInfo, gblWidgetName & " Locking pin Help", , , , True
             Case "sliderset"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, "This is the Volume Slider. Click and drag me left/right to change the volume.", _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, "This is the Volume Slider. Click and drag me left/right to change the volume.", _
                      TTIconInfo, gblWidgetName & " Locking pin Help", , , , True
-
             Case "speaker", "cable", "bar", "pipes", "cablewheelset"
-                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hWnd, stdMessage _
+                If gblPrefsTooltips = "0" Then CreateToolTip volumeForm.hwnd, stdMessage _
                     & vbCrLf & stdSubject, _
                     TTIconInfo, gblWidgetName & " Configuration Help", , , , True
         End Select
@@ -506,9 +505,9 @@ Private Sub volumeForm_DblClick()
     
     If gblSHIFT_1 = True Then
         gblSHIFT_1 = False
-        Call ShellExecute(volumeForm.hWnd, "Open", gblOpenFile, vbNullString, App.Path, 1)
+        Call ShellExecute(volumeForm.hwnd, "Open", gblOpenFile, vbNullString, App.Path, 1)
     Else
-        Call ShellExecute(volumeForm.hWnd, "runas", thisCommand, vbNullString, App.Path, 1)
+        Call ShellExecute(volumeForm.hwnd, "runas", thisCommand, vbNullString, App.Path, 1)
     End If
 
     On Error GoTo 0
