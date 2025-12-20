@@ -26,9 +26,14 @@ Attribute W.VB_VarHelpID = -1
 
 ' RC timers
 
-Private WithEvents tmrAboutFadeIn As cTimer
+'Private WithEvents tmrAboutFadeIn As cTimer
+'Private WithEvents tmrAboutFadeOut As cTimer
+
+' create in-code timer vars as class timers enabling the tick event for each instance replacing RC timers
+
+Private WithEvents tmrAboutFadeIn As clsTimer
 Attribute tmrAboutFadeIn.VB_VarHelpID = -1
-Private WithEvents tmrAboutFadeOut As cTimer
+Private WithEvents tmrAboutFadeOut As clsTimer
 Attribute tmrAboutFadeOut.VB_VarHelpID = -1
 
 ' private members for property assignment
@@ -81,8 +86,14 @@ Private Sub Class_Initialize()
     
     Set W = Cairo.WidgetBase '<- this is required in each cwImplementation...
        
-    Set tmrAboutFadeIn = New_c.Timer(20, False)
-    Set tmrAboutFadeOut = New_c.Timer(20, False)
+    Set tmrAboutFadeIn = New clsTimer
+    Set tmrAboutFadeOut = New clsTimer
+       
+'    Set tmrAboutFadeIn = New_c.Timer(20, False)
+'    Set tmrAboutFadeOut = New_c.Timer(20, False)
+
+    tmrAboutFadeIn.Interval = 20
+    tmrAboutFadeOut.Interval = 20
 
    On Error GoTo 0
    Exit Sub
@@ -282,64 +293,154 @@ ShowMeGet_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure ShowMe of Class Module cwAbout"
 End Property
 
-'
+
 '---------------------------------------------------------------------------------------
-' Procedure : tmrAboutFadeIn_Timer
+' Procedure : tmrAboutFadeIn_Tick
 ' Author    : beededea
 ' Date      : 17/05/2023
 ' Purpose   : timer to make the about form or about image fade in opacity
 '---------------------------------------------------------------------------------------
 '
-Private Sub tmrAboutFadeIn_Timer()
+Private Sub tmrAboutFadeIn_Tick()
       
-   On Error GoTo tmrAboutFadeIn_Timer_Error
+   On Error GoTo tmrAboutFadeIn_Tick_Error
+
+   Call tmrAboutFadeIn_Code
+   
+   On Error GoTo 0
+   Exit Sub
+
+tmrAboutFadeIn_Tick_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeIn_Tick of Class Module cwAbout"
+End Sub
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : tmrAboutFadeOut_Tick
+' Author    : beededea
+' Date      : 17/05/2023
+' Purpose   : timer to make the about form or about image fade out in opacity
+'---------------------------------------------------------------------------------------
+Private Sub tmrAboutFadeOut_Tick()
+   On Error GoTo tmrAboutFadeOut_Tick_Error
+    
+   Call tmrAboutFadeOut_Code
+
+   On Error GoTo 0
+   Exit Sub
+
+tmrAboutFadeOut_Tick_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeOut_Tick of Class Module cwAbout"
+End Sub
+
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : tmrAboutFadeIn_Code
+' Author    : beededea
+' Date      : 17/12/2025
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Private Sub tmrAboutFadeIn_Code()
+
+    On Error GoTo tmrAboutFadeIn_Code_Error
+
     fMain.aboutForm.Show
     MyOpacity = MyOpacity + 0.05
     If MyOpacity >= 1 Then
         MyOpacity = 1
 
         tmrAboutFadeIn.Enabled = False
+        'tmrAboutFadeIn.StopTimer
 
         Exit Sub
     End If
     W.Refresh
 
-   On Error GoTo 0
-   Exit Sub
+    On Error GoTo 0
+    Exit Sub
 
-tmrAboutFadeIn_Timer_Error:
+tmrAboutFadeIn_Code_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeIn_Timer of Class Module cwAbout"
+     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeIn_Code of Class Module cwAbout"
 End Sub
-'
+
 '---------------------------------------------------------------------------------------
-' Procedure : tmrAboutFadeOut_Timer
+' Procedure : tmrAboutFadeOut_Code
 ' Author    : beededea
-' Date      : 17/05/2023
-' Purpose   : timer to make the about form or about image fade out in opacity
+' Date      : 17/12/2025
+' Purpose   :
 '---------------------------------------------------------------------------------------
-Private Sub tmrAboutFadeOut_Timer()
-    On Error GoTo tmrAboutFadeOut_Timer_Error
-    
+'
+Private Sub tmrAboutFadeOut_Code()
+
+    On Error GoTo tmrAboutFadeOut_Code_Error
+
     MyOpacity = MyOpacity - 0.05
     
     If MyOpacity < 0 Then
         MyOpacity = 0
         
         tmrAboutFadeOut.Enabled = False
+        'tmrAboutFadeOut.Start 20
+        
         fMain.aboutForm.Hide
         Exit Sub
     End If
     
     W.Refresh
 
-   On Error GoTo 0
-   Exit Sub
+    On Error GoTo 0
+    Exit Sub
 
-tmrAboutFadeOut_Timer_Error:
+tmrAboutFadeOut_Code_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeOut_Timer of Class Module cwAbout"
+     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeIn_Code of Class Module cwAbout"
 End Sub
+
+''---------------------------------------------------------------------------------------
+'' Procedure : tmrAboutFadeIn_Timer
+'' Author    : beededea
+'' Date      : 17/05/2023
+'' Purpose   : timer to make the about form or about image fade in opacity
+''---------------------------------------------------------------------------------------
+''
+'Private Sub tmrAboutFadeIn_Timer()
+'
+'   On Error GoTo tmrAboutFadeIn_Timer_Error
+'
+'   Call tmrAboutFadeIn_Code
+'
+'   On Error GoTo 0
+'   Exit Sub
+'
+'tmrAboutFadeIn_Timer_Error:
+'
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeIn_Timer of Class Module cwAbout"
+'End Sub
+''
+''---------------------------------------------------------------------------------------
+'' Procedure : tmrAboutFadeOut_Timer
+'' Author    : beededea
+'' Date      : 17/05/2023
+'' Purpose   : timer to make the about form or about image fade out in opacity
+''---------------------------------------------------------------------------------------
+'Private Sub tmrAboutFadeOut_Timer()
+'
+'   On Error GoTo tmrAboutFadeOut_Timer_Error
+'
+'   Call tmrAboutFadeOut_Code
+'
+'   On Error GoTo 0
+'   Exit Sub
+'
+'tmrAboutFadeOut_Timer_Error:
+'
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrAboutFadeOut_Timer of Class Module cwAbout"
+'End Sub
 '---------------------------------------------------------------------------------------
 ' Procedure : W_Paint
 ' Author    : beededea

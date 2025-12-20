@@ -26,9 +26,14 @@ Attribute W.VB_VarHelpID = -1
 
 ' RC timers
 
-Private WithEvents tmrLicenceFadeIn As cTimer
+'Private WithEvents tmrLicenceFadeIn As cTimer
+'Private WithEvents tmrLicenceFadeOut As cTimer
+
+' create in-code timer vars as class timers enabling the tick event for each instance replacing RC timers
+
+Private WithEvents tmrLicenceFadeIn As clsTimer
 Attribute tmrLicenceFadeIn.VB_VarHelpID = -1
-Private WithEvents tmrLicenceFadeOut As cTimer
+Private WithEvents tmrLicenceFadeOut As clsTimer
 Attribute tmrLicenceFadeOut.VB_VarHelpID = -1
 
 ' private members for property assignment
@@ -82,8 +87,14 @@ Private Sub Class_Initialize()
     
     Set W = Cairo.WidgetBase '<- this is required in each cwImplementation...
    
-    Set tmrLicenceFadeIn = New_c.Timer(20, False)
-    Set tmrLicenceFadeOut = New_c.Timer(20, False)
+    Set tmrLicenceFadeIn = New clsTimer
+    Set tmrLicenceFadeOut = New clsTimer
+       
+'    Set tmrLicenceFadeIn = New_c.Timer(20, False)
+'    Set tmrLicenceFadeOut = New_c.Timer(20, False)
+
+    tmrLicenceFadeIn.Interval = 20
+    tmrLicenceFadeOut.Interval = 20
 
    On Error GoTo 0
    Exit Sub
@@ -271,18 +282,61 @@ ShowMeGet_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure ShowMe of Class Module cwLicence"
 End Property
 
-'
+
 '---------------------------------------------------------------------------------------
-' Procedure : tmrLicenceFadeIn_Timer
+' Procedure : tmrLicenceFadeIn_Tick
 ' Author    : beededea
 ' Date      : 17/05/2023
-' Purpose   : timer to make the Licence form or Licence image fade in opacity
+' Purpose   : timer to make the about form or about image fade in opacity
 '---------------------------------------------------------------------------------------
 '
-Private Sub tmrLicenceFadeIn_Timer()
+Private Sub tmrLicenceFadeIn_Tick()
       
-   On Error GoTo tmrLicenceFadeIn_Timer_Error
+   On Error GoTo tmrLicenceFadeIn_Tick_Error
+
+   Call tmrLicenceFadeIn_Code
+   
+   On Error GoTo 0
+   Exit Sub
+
+tmrLicenceFadeIn_Tick_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeIn_Tick of Class Module cwAbout"
+End Sub
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : tmrLicenceFadeOut_Tick
+' Author    : beededea
+' Date      : 17/05/2023
+' Purpose   : timer to make the about form or about image fade out in opacity
+'---------------------------------------------------------------------------------------
+Private Sub tmrLicenceFadeOut_Tick()
+   On Error GoTo tmrLicenceFadeOut_Tick_Error
     
+   Call tmrLicenceFadeOut_Code
+
+   On Error GoTo 0
+   Exit Sub
+
+tmrLicenceFadeOut_Tick_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeOut_Tick of Class Module cwAbout"
+End Sub
+
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : tmrLicenceFadeIn_Code
+' Author    : beededea
+' Date      : 17/12/2025
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Private Sub tmrLicenceFadeIn_Code()
+
+    On Error GoTo tmrLicenceFadeIn_Code_Error
+
     fMain.licenceForm.Show
     MyOpacity = MyOpacity + 0.05
     If MyOpacity >= 1 Then
@@ -294,41 +348,102 @@ Private Sub tmrLicenceFadeIn_Timer()
     End If
     W.Refresh
 
-   On Error GoTo 0
-   Exit Sub
+    On Error GoTo 0
+    Exit Sub
 
-tmrLicenceFadeIn_Timer_Error:
+tmrLicenceFadeIn_Code_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeIn_Timer of Class Module cwLicence"
+     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeIn_Code of Class Module cwAbout"
 End Sub
-'
+
 '---------------------------------------------------------------------------------------
-' Procedure : tmrLicenceFadeOut_Timer
+' Procedure : tmrLicenceFadeOut_Code
 ' Author    : beededea
-' Date      : 17/05/2023
-' Purpose   : timer to make the Licence form or Licence image fade out in opacity
+' Date      : 17/12/2025
+' Purpose   :
 '---------------------------------------------------------------------------------------
-Private Sub tmrLicenceFadeOut_Timer()
-      
-    On Error GoTo tmrLicenceFadeOut_Timer_Error
+'
+Private Sub tmrLicenceFadeOut_Code()
+
+    On Error GoTo tmrLicenceFadeOut_Code_Error
 
     MyOpacity = MyOpacity - 0.05
     If MyOpacity < 0 Then
         MyOpacity = 0
-        
+
         tmrLicenceFadeOut.Enabled = False
         fMain.licenceForm.Hide
         Exit Sub
     End If
     W.Refresh
 
-   On Error GoTo 0
-   Exit Sub
+    On Error GoTo 0
+    Exit Sub
 
-tmrLicenceFadeOut_Timer_Error:
+tmrLicenceFadeOut_Code_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeOut_Timer of Class Module cwLicence"
+     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeOut_Code of Class Module cwAbout"
 End Sub
+
+'
+''---------------------------------------------------------------------------------------
+'' Procedure : tmrLicenceFadeIn_Timer
+'' Author    : beededea
+'' Date      : 17/05/2023
+'' Purpose   : timer to make the Licence form or Licence image fade in opacity
+''---------------------------------------------------------------------------------------
+''
+'Private Sub tmrLicenceFadeIn_Timer()
+'
+'   On Error GoTo tmrLicenceFadeIn_Timer_Error
+'
+'    fMain.licenceForm.Show
+'    MyOpacity = MyOpacity + 0.05
+'    If MyOpacity >= 1 Then
+'        MyOpacity = 1
+'
+'        tmrLicenceFadeIn.Enabled = False
+'
+'        Exit Sub
+'    End If
+'    W.Refresh
+'
+'   On Error GoTo 0
+'   Exit Sub
+'
+'tmrLicenceFadeIn_Timer_Error:
+'
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeIn_Timer of Class Module cwLicence"
+'End Sub
+''
+''---------------------------------------------------------------------------------------
+'' Procedure : tmrLicenceFadeOut_Timer
+'' Author    : beededea
+'' Date      : 17/05/2023
+'' Purpose   : timer to make the Licence form or Licence image fade out in opacity
+''---------------------------------------------------------------------------------------
+'Private Sub tmrLicenceFadeOut_Timer()
+'
+'    On Error GoTo tmrLicenceFadeOut_Timer_Error
+'
+'    MyOpacity = MyOpacity - 0.05
+'    If MyOpacity < 0 Then
+'        MyOpacity = 0
+'
+'        tmrLicenceFadeOut.Enabled = False
+'        fMain.licenceForm.Hide
+'        Exit Sub
+'    End If
+'    W.Refresh
+'
+'   On Error GoTo 0
+'   Exit Sub
+'
+'tmrLicenceFadeOut_Timer_Error:
+'
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrLicenceFadeOut_Timer of Class Module cwLicence"
+'End Sub
+
 '---------------------------------------------------------------------------------------
 ' Procedure : W_Paint
 ' Author    : beededea

@@ -23,10 +23,19 @@ Option Explicit
  
 Private WithEvents W As cWidgetBase '<- this is required in each cwImplementation...
 Attribute W.VB_VarHelpID = -1
-Private WithEvents tmrHelpFadeIn As cTimer
+
+ ' RC timers
+ 
+'Private WithEvents tmrHelpFadeIn As cTimer
+'Private WithEvents tmrHelpFadeOut As cTimer
+
+' create in-code timer vars as class timers enabling the tick event for each instance replacing RC timers
+
+Private WithEvents tmrHelpFadeIn As clsTimer
 Attribute tmrHelpFadeIn.VB_VarHelpID = -1
-Private WithEvents tmrHelpFadeOut As cTimer
+Private WithEvents tmrHelpFadeOut As clsTimer
 Attribute tmrHelpFadeOut.VB_VarHelpID = -1
+
 
 Private helpxo As Integer
 Private helpyo As Integer
@@ -58,8 +67,14 @@ Private Sub Class_Initialize()
 
     Set W = Cairo.WidgetBase '<- this is required in each cwImplementation...
    
-    Set tmrHelpFadeIn = New_c.Timer(20, False)
-    Set tmrHelpFadeOut = New_c.Timer(20, False)
+    Set tmrHelpFadeIn = New clsTimer
+    Set tmrHelpFadeOut = New clsTimer
+       
+'    Set tmrHelpFadeIn = New_c.Timer(20, False)
+'    Set tmrHelpFadeOut = New_c.Timer(20, False)
+
+    tmrHelpFadeIn.Interval = 20
+    tmrHelpFadeOut.Interval = 20
 
    On Error GoTo 0
    Exit Sub
@@ -69,8 +84,46 @@ Class_Initialize_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Class_Initialize of Class Module cwhelp"
 End Sub
 
-Public Property Get Widget() As cWidgetBase: Set Widget = W: End Property
-Public Property Get Widgets() As cWidgets:  Set Widgets = W.Widgets: End Property ' does this really need to be exposed?
+
+'---------------------------------------------------------------------------------------
+' Procedure : Widget
+' Author    : olaf schmidt
+' Date      : 21/09/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Public Property Get Widget() As cWidgetBase
+   On Error GoTo Widget_Error
+
+    Set Widget = W
+
+   On Error GoTo 0
+   Exit Property
+
+Widget_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Widget of Class Module cwTenShillings"
+End Property
+'---------------------------------------------------------------------------------------
+' Procedure : Widgets
+' Author    : olaf schmidt
+' Date      : 21/09/2023
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Public Property Get Widgets() As cWidgets
+   On Error GoTo Widgets_Error
+
+    Set Widgets = W.Widgets
+
+   On Error GoTo 0
+   Exit Property
+
+Widgets_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Widgets of Class Module cwTenShillings"
+End Property
+
 '---------------------------------------------------------------------------------------
 ' Procedure : Zoom
 ' Author    : beededea
@@ -209,17 +262,61 @@ ShowMeGet_Error:
     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure ShowMe of Class Module cwhelp"
 End Property
 
-'
+
 '---------------------------------------------------------------------------------------
-' Procedure : tmrHelpFadeIn_Timer
+' Procedure : tmrHelpFadeIn_Tick
 ' Author    : beededea
 ' Date      : 17/05/2023
-' Purpose   : timer to make the help form or help image fade in opacity
+' Purpose   : timer to make the about form or about image fade in opacity
 '---------------------------------------------------------------------------------------
 '
-Private Sub tmrHelpFadeIn_Timer()
+Private Sub tmrHelpFadeIn_Tick()
       
-   On Error GoTo tmrHelpFadeIn_Timer_Error
+   On Error GoTo tmrHelpFadeIn_Tick_Error
+
+   Call tmrHelpFadeIn_Code
+   
+   On Error GoTo 0
+   Exit Sub
+
+tmrHelpFadeIn_Tick_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeIn_Tick of Class Module cwAbout"
+End Sub
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : tmrHelpFadeOut_Tick
+' Author    : beededea
+' Date      : 17/05/2023
+' Purpose   : timer to make the about form or about image fade out in opacity
+'---------------------------------------------------------------------------------------
+Private Sub tmrHelpFadeOut_Tick()
+   On Error GoTo tmrHelpFadeOut_Tick_Error
+    
+   Call tmrHelpFadeOut_Code
+
+   On Error GoTo 0
+   Exit Sub
+
+tmrHelpFadeOut_Tick_Error:
+
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeOut_Tick of Class Module cwAbout"
+End Sub
+
+
+
+'---------------------------------------------------------------------------------------
+' Procedure : tmrHelpFadeIn_Code
+' Author    : beededea
+' Date      : 17/12/2025
+' Purpose   :
+'---------------------------------------------------------------------------------------
+'
+Private Sub tmrHelpFadeIn_Code()
+
+    On Error GoTo tmrHelpFadeIn_Code_Error
+
     fMain.helpForm.Show
     MyOpacity = MyOpacity + 0.05
     If MyOpacity >= 1 Then
@@ -231,23 +328,25 @@ Private Sub tmrHelpFadeIn_Timer()
     End If
     W.Refresh
 
-   On Error GoTo 0
-   Exit Sub
+    On Error GoTo 0
+    Exit Sub
 
-tmrHelpFadeIn_Timer_Error:
+tmrHelpFadeIn_Code_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeIn_Timer of Class Module cwhelp"
+     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeIn_Code of Class Module cwAbout"
 End Sub
-'
+
 '---------------------------------------------------------------------------------------
-' Procedure : tmrHelpFadeOut_Timer
+' Procedure : tmrHelpFadeOut_Code
 ' Author    : beededea
-' Date      : 17/05/2023
-' Purpose   : timer to make the help form or help image fade out in opacity
+' Date      : 17/12/2025
+' Purpose   :
 '---------------------------------------------------------------------------------------
-Private Sub tmrHelpFadeOut_Timer()
+'
+Private Sub tmrHelpFadeOut_Code()
     Dim fileToPlay As String: fileToPlay = vbNullString
-    On Error GoTo tmrHelpFadeOut_Timer_Error
+    
+    On Error GoTo tmrHelpFadeOut_Code_Error
 
     MyOpacity = MyOpacity - 0.05
     
@@ -258,8 +357,8 @@ Private Sub tmrHelpFadeOut_Timer()
         fMain.helpForm.Hide
     
         fileToPlay = "till.wav"
-        If gblEnableSounds = "1" And fFExists(App.path & "\resources\sounds\" & fileToPlay) Then
-            PlaySound App.path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
+        If gblEnableSounds = "1" And fFExists(App.Path & "\resources\sounds\" & fileToPlay) Then
+            playSound App.Path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
         End If
         
         Exit Sub
@@ -267,13 +366,79 @@ Private Sub tmrHelpFadeOut_Timer()
     
     W.Refresh
 
-   On Error GoTo 0
-   Exit Sub
+    On Error GoTo 0
+    Exit Sub
 
-tmrHelpFadeOut_Timer_Error:
+tmrHelpFadeOut_Code_Error:
 
-    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeOut_Timer of Class Module cwhelp"
+     MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeOut_Code of Class Module cwAbout"
 End Sub
+'
+''---------------------------------------------------------------------------------------
+'' Procedure : tmrHelpFadeIn_Timer
+'' Author    : beededea
+'' Date      : 17/05/2023
+'' Purpose   : timer to make the help form or help image fade in opacity
+''---------------------------------------------------------------------------------------
+''
+'Private Sub tmrHelpFadeIn_Timer()
+'
+'   On Error GoTo tmrHelpFadeIn_Timer_Error
+'    fMain.helpForm.Show
+'    MyOpacity = MyOpacity + 0.05
+'    If MyOpacity >= 1 Then
+'        MyOpacity = 1
+'
+'        tmrHelpFadeIn.Enabled = False
+'
+'        Exit Sub
+'    End If
+'    W.Refresh
+'
+'   On Error GoTo 0
+'   Exit Sub
+'
+'tmrHelpFadeIn_Timer_Error:
+'
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeIn_Timer of Class Module cwhelp"
+'End Sub
+''
+''---------------------------------------------------------------------------------------
+'' Procedure : tmrHelpFadeOut_Timer
+'' Author    : beededea
+'' Date      : 17/05/2023
+'' Purpose   : timer to make the help form or help image fade out in opacity
+''---------------------------------------------------------------------------------------
+'Private Sub tmrHelpFadeOut_Timer()
+'    Dim fileToPlay As String: fileToPlay = vbNullString
+'    On Error GoTo tmrHelpFadeOut_Timer_Error
+'
+'    MyOpacity = MyOpacity - 0.05
+'
+'    If MyOpacity < 0 Then
+'        MyOpacity = 0
+'
+'        tmrHelpFadeOut.Enabled = False
+'        fMain.helpForm.Hide
+'
+'        fileToPlay = "till.wav"
+'        If gsEnableSounds = "1" And fFExists(App.Path & "\resources\sounds\" & fileToPlay) Then
+'            playSound App.Path & "\resources\sounds\" & fileToPlay, ByVal 0&, SND_FILENAME Or SND_ASYNC
+'        End If
+'
+'        Exit Sub
+'    End If
+'
+'    W.Refresh
+'
+'   On Error GoTo 0
+'   Exit Sub
+'
+'tmrHelpFadeOut_Timer_Error:
+'
+'    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure tmrHelpFadeOut_Timer of Class Module cwhelp"
+'End Sub
+
 '---------------------------------------------------------------------------------------
 ' Procedure : W_Paint
 ' Author    : beededea

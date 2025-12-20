@@ -56,9 +56,16 @@ Private mVolumePerc As Currency
 
 Private mOpacity As Long
 
-Public WithEvents tmrSampleAudioVolume As cTimer
+' RC timers
+'
+'Public WithEvents tmrSampleAudioVolume As cTimer
+'Public WithEvents tmrSampleAudioMute As cTimer
+
+' create in-code timer vars as class timers enabling the tick event for each instance replacing RC timers
+
+Public WithEvents tmrSampleAudioVolume As clsTimer
 Attribute tmrSampleAudioVolume.VB_VarHelpID = -1
-Public WithEvents tmrSampleAudioMute As cTimer
+Public WithEvents tmrSampleAudioMute As clsTimer
 Attribute tmrSampleAudioMute.VB_VarHelpID = -1
 
 '---------------------------------------------------------------------------------------
@@ -98,11 +105,20 @@ Private Sub Class_Initialize()
     
     Call obtainAudioDevice
     
-    Set tmrSampleAudioVolume = Nothing
-    Set tmrSampleAudioVolume = New_c.Timer(1000, True) ' interval is one second.
+    Set tmrSampleAudioVolume = New clsTimer
+    Set tmrSampleAudioMute = New clsTimer
     
-    Set tmrSampleAudioMute = Nothing
-    Set tmrSampleAudioMute = New_c.Timer(1000, True) ' interval is one second.
+'    Set tmrSampleAudioVolume = Nothing
+'    Set tmrSampleAudioVolume = New_c.Timer(1000, True) ' interval is one second.
+    
+'    Set tmrSampleAudioMute = Nothing
+'    Set tmrSampleAudioMute = New_c.Timer(1000, True) ' interval is one second.
+
+    tmrSampleAudioVolume.Interval = 1000
+    tmrSampleAudioMute.Interval = 1000
+
+    tmrSampleAudioVolume.Enabled = True
+    tmrSampleAudioMute.Enabled = True
     
    On Error GoTo 0
    Exit Sub
@@ -1062,7 +1078,7 @@ End Sub
 ' Purpose   : regular check to reflect changes to system volume
 '---------------------------------------------------------------------------------------
 '
-Public Sub tmrSampleAudioVolume_Timer()
+Public Sub tmrSampleAudioVolume_Tick()
 
     On Error GoTo tmrSampleAudioVolume_Timer_Error
     
@@ -1096,7 +1112,7 @@ End Sub
 ' Purpose   : regular check to reflect changes to system volume
 '---------------------------------------------------------------------------------------
 '
-Public Sub tmrSampleAudioMute_Timer()
+Public Sub tmrSampleAudioMute_Tick()
 
     On Error GoTo tmrSampleAudioMute_Timer_Error
     
