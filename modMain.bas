@@ -541,10 +541,13 @@ End Sub
 '---------------------------------------------------------------------------------------
 '
 Public Sub adjustMainControls(Optional ByVal licenceState As Integer)
-   Dim thisEditor As String: thisEditor = vbNullString
-   Dim bigScreen As Long: bigScreen = 3840
+    Dim thisEditor As String: thisEditor = vbNullString
+    Dim bigScreen As Long: bigScreen = 0
+    Dim bMuted As BOOL: bMuted = False
    
-   On Error GoTo adjustMainControls_Error
+    On Error GoTo adjustMainControls_Error
+    
+    bigScreen = 3840
 
     ' validate the inputs of any data from the input settings file
     Call validateInputs
@@ -735,16 +738,29 @@ Public Sub adjustMainControls(Optional ByVal licenceState As Integer)
         fVolume.volumeForm.Widgets("lockingpinunlocked").Widget.Alpha = Val(gblOpacity) / 100
     End If
     
-    If fVolume.Mute = True Then
+    ' test for the initial mute state of the default audio output
+    bMuted = getmute
+    If bMuted Then
         fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
         fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
     Else
         fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
         fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
     End If
+    
+'    If fVolume.mute = True Then
+'        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = 0
+'        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = Val(gblOpacity) / 100
+'    Else
+'        fVolume.volumeForm.Widgets("indicatorgreen").Widget.Alpha = Val(gblOpacity) / 100
+'        fVolume.volumeForm.Widgets("indicatorred").Widget.Alpha = 0
+'    End If
 
     ' obtain the system volume and set the slider position accordingly
-    fVolume.VolumePerc = fVolume.SystemAudioLevel
+    'fVolume.VolumePerc = fVolume.SystemAudioLevel
+    
+    ' set the volume slider position to the initial volume level of the default audio output
+    fVolume.VolumePerc = getVol / 100
 
     ' refresh the form in order to show the above changes immediately
     fVolume.volumeForm.Refresh

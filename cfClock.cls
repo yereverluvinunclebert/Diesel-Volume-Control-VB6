@@ -155,7 +155,7 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
     Const AlphaWithTaskbarEntry As Integer = 6
     Const AlphaNoTaskbarEntry As Integer = 7
   
-    Dim I As Long: I = 0
+    Dim i As Long: i = 0
     Dim W As cWidgetBase
     Dim someOpacity As Double: someOpacity = 0
     
@@ -171,24 +171,24 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
         pvtPSDWidth = .Width
         pvtPSDHeight = .Height       'store the original Psd-Pixel-Width/Height in Private vars (as the base from which we calculate the zoomed Form-Width/Height)
     
-        For I = 0 To .LayersCount - 1 ' loop through each of the Layers in the PSD
-            If .LayerByteSize(I) Then  ' check this is a true Alpha-Surface-Layer and not just a PSD layer 'group'
-                If .LayerAlphaPercent(I) > 0 Then ' only handles layers that have an opacity greater than 0 - need to note this for the future, this will cause a problem!
+        For i = 0 To .LayersCount - 1 ' loop through each of the Layers in the PSD
+            If .LayerByteSize(i) Then  ' check this is a true Alpha-Surface-Layer and not just a PSD layer 'group'
+                If .LayerAlphaPercent(i) > 0 Then ' only handles layers that have an opacity greater than 0 - need to note this for the future, this will cause a problem!
                     
                     'add each current Layer path and surface object into the global ImageList collection (using LayerPath as the ImageKey)
-                    Cairo.ImageList.AddSurface .LayerPath(I), .LayerSurface(I)
+                    Cairo.ImageList.AddSurface .LayerPath(i), .LayerSurface(i)
                     
                     ' check if each layer is in the layer exclude list, if it IS then we add it to a collection for non UI elements (ie. do not create Widgets)
-                    If collPSDNonUIElements.Exists(.LayerPath(I)) Then
+                    If collPSDNonUIElements.Exists(.LayerPath(i)) Then
                         
                         'we add layer info. (used later in cwOverlay) to the excluded layers that will form the overlay.
-                        collPSDNonUIElements(.LayerPath(I)) = Array(.LayerX(I), .LayerY(I), someOpacity)  'here we update the so far empty slots with the PSD-offsets
+                        collPSDNonUIElements(.LayerPath(i)) = Array(.LayerX(i), .LayerY(i), someOpacity)  'here we update the so far empty slots with the PSD-offsets
                                     
                     Else
                     
                         'create a widget instance for all layers in the PSD, excluding any layers entered into the exclude-list
                         
-                        Set W = volumeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(I)), .LayerX(I), .LayerY(I), .LayerWidth(I), .LayerHeight(I)).Widget
+                        Set W = volumeForm.Widgets.Add(New cwAlphaImg, LCase$(.LayerPath(i)), .LayerX(i), .LayerY(i), .LayerWidth(i), .LayerHeight(i)).Widget
                         
                         W.ImageKey = W.Key 'W.Key equals ImageList-Key, set above - and LayerPath(i) at this point ... set it also as the ImageKey of our new created Widget
 
@@ -204,7 +204,7 @@ Public Sub InitFromPSD(ByRef PSD_FileNameOrByteArray As Variant)
                     End If
                 End If
             End If
-        Next I
+        Next i
     End With '<-- the Parser-instance will be destroyed here (freeing the Memory, the internal PSD-Layers have occupied)
         
     ' create a overlay here just for a single custom widget that contains just the animated elements.
@@ -413,10 +413,16 @@ Private Sub bell_mouseDown(ByRef Sender As Object)
     
     fileToPlay = "buzzer.wav"
 
-    If Mute = 1 Then
-        Mute = 0
+'    If mute = 1 Then
+'        mute = 0
+'    Else
+'        mute = 1
+'    End If
+
+    If getmute = True Then
+        unMute
     Else
-        Mute = 1
+        muteIt
     End If
     
     If gblEnableSounds = "1" And fFExists(App.Path & "\resources\sounds\" & fileToPlay) Then
@@ -852,9 +858,12 @@ Public Property Get SystemAudioLevel() As Currency
     
     On Error GoTo SystemAudioLevel_Error
     
-    mSystemAudioLevel = SystemVolume.GetMasterVolume
-    SystemAudioLevel = mSystemAudioLevel
+    ' RC volume control
+'    mSystemAudioLevel = SystemVolume.GetMasterVolume
+'    SystemAudioLevel = mSystemAudioLevel
 
+    mSystemAudioLevel = getVol / 100
+    SystemAudioLevel = mSystemAudioLevel
     
     On Error GoTo 0
     Exit Property
@@ -872,12 +881,12 @@ End Property
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Public Property Let Mute(ByVal newValue As Integer)
+Public Property Let mute(ByVal newValue As Integer)
    On Error GoTo MuteLet_Error
    
     If mMute <> newValue Then mMute = newValue Else Exit Property
     
-    Mute = mMute
+    mute = mMute
    
     SystemVolume.SetMute mMute
     
@@ -898,14 +907,14 @@ End Property
 ' Purpose   :
 '---------------------------------------------------------------------------------------
 '
-Public Property Get Mute() As Integer
+Public Property Get mute() As Integer
    On Error GoTo MuteGet_Error
 
-    Mute = mMute
+    mMute = SystemVolume.getmute
     
-    SystemVolume.SetMute mMute
+    mute = mMute
     
-    Call setLamps
+    'Call setLamps
 
    On Error GoTo 0
    Exit Property
@@ -1030,7 +1039,11 @@ Private Sub HandleVolumeChangeForHardware()
 
     On Error GoTo HandleVolumeChangeForHardware_Error
    
-    SystemVolume.SetMasterVolume VolumePerc
+    ' RC functionality
+    'SystemVolume.SetMasterVolume VolumePerc
+    
+    'modifies the volume dynamically using Faf's implementation of CoreAudio
+    Call sliVolControl_ScrollCode(VolumePerc * 100)
     
     On Error GoTo 0
     Exit Sub
@@ -1054,9 +1067,13 @@ Public Sub tmrSampleAudioVolume_Timer()
 
     On Error GoTo tmrSampleAudioVolume_Timer_Error
     
-    If mSystemAudioLevel = SystemVolume.GetMasterVolume Then Exit Sub
+    ' RC functionality
+    'If mSystemAudioLevel = SystemVolume.GetMasterVolume Then Exit Sub
+    'mSystemAudioLevel = SystemVolume.GetMasterVolume
     
-    mSystemAudioLevel = SystemVolume.GetMasterVolume
+    ' test the volume level of the default audio output using Faf's coreaudio code
+    If mSystemAudioLevel = (getVol / 100) Then Exit Sub
+    mSystemAudioLevel = (getVol / 100)
     
     sldX = mSystemAudioLevel * (sldXMax - sldXMin) + sldXMin
     overlayWidget.sldCurWidth = sldXMax - sldX 'inform the Overlay about the new current "Cable-Width"
@@ -1084,9 +1101,15 @@ Public Sub tmrSampleAudioMute_Timer()
 
     On Error GoTo tmrSampleAudioMute_Timer_Error
     
-    If mMute = SystemVolume.GetMute Then Exit Sub
+    ' RC functionality
+    'If mMute = SystemVolume.getmute Then Exit Sub
+    'mMute = SystemVolume.getmute
+
+    ' test the mute status of the default audio output using Faf's coreaudio code
+    ' getMute returns a true (-1) and false (0) whereas mMute wants a 0 or 1 so we convert
     
-    mMute = SystemVolume.GetMute
+    If mMute = Abs(CInt(getmute)) Then Exit Sub
+    mMute = Abs(CInt(getmute))
     
     Call setLamps
     
