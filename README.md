@@ -218,9 +218,12 @@ The above is only for development, for ordinary users, during runtime there is n
 	VisualBasic Runtime Objects and Procedures  
 	VisualBasic Objects and Procedures  
 	OLE Automation  
-	vbRichClient6  
+	RC6Widgets
+	RC6
+	OLEEXP Modern Shell Interfaces
+	Microsoft Scripting Runtime
  
- <img width="445" height="359" alt="projectReferences" src="https://github.com/user-attachments/assets/51a33785-2e3c-4b32-9fd0-6c4b0ebb8531" />
+![dieselpunk-vol-ref-001](https://github.com/user-attachments/assets/ffddfd37-a3d7-435a-8887-f404f683ff00)
 
  
  LICENCE AGREEMENTS:
@@ -238,6 +241,7 @@ The above is only for development, for ordinary users, during runtime there is n
 
 
  
+
 
 
 
