@@ -370,7 +370,7 @@ Public Sub unMute()
     Else
         'Form1.AppendNotice "Couldn't get default endpoint device."
     End If
-
+    
     On Error GoTo 0
     Exit Sub
 
@@ -410,7 +410,7 @@ Public Sub muteIt()
     Else
        ' Form1.AppendNotice "Couldn't get default endpoint device."
     End If
-
+    
     On Error GoTo 0
     Exit Sub
 

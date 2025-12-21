@@ -1,3 +1,69 @@
+Tasks
+=====
+
+' on wake from sleep when volume control is lost due to an external volume controller then re-establish it automatically.
+
+create a timer to reset audio - on rare occasions, with sxFi, the vol. control becomes disconnected from the sound APIs and no longer control the volume
+add prefs options to control the 3 minute audio reset.
+
+' -oOo-
+
+mouse scroll wheel to set volume up/down
+
+When you reconnect the audio hardware - test for current mute and volume
+
+Create a XP /ReactOS version using simple old APIs
+obtain a XP test system
+
+' add second monitor - wip find cable!
+' sync. E6410 win 7
+' sync. Fast Dell laptop
+
+' test usage of RC6 for monitor awareness - wip
+With New_c.Displays(OneBasedIndex_Or_DeviceName) 'hands out an instance of cDisplay
+  'output as LeftOffs, TopOffs, Width, Height
+  Debug.Print .WorkLeft , .WorkTop, (.WorkRight - .WorkLeft), (.WorkBottom - .WorkTop)
+End With
+
+' https://www.vbforums.com/showthread.php?900892-VB6-Simple-way-to-make-your-VB6-application-quot-Per-Monitor-DPI-Aware-quot
+
+widget prefs starts up top let first run.
+widgetprefs second run, starts up in the middle of the virtual screen rather than the middle of the main monitor it sits upon
+
+' adjustFormPositionToCorrectMonitor, make it work and observe the result as per FCW - wip
+
+' adjustFormPositionToCorrectMonitor - licence form
+' adjustFormPositionToCorrectMonitor - about form
+' adjustFormPositionToCorrectMonitor - help form
+
+' -oOo-
+
+' hard restart as per steampunk clock/calendar
+
+' ChangeToolTipWidgetDefaultSettings - control the font size/style of the RC widget tooltips
+
+' -oOo-
+
+' Later tasks after testing
+
+' test the icon sizes on 32bit Win7, XP and ReactOS, find out if 48x48 causes a crash
+' 32x32 (24 bit)
+' 16x16 (24 bit)
+' 48x48 (32 bit)
+' 32x32 (32 bit)
+' 16x16 (32 bit)
+
+
+' RC BUGS & LIMITATIONS
+' =====================
+
+' tooltips also resize when the whole thing is resized, code received from Olaf tested - resizing results in missing text and blank tooltips, using non-standard font centurion light
+' RC6 needs a static tooltip option.
+
+
+
+Items Done
+==========
 
 dealing with increased density shadows, the simple PSD parser function seems to increase to opacity of shadows in the transparent regions. Sent PSD to Olaf - done
 
@@ -24,75 +90,9 @@ Prefs scale altered from 5-100 - done
 fmrMessage unloaded - done
 startup - done
 
-' on wake from sleep when volume control is lost due to an external volume controller then re-establish it automatically.
-
-create a timer to reset audio - on rare occasions, with sxFi, the vol. control becomes disconnected from the sound APIs and no longer control the volume
-add prefs options to control the 3 minute audio reset.
-
-' -oOo-
-
-when you reconnect the audio hardware - test for current mute and volume
-
-Create a XP /ReactOS version using old APIs - wip
-obtain a XP test system
-create two new functions as below
-https://www.tek-tips.com/viewthread.cfm?qid=258233
-this is overly complex and beyond scope of a volume control
-https://www.vbforums.com/showthread.php?841819-RESOLVED-Changing-system-volume-from-VB6
-
-use CoreAudio and Faf's OLExP TLB to create a Vista + version
-
-create
-
-' add second monitor - wip find cable!
-' sync. E6410 win 7
-' sync. Fast Dell laptop
-
-' test on Dell win 11 high DPI with slicence = 0
-
-' test usage of RC6 for monitor awareness - wip
-With New_c.Displays(OneBasedIndex_Or_DeviceName) 'hands out an instance of cDisplay
-  'output as LeftOffs, TopOffs, Width, Height
-  Debug.Print .WorkLeft , .WorkTop, (.WorkRight - .WorkLeft), (.WorkBottom - .WorkTop)
-End With
-
-' https://www.vbforums.com/showthread.php?900892-VB6-Simple-way-to-make-your-VB6-application-quot-Per-Monitor-DPI-Aware-quot
-
-widget prefs starts up top let first run.
-widgetprefs second run, starts up in the middle of the virtual screen rather than the  middle of the main monitor it sits upon
-
-' adjustFormPositionToCorrectMonitor, make it work and observe the result as per FCW - wip
-
-' adjustFormPositionToCorrectMonitor - licence form
-' adjustFormPositionToCorrectMonitor - about form
-' adjustFormPositionToCorrectMonitor - help form
-
-' -oOo-
-
-' hard restart as per steampunk clock/calendar
-
-' Closing the program , timers &c as per clock/cal
-
-' ChangeToolTipWidgetDefaultSettings - control the font size/style of the RC widget tooltips
-
-' -oOo-
-
-' Later tasks after testing
-
-' test the icon sizes on 32bit Win7, XP and ReactOS, find out if 48x48 causes a crash
-' 32x32 (24 bit)
-' 16x16 (24 bit)
-' 48x48 (32 bit)
-' 32x32 (32 bit)
-' 16x16 (32 bit)
-
-' patch a 256 bit icon into the VB6 binary
-' https://www.vbforums.com/showthread.php?858347-RESOLVED-How-to-create-and-connect-quality-icon-group-to-your-VB6-app
-
-' RC BUGS & LIMITATIONS
-' =====================
-
-' tooltips also resize when the whole thing is resized, code received from Olaf tested - resizing results in missing text and blank tooltips, using non-standard font centurion light
-' RC6 needs a static tooltip option.
-
-
+use CoreAudio and Faf's OLExP TLB to create a Vista + version - done
+Closing the program , timers &c as per clock/cal - done
+patch a 256 bit icon into the VB6 binary using vbAdvance - done
+cursor keys to set volume up/down  - done
+shift+ cursor keys to move the whole widget around the desktop  - done
+html & CHM update  - done

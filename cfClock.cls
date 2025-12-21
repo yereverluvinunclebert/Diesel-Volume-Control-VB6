@@ -38,9 +38,10 @@ Private mMute As Integer ' property
 Private mSystemAudioLevel As Currency ' property
 Private mResetAudio As Boolean
 
-Private RenderDev As cMMDevice
-Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVolume with events
-Attribute SystemVolume.VB_VarHelpID = -1
+
+' Rich Client timers
+'Private RenderDev As cMMDevice
+'Private WithEvents SystemVolume As cSimpleAudioVolume 'use cSimpleAudioVolume with events
 
 'Private lblPercent As cwLabel
 'Private lblPercentShadow As cwLabel
@@ -140,10 +141,10 @@ Private Sub obtainAudioDevice()
    On Error GoTo obtainAudioDevice_Error
 
     'retrieve (and Set) the Default-Renderdevice
-    Set RenderDev = New_c.MMDeviceEnumerator.GetDefaultAudioEndpoint(eRender, eMultimedia)
+    'Set RenderDev = New_c.MMDeviceEnumerator.GetDefaultAudioEndpoint(eRender, eMultimedia)
     
     'retrieve (and Set) a cSimpleAudioVolume instance, to get access to Volume-Handling
-    Set SystemVolume = RenderDev.Activate(AudioEndpointVolume)
+    'Set SystemVolume = RenderDev.Activate(AudioEndpointVolume)
 
    On Error GoTo 0
    Exit Sub
@@ -447,6 +448,8 @@ Private Sub bell_mouseDown(ByRef Sender As Object)
     Sender.Widget.Alpha = 0
     Sender.Widget.Refresh ' this removes the delay in the bell depressing
     
+    ' call the routine that tests for mute/unmute and sets the lamp status
+    Call tmrSampleAudioMute_Tick
     tmrSampleAudioMute.Enabled = True
     
    On Error GoTo 0
@@ -903,7 +906,9 @@ Public Property Let mute(ByVal newValue As Integer)
     
     mute = mMute
    
-    SystemVolume.SetMute mMute
+    'SystemVolume.SetMute mMute
+    
+    muteIt
     
     Call setLamps
    
@@ -925,12 +930,11 @@ End Property
 Public Property Get mute() As Integer
    On Error GoTo MuteGet_Error
 
-    mMute = SystemVolume.getmute
+    'mMute = SystemVolume.getmute
     
+    mMute = Abs(CInt(getmute))
     mute = mMute
     
-    'Call setLamps
-
    On Error GoTo 0
    Exit Property
 
@@ -1123,6 +1127,7 @@ Public Sub tmrSampleAudioMute_Tick()
     ' test the mute status of the default audio output using Faf's coreaudio code
     ' getMute returns a true (-1) and false (0) whereas mMute wants a 0 or 1 so we convert
     
+    ' we don't have to do anything here other than obtain the mute status and set the lamps
     If mMute = Abs(CInt(getmute)) Then Exit Sub
     mMute = Abs(CInt(getmute))
     
