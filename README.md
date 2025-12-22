@@ -200,6 +200,24 @@ The above is only for development, for ordinary users, during runtime there is n
  
 ![dieselpunk-volume-prefs002](https://github.com/yereverluvinunclebert/Diesel-Volume-Control-VB6/assets/2788342/911deeb2-1649-42d6-9fd6-4339e09b7ea3)
 
+* oleexp.tlb - Fafalone's oleexp.tlb Modern Shell Interfaces for VB6 is a type
+ library containing a vast collection of Windows shell interfaces and interfaces
+ for a number of related features in order to bring in the expansive set of new
+ interfaces introduced in Windows Vista, and including the smaller number
+ introduced in Windows 7 through 10.
+ 
+  Project References:
+
+	VisualBasic for Applications  
+	VisualBasic Runtime Objects and Procedures  
+	VisualBasic Objects and Procedures    
+	RC6Widgets
+	RC6
+	OLEEXP Modern Shell Interfaces
+	Microsoft Scripting Runtime
+ 
+![dieselpunk-vol-ref-001](https://github.com/user-attachments/assets/ffddfd37-a3d7-435a-8887-f404f683ff00)
+
  * SETUP.EXE - The program is currently distributed using setup2go, a very useful 
  and comprehensive installer program that builds a .exe installer. Youll have to 
  find a copy of setup2go on the web as it is now abandonware. Contact me
@@ -211,19 +229,7 @@ The above is only for development, for ordinary users, during runtime there is n
  the HTM2CHM tool from Yaroslav Kirillov. Both are abandonware but still do
  the job admirably. The HTML files exist alongside the compiled CHM file in the 
  HELP folder.
- 
-  Project References:
 
-	VisualBasic for Applications  
-	VisualBasic Runtime Objects and Procedures  
-	VisualBasic Objects and Procedures  
-	OLE Automation  
-	RC6Widgets
-	RC6
-	OLEEXP Modern Shell Interfaces
-	Microsoft Scripting Runtime
- 
-![dieselpunk-vol-ref-001](https://github.com/user-attachments/assets/ffddfd37-a3d7-435a-8887-f404f683ff00)
 
  
  LICENCE AGREEMENTS:
@@ -241,6 +247,7 @@ The above is only for development, for ordinary users, during runtime there is n
 
 
  
+
 
 
 
