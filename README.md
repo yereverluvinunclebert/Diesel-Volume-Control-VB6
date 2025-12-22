@@ -205,16 +205,20 @@ The above is only for development, for ordinary users, during runtime there is n
  for a number of related features in order to bring in the expansive set of new
  interfaces introduced in Windows Vista, and including the smaller number
  introduced in Windows 7 through 10.
+
+* Microsoft Scripting Runtime  - requires a reference to the Microsoft scripting
+ dictionary to create a collection of in-code timers allowing the use of multiple
+ non-standard VB6 timers.
  
   Project References:
 
-	VisualBasic for Applications  
-	VisualBasic Runtime Objects and Procedures  
-	VisualBasic Objects and Procedures    
-	RC6Widgets
-	RC6
-	OLEEXP Modern Shell Interfaces
-	Microsoft Scripting Runtime
+	* VisualBasic for Applications  
+	* VisualBasic Runtime Objects and Procedures  
+	* VisualBasic Objects and Procedures    
+	* RC6Widgets
+	* RC6
+	* OLEEXP Modern Shell Interfaces
+	* Microsoft Scripting Runtime
  
 ![dieselpunk-vol-ref-001](https://github.com/user-attachments/assets/ffddfd37-a3d7-435a-8887-f404f683ff00)
 
@@ -247,6 +251,7 @@ The above is only for development, for ordinary users, during runtime there is n
 
 
  
+
 
 
 
