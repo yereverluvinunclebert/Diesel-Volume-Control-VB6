@@ -1,4 +1,11 @@
 Attribute VB_Name = "mIID"
+'---------------------------------------------------------------------------------------
+' Module    : mIID
+' Author    : fafalone
+' Date      : 22/12/2025
+' Purpose   :
+'---------------------------------------------------------------------------------------
+
 Option Explicit
 
 'mIID.bas by fafalone, an add-on module for oleexp.tlb.

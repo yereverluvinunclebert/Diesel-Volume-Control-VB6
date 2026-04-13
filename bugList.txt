@@ -8,7 +8,9 @@ add prefs options to control the 3 minute audio reset.
 
 ' -oOo-
 
-mouse scroll wheel to set volume up/down
+CTRL + mouse scroll wheel to set the widget size
+
+apply the latest fixes as per the RC5/6 PzCPU gauges so that the TB bugs in the prefs can be handled
 
 When you reconnect the audio hardware - test for current mute and volume
 
@@ -96,3 +98,5 @@ patch a 256 bit icon into the VB6 binary using vbAdvance - done
 cursor keys to set volume up/down  - done
 shift+ cursor keys to move the whole widget around the desktop  - done
 html & CHM update  - done
+
+mouse scroll wheel to set volume up/down  - done
