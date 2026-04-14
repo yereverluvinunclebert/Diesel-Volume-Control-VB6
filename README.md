@@ -4,6 +4,8 @@
 
  My current VB6/RC6 PSD program being worked upon now, in progress, you can download as it is complete and operating - except for testing and changes for multi monitor systems.
  This is based upon the Yahoo widget of the same design. 
+
+ This project is no longer maintained on github please find us now on gitlab https://gitlab.com/yereverluvinunclebert/Diesel-Volume-Control-VB6
  
  If you just want to install, there is a setup.exe that you download and run. If you want to compile this yourself, clone/download the lot. You will of course, need the VB6 IDE.
 
